@@ -113,7 +113,6 @@ public class TripleX extends JFrame {
 	private JTextField txtSlugTitelbild;
 	private JTextField txtSlugPortraitbild;
 	private JTextField txtSlugReleaseJahr;
-	private JTextField txtSlugErstelltAm;
 	
 	private JFileChooser jfcSlug;
 	//private File fileSlugPfad; // sollte irgendwann zu löschen sein!!! 09.10.2017
@@ -141,10 +140,10 @@ public class TripleX extends JFrame {
 	private JCheckBox chckbxSlugThumbs;
 	private JCheckBox chckbxSlugVr;
 	private JCheckBox chckbxSlugRemastered;
-	private JTextField txtErstelltAmJahr;
-	private JTextField txtErstelltAmMonat;
-	private JTextField txtErstelltAmTag;
-	private JTextField txtErstelltAmZeit;
+	private JTextField txtSlugErstelltAmJahr;
+	private JTextField txtSlugErstelltAmMonat;
+	private JTextField txtSlugErstelltAmTag;
+	private JTextField txtSlugErstelltAmZeit;
 	
 	private DateTimeFormatter dtf;
 	private LocalDate localDate;
@@ -444,13 +443,12 @@ public class TripleX extends JFrame {
 		sDatenFunktion.setStrNA(txtSlugNa.getText());
 
 		
-		/*
-		 * zu löschen?
-		 * in der txt-Datei-Ausgabe steht von jedem : ein Backslash \
-		 * Warum?
-		 */
-		sDatenFunktion.setStrRelease(txtSlugReleaseJahr.getText() + ":" + txtSlugReleaseMonat.getText() + ":" + txtSlugReleaseTag.getText() + txtSlugReleaseZeit.getText());
-		sDatenFunktion.setStrErstellt(txtSlugErstelltAm.getText().toString());
+		sDatenFunktion.setStrRelease(txtSlugReleaseJahr.getText() + ":" + txtSlugReleaseMonat.getText() + ":" + txtSlugReleaseTag.getText() + " " + txtSlugReleaseZeit.getText());
+		sDatenFunktion.setStrErstellt(txtSlugErstelltAmJahr.getText() + ":" + txtSlugErstelltAmMonat.getText() + ":" + txtSlugErstelltAmTag.getText() + " " + txtSlugErstelltAmZeit.getText());
+		
+//		sDatenFunktion.setStrErstellt(txtSlugErstelltAm.getText().toString());
+
+		
 		sDatenFunktion.setStrTitelbild(txtSlugTitelbild.getText());
 		sDatenFunktion.setStrPortraetbild(txtSlugPortraitbild.getText());
 		
@@ -990,57 +988,14 @@ public class TripleX extends JFrame {
 												panel_2_slug.add(txtSlugPortraitbild);
 												txtSlugPortraitbild.setColumns(10);
 
+												/*
+												 * Bereich Datum: ReleaseAM
+												 */
 												txtSlugReleaseJahr = new JTextField();
 												txtSlugReleaseJahr.setText("2017");
 												txtSlugReleaseJahr.setBounds(100, 108, 40, 20);
 												panel_2_slug.add(txtSlugReleaseJahr);
 												txtSlugReleaseJahr.setColumns(10);
-												
-												/*
-												 * Bereich Datum: ErstelltAM
-												 */
-												txtSlugErstelltAm = new JTextField();
-												txtSlugErstelltAm.setBounds(600, 108, 130, 20);
-												
-												// Feld mit dem heutigen Datum in der Form jjjj:mm:tt hh:mm füllen
-												DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy:MM:dd");
-												LocalDate localDate = LocalDate.now();
-												
-												txtSlugErstelltAm.setText(dtf.format(localDate) + "00:00");												
-												panel_2_slug.add(txtSlugErstelltAm);
-												txtSlugErstelltAm.setColumns(10);
-												
-												
-												// Feld mit dem heutigen Datum in der Form jjjj:mm:tt hh:mm füllen
-												dtf = DateTimeFormatter.ofPattern("yyyy");
-												localDate = LocalDate.now();
-												
-												txtErstelltAmJahr = new JTextField();
-												txtErstelltAmJahr.setBounds(440, 108, 40, 20);
-												panel_2_slug.add(txtErstelltAmJahr);
-												txtErstelltAmJahr.setColumns(10);
-												
-												dtf = DateTimeFormatter.ofPattern("MM");
-												localDate = LocalDate.now();
-												txtErstelltAmMonat = new JTextField();
-												txtErstelltAmMonat.setBounds(485, 108, 25, 20);
-												panel_2_slug.add(txtErstelltAmMonat);
-												txtErstelltAmMonat.setColumns(10);
-												
-												txtErstelltAmTag = new JTextField();
-												txtErstelltAmTag.setBounds(515, 108, 25, 20);
-												panel_2_slug.add(txtErstelltAmTag);
-												txtErstelltAmTag.setColumns(10);
-												
-												txtErstelltAmZeit = new JTextField();
-												txtErstelltAmZeit.setText("00:00");
-												txtErstelltAmZeit.setBounds(550, 108, 41, 20);
-												panel_2_slug.add(txtErstelltAmZeit);
-												txtErstelltAmZeit.setColumns(10);
-												
-												
-												
-												
 												
 												txtSlugReleaseMonat = new JTextField();
 												txtSlugReleaseMonat.setBounds(145, 108, 25, 20);
@@ -1048,7 +1003,7 @@ public class TripleX extends JFrame {
 												txtSlugReleaseMonat.setColumns(10);
 												
 												txtSlugReleaseTag = new JTextField();
-												txtSlugReleaseTag.setText("\n");
+												txtSlugReleaseTag.setText("");
 												txtSlugReleaseTag.setBounds(175, 108, 25, 20);
 												panel_2_slug.add(txtSlugReleaseTag);
 												txtSlugReleaseTag.setColumns(10);
@@ -1058,7 +1013,43 @@ public class TripleX extends JFrame {
 												txtSlugReleaseZeit.setBounds(210, 108, 41, 20);
 												panel_2_slug.add(txtSlugReleaseZeit);
 												txtSlugReleaseZeit.setColumns(10);
+												
+												// Feld mit dem heutigen Datum in der Form jjjj:mm:tt hh:mm füllen
+												DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy:MM:dd");
+												LocalDate localDate = LocalDate.now();
+												
+												
+												// Feld mit dem heutigen Datum in der Form jjjj:mm:tt hh:mm füllen
+												dtf = DateTimeFormatter.ofPattern("yyyy");
+												localDate = LocalDate.now();
+												txtSlugErstelltAmJahr = new JTextField();
+												txtSlugErstelltAmJahr.setBounds(440, 108, 40, 20);
+												txtSlugErstelltAmJahr.setText(dtf.format(localDate).toString());
+												panel_2_slug.add(txtSlugErstelltAmJahr);
+												txtSlugErstelltAmJahr.setColumns(10);
+												
+												dtf = DateTimeFormatter.ofPattern("MM");
+												localDate = LocalDate.now();
+												txtSlugErstelltAmMonat = new JTextField();
+												txtSlugErstelltAmMonat.setBounds(485, 108, 25, 20);
+												txtSlugErstelltAmMonat.setText(dtf.format(localDate).toString());
+												panel_2_slug.add(txtSlugErstelltAmMonat);
+												txtSlugErstelltAmMonat.setColumns(10);
 
+												dtf = DateTimeFormatter.ofPattern("dd");
+												localDate = LocalDate.now();
+												txtSlugErstelltAmTag = new JTextField();
+												txtSlugErstelltAmTag.setBounds(515, 108, 25, 20);
+												txtSlugErstelltAmTag.setText(dtf.format(localDate).toString());
+												panel_2_slug.add(txtSlugErstelltAmTag);
+												txtSlugErstelltAmTag.setColumns(10);
+												
+												txtSlugErstelltAmZeit = new JTextField();
+												txtSlugErstelltAmZeit.setText("00:00");
+												txtSlugErstelltAmZeit.setBounds(550, 108, 41, 20);
+												panel_2_slug.add(txtSlugErstelltAmZeit);
+												txtSlugErstelltAmZeit.setColumns(10);
+												
 												
 												/*
 												 * ReleaseAm und ErstelltAm Buttons mit Grafik/Pfeilen
@@ -1103,6 +1094,14 @@ public class TripleX extends JFrame {
 												txtSlugAnzahlParts.setBounds(660, 234, 25, 20);
 												panel_2_slug.add(txtSlugAnzahlParts);
 												txtSlugAnzahlParts.setColumns(10);
+												
+												JButton btnSlugErstelltAmNachRelease = new JButton("Slug");
+												btnSlugErstelltAmNachRelease.setBounds(269, 110, 18, 18);
+												panel_2_slug.add(btnSlugErstelltAmNachRelease);
+												
+												JButton btnSlugReleaseNachErstelltAm = new JButton("s");
+												btnSlugReleaseNachErstelltAm.setBounds(320, 110, 18, 18);
+												panel_2_slug.add(btnSlugReleaseNachErstelltAm);
 												
 												/*
 												 * Ende Panel 2
