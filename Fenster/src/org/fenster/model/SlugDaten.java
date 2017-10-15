@@ -199,9 +199,12 @@ public String slugSchreiben(String strSlugDateiName) {
 //	FileOutputStream fisDatei;
 	try {
 		writer = new FileWriter(strSlugDateiName);
+		
+		writer.write("#Aus der Gui-Anwendung heraus erstellt.");
+		writer.write(System.getProperty("line.separator"));
+		// Hier beginnen die Werte
 		writer.write("ERSTELLT=\"" + strErstellt + "\"");
 		writer.write(System.getProperty("line.separator"));
-		
 		writer.write("PFAD=\"" + strPfad + "\"");
 		writer.write(System.getProperty("line.separator"));
 		writer.write("SLUG=\"" + strSlug + "\"");

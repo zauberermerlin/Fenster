@@ -29,6 +29,7 @@ import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import javax.swing.filechooser.FileSystemView;
 
 import org.fenster.logic.menuFunktionen;
 import org.fenster.model.SlugDaten;
@@ -37,6 +38,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import javax.swing.JList;
 
 public class TripleX extends JFrame {
 
@@ -96,6 +98,8 @@ public class TripleX extends JFrame {
 	private ImageIcon iconRibbonTitelZuSerie;
 	private ImageIcon iconRibbonSlugUmwandeln;
 	private ImageIcon iconKonfigReload;
+	private ImageIcon iconSlugErstelltAmNachRelase;
+	private ImageIcon iconSlugRelaseNachErstelltAm;
 	
 	private ImageIcon iconSlugReleaseJahrOben;
 	private ImageIcon iconSlugReleaseJahrUnten;
@@ -627,7 +631,9 @@ public class TripleX extends JFrame {
 		panel_ribbon.add(txtRibbonTitel);
 		txtRibbonTitel.setColumns(10);
 
-		
+		/*
+		 * Pfad-Auswahl Button im Bereich Ribbon
+		 */
 		JButton btnRibbonPfaddialogbox = new JButton("");
 		btnRibbonPfaddialogbox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -643,8 +649,14 @@ public class TripleX extends JFrame {
 
 				fileRibbonPfad = new File(txtRibbonPfad.getText());
 
+//				Kann Problem mit FileSystemView gelöst werden?
+//				FileSystemView fsv = FileSystemView.getFileSystemView();
+//				fileRibbonPfad = fsv.getParentDirectory(fileRibbonPfad);
+
+				
 				jfcSlug = new JFileChooser();
 				jfcSlug.setCurrentDirectory(fileRibbonPfad);
+				
 				jfcSlug.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 				jfcSlug.setMultiSelectionEnabled(false);
 
@@ -714,9 +726,25 @@ public class TripleX extends JFrame {
 		tabbedPane.setEnabledAt(0, true);
 		panel_1_Datei.setLayout(null);
 
-		JButton btnPfad = new JButton("Pfad");
-		btnPfad.setBounds(36, 36, 117, 25);
-		panel_1_Datei.add(btnPfad);
+		JButton btnDateiVerzeichnisErstellen = new JButton("Verz. erstellen");
+		btnDateiVerzeichnisErstellen.setBounds(400, 35, 150, 25);
+		panel_1_Datei.add(btnDateiVerzeichnisErstellen);
+		
+		JButton btnDateiDateiKopieren = new JButton("Datei kopieren");
+		btnDateiDateiKopieren.setBounds(400, 70, 150, 25);
+		panel_1_Datei.add(btnDateiDateiKopieren);
+		
+		JButton btnDateiErstellenUndKopieren = new JButton("Erst. + kopieren");
+		btnDateiErstellenUndKopieren.setBounds(400, 105, 150, 25);
+		panel_1_Datei.add(btnDateiErstellenUndKopieren);
+		
+		JLabel lblDateiVerzeichnis = new JLabel("Verzeichnis:");
+		lblDateiVerzeichnis.setBounds(50, 40, 100, 15);
+		panel_1_Datei.add(lblDateiVerzeichnis);
+		
+		JList listDateiVerzeichnis = new JList();
+		listDateiVerzeichnis.setBounds(50, 70, 300, 300);
+		panel_1_Datei.add(listDateiVerzeichnis);
 		JPanel panel_2_slug = new JPanel();
 		tabbedPane.addTab("slug", null, panel_2_slug, null);
 		panel_2_slug.setLayout(null);
@@ -1014,10 +1042,9 @@ public class TripleX extends JFrame {
 												panel_2_slug.add(txtSlugReleaseZeit);
 												txtSlugReleaseZeit.setColumns(10);
 												
-												// Feld mit dem heutigen Datum in der Form jjjj:mm:tt hh:mm füllen
-												DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy:MM:dd");
-												LocalDate localDate = LocalDate.now();
-												
+//												// Feld mit dem heutigen Datum in der Form jjjj:mm:tt hh:mm füllen
+//												DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy:MM:dd");
+//												LocalDate localDate = LocalDate.now();
 												
 												// Feld mit dem heutigen Datum in der Form jjjj:mm:tt hh:mm füllen
 												dtf = DateTimeFormatter.ofPattern("yyyy");
@@ -1072,6 +1099,14 @@ public class TripleX extends JFrame {
 												panel_2_slug.add(btnSlugLeeren);
 												
 												/*
+												 * ====================================================
+												 * Pfeile zwischen den Datümern Release und Erstellt am
+												 * ====================================================
+												 * 
+												 */
+												
+												
+												/*
 												 * Pfeil tauschen zwischen Release und Erstellt
 												 */
 												JButton btnSlugTauschen = new JButton("");
@@ -1079,6 +1114,40 @@ public class TripleX extends JFrame {
 												btnSlugTauschen.setIcon(iconSlugTauschen);
 												btnSlugTauschen.setBounds(290, 110, 26, 18);
 												panel_2_slug.add(btnSlugTauschen);
+												
+													
+												JButton btnSlugErstelltAmNachRelease = new JButton("");
+												iconSlugErstelltAmNachRelase = new ImageIcon(strPfeilLinks);
+												btnSlugErstelltAmNachRelease.setIcon(iconSlugErstelltAmNachRelase);
+												btnSlugErstelltAmNachRelease.addActionListener(new ActionListener() {
+													public void actionPerformed(ActionEvent e) {
+														// Werte Jahr - Monat - Tag - Zeit von Erstellt am nach Release kopiern
+														txtSlugReleaseJahr.setText(txtSlugErstelltAmJahr.getText());
+														txtSlugReleaseMonat.setText(txtSlugErstelltAmMonat.getText());
+														txtSlugReleaseTag.setText(txtSlugErstelltAmTag.getText());
+														txtSlugReleaseZeit.setText(txtSlugErstelltAmZeit.getText());
+													}
+												});
+												btnSlugErstelltAmNachRelease.setBounds(269, 110, 18, 18);
+												panel_2_slug.add(btnSlugErstelltAmNachRelease);
+												
+												JButton btnSlugReleaseNachErstelltAm = new JButton("");
+												iconSlugRelaseNachErstelltAm = new ImageIcon(strPfeilRechts);
+												btnSlugReleaseNachErstelltAm.setBounds(320, 110, 18, 18);
+												btnSlugReleaseNachErstelltAm.setIcon(iconSlugRelaseNachErstelltAm);
+												panel_2_slug.add(btnSlugReleaseNachErstelltAm);
+												btnSlugReleaseNachErstelltAm.addActionListener(new ActionListener() {
+													public void actionPerformed(ActionEvent e) {
+														// Werte Jahr - Monat - Tag - Zeit von Release nach Erstellt am kopiern
+														txtSlugErstelltAmJahr.setText(txtSlugReleaseJahr.getText());
+														txtSlugErstelltAmMonat.setText(txtSlugReleaseMonat.getText());
+														txtSlugErstelltAmTag.setText(txtSlugReleaseTag.getText());
+														txtSlugErstelltAmZeit.setText(txtSlugReleaseZeit.getText());
+													}
+												});
+
+												
+												
 												
 												txtSlugDvd = new JTextField();
 												txtSlugDvd.setBounds(510, 200, 250, 20);
@@ -1094,14 +1163,8 @@ public class TripleX extends JFrame {
 												txtSlugAnzahlParts.setBounds(660, 234, 25, 20);
 												panel_2_slug.add(txtSlugAnzahlParts);
 												txtSlugAnzahlParts.setColumns(10);
+											
 												
-												JButton btnSlugErstelltAmNachRelease = new JButton("Slug");
-												btnSlugErstelltAmNachRelease.setBounds(269, 110, 18, 18);
-												panel_2_slug.add(btnSlugErstelltAmNachRelease);
-												
-												JButton btnSlugReleaseNachErstelltAm = new JButton("s");
-												btnSlugReleaseNachErstelltAm.setBounds(320, 110, 18, 18);
-												panel_2_slug.add(btnSlugReleaseNachErstelltAm);
 												
 												/*
 												 * Ende Panel 2
