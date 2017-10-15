@@ -78,13 +78,13 @@ public class TripleX extends JFrame {
 	private JLabel lblKonfigYpos;
 	private JLabel lblKonfigLogdatei;
 
-	String strSchublade16 = "/home/thomas/workspace/Fenster/externe_dateien/schublade16x16.png";
-	String strSchublade19 = "/home/thomas/workspace/Fenster/externe_dateien/schublade19x19.png";
-	String strSchublade25 = "/home/thomas/workspace/Fenster/externe_dateien/schublade25x25.png";
+	String strSchublade16 = "externe_dateien/schublade16x16.png";
+	String strSchublade19 = "externe_dateien/schublade19x19.png";
+	String strSchublade25 = "externe_dateien/schublade25x25.png";
 
 	String strReload16 = "externe_dateien/reload_16x16.png";
-	String strReload19 = "/home/thomas/workspace/Fenster/externe_dateien/reload_19x19.png";
-	String strReload25 = "/home/thomas/workspace/Fenster/externe_dateien/reload_25x25.png";
+	String strReload19 = "externe_dateien/reload_19x19.png";
+	String strReload25 = "externe_dateien/reload_25x25.png";
 	
 	String strPfeilOben = "externe_dateien/pfeil_oben.png";
 	String strPfeilUnten = "externe_dateien/pfeil_unten.png";
@@ -431,7 +431,7 @@ public class TripleX extends JFrame {
 		
 		sDatenFunktion.setStrActress(txtSlugActress.getText());
 		sDatenFunktion.setStrActor(txtSlugActor.getText());
-		sDatenFunktion.setStrBeschreibung(txtpnSlugBeschreibung.getText());
+		sDatenFunktion.setStrBeschreibung(txtpnSlugBeschreibung.getText().trim());
 		sDatenFunktion.setStrBraznr(txtSlugBraznr.getText());
 
 		sDatenFunktion.setStrNA(txtSlugNa.getText());
@@ -442,7 +442,7 @@ public class TripleX extends JFrame {
 		 * in der txt-Datei-Ausgabe steht von jedem : ein Backslash \
 		 * Warum?
 		 */
-		sDatenFunktion.setStrRelease(txtSlugReleaseJahr.getText() + ":" + txtSlugReleaseMonat.getText() + ":" + txtSlugReleaseTag.getText() + " " + txtSlugReleaseZeit.getText());
+		sDatenFunktion.setStrRelease(txtSlugReleaseJahr.getText() + ":" + txtSlugReleaseMonat.getText() + ":" + txtSlugReleaseTag.getText() + txtSlugReleaseZeit.getText());
 		sDatenFunktion.setStrErstellt(txtSlugErstelltAm.getText().toString());
 		sDatenFunktion.setStrTitelbild(txtSlugTitelbild.getText());
 		sDatenFunktion.setStrPortraetbild(txtSlugPortraitbild.getText());
@@ -627,10 +627,12 @@ public class TripleX extends JFrame {
 		btnRibbonPfaddialogbox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				/*
-				 * Dialogbox öffnen (1) Auslese txtSlugPfad Feld und daraus den
-				 * Pfad entnehmen (1a) Überprüfen, ob Datei oder Verzeichnis;
-				 * event. Verzeichnis daraus extrahieren (2) Dialogbox (3)
-				 * Ausgewählten Wert in txtSlugPfad übernehmen
+				 * Dialogbox öffnen
+				 * (1) Auslese txtSlugPfad Feld und daraus den Pfad entnehmen 
+				 * (1a) Überprüfen, ob Datei oder Verzeichnis;
+				 * 		event. Verzeichnis daraus extrahieren
+				 * (2) Dialogbox
+				 * (3) Ausgewählten Wert in txtSlugPfad übernehmen
 				 */
 				txtStatusleiste.setText("Dialogfenster zur Pfadauswahl geöffnet");
 
@@ -976,6 +978,7 @@ public class TripleX extends JFrame {
 												txtSlugTitelbild.setColumns(10);
 
 												txtSlugPortraitbild = new JTextField();
+												txtSlugPortraitbild.setText("01");
 												txtSlugPortraitbild.setBounds(345, 53, 30, 19);
 												panel_2_slug.add(txtSlugPortraitbild);
 												txtSlugPortraitbild.setColumns(10);

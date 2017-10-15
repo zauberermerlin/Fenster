@@ -1,10 +1,8 @@
 package org.fenster.model;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Properties;
 
 public class SlugDaten {
 
@@ -195,9 +193,8 @@ public String slug_auf_konsole() {
 public String slugSchreiben(String strSlugDateiName) {
 	
 	FileWriter writer;
-	Properties props = new Properties();
 	
-	String strRueckgabe;
+	String strRueckgabe = "";
 	
 //	FileOutputStream fisDatei;
 	try {
@@ -205,58 +202,75 @@ public String slugSchreiben(String strSlugDateiName) {
 		writer.write("ERSTELLT=\"" + strErstellt + "\"");
 		writer.write(System.getProperty("line.separator"));
 		
+		writer.write("PFAD=\"" + strPfad + "\"");
+		writer.write(System.getProperty("line.separator"));
+		writer.write("SLUG=\"" + strSlug + "\"");
+		writer.write(System.getProperty("line.separator"));
+		writer.write("TITEL=\"" + strTitel + "\"");
+		writer.write(System.getProperty("line.separator"));
+		writer.write("ACTRESS=\"" + strActress + "\"");
+		writer.write(System.getProperty("line.separator"));
+		writer.write("ACTOR=\"" + strActor + "\"");
+		writer.write(System.getProperty("line.separator"));
+		writer.write("BESCHREIBUNG=\"" + strBeschreibung + "\"");
+		writer.write(System.getProperty("line.separator"));
+		writer.write("BRAZNR=\"" + strBraznr + "\"");
+		writer.write(System.getProperty("line.separator"));
+		writer.write("NA=\"" + strNA + "\"");
+		writer.write(System.getProperty("line.separator"));
+		writer.write("RELEASE=\"" + strRelease + "\"");
+		writer.write(System.getProperty("line.separator"));
+		writer.write("ERSTELLT=\"" + strErstellt + "\"");
+		writer.write(System.getProperty("line.separator"));
+		writer.write("TITELBILD=\"" + strTitelbild + "\"");
+		writer.write(System.getProperty("line.separator"));
+		writer.write("PORTRAETBILD=\"" + strPortraetbild + "\"");
+		writer.write(System.getProperty("line.separator"));
+		writer.write("STUDIO=\"" + strStudio + "\"");
+		writer.write(System.getProperty("line.separator"));
+		writer.write("ALBUM=\"" + strAlbum + "\"");
+		writer.write(System.getProperty("line.separator"));
+		writer.write("DVD=\"" + strDVD + "\"");
+		writer.write(System.getProperty("line.separator"));
+		writer.write("SERIE=\"" + strSerie + "\"");	
+		writer.write(System.getProperty("line.separator"));
+		writer.write("PART=\"" + strPart + "\"");
+		writer.write(System.getProperty("line.separator"));
+		writer.write("ANZAHLPARTS=\"" + strAnzahlparts + "\"");
+		writer.write(System.getProperty("line.separator"));
+		writer.write("BILDER=\"" + strBilder + "\"");
+		writer.write(System.getProperty("line.separator"));
+		writer.write("THUMBS=\"" + strThumbs + "\"");	
+		writer.write(System.getProperty("line.separator"));
+		writer.write("REMASTERED=\"" + strRemastered + "\"");
+		writer.write(System.getProperty("line.separator"));
+		writer.write("VR=\"" + strVR + "\"");
+		writer.write(System.getProperty("line.separator"));
+		writer.write("FIRST=\"" + strFirst + "\"");
+		writer.write(System.getProperty("line.separator"));
+		writer.write("FIRSTNAME=\"" + strFirstname + "\"");
+		writer.write(System.getProperty("line.separator"));
+		writer.write("Near=\"" + strNear + "\"");	
+		writer.write(System.getProperty("line.separator"));
+		writer.write("NEARNAME=\"" + strNearname + "\"");
+		writer.write(System.getProperty("line.separator"));
+		writer.write("STERNE=\"" + strSterne + "\"");
+		writer.write(System.getProperty("line.separator"));
+
 		writer.flush();
 		writer.close();
 		strRueckgabe = "Slug-Datei " + strSlugDateiName + " wurde erfolgreich geschrieben."; 
+		return strRueckgabe;
 		
-//		fisDatei = new FileOutputStream(strSlugDateiName);
-//		props.setProperty("PFAD", strPfad);
-//		props.setProperty("SLUG", strSlug);
-//		props.setProperty("TITEL", strTitel);
-//		props.setProperty("ACTRESS", strActress);
-//		props.setProperty("ACTOR", strActor);
-//		props.setProperty("BESCHREIBUNG", strBeschreibung);
-//		props.setProperty("BRAZNR", strBraznr);
-//		props.setProperty("NA", strNA);
-//		props.setProperty("RELEASE", strRelease);
-//		props.setProperty("ERSTELLT", strErstellt);
-//		props.setProperty("TITELBILD", strTitelbild);
-//		props.setProperty("PORTRAETBILD", strPortraetbild);
-//		props.setProperty("STUDIO", strStudio);
-//		props.setProperty("ALBUM", strAlbum);
-//		props.setProperty("DVD", strDVD);
-//		props.setProperty("SERIE", strSerie);	
-//		props.setProperty("PART", strPart);
-//		props.setProperty("ANZAHLPARTS", strAnzahlparts);
-//		props.setProperty("BILDER", strBilder);
-//		props.setProperty("THUMBS", strThumbs);	
-//		props.setProperty("REMASTERED", strRemastered);
-//		props.setProperty("VR", strVR);
-//		props.setProperty("FIRST", strFirst);
-//		props.setProperty("FIRSTNAME", strFirstname);
-//		props.setProperty("Near", strNear);	
-//		props.setProperty("NEARNAME", strNearname);
-//		props.setProperty("STERNE", strSterne);
-//		
-//		props.store(fisDatei, null);
 	} catch (IOException e) {
-		// TODO Automatisch generierter Erfassungsblock
+		strRueckgabe = "Fehler beim Schreiben der Slug-Datei " + strSlugDateiName + "."; 
 		e.printStackTrace();
-	} finally {
-		
-//		writer.flush();
-//		writer.close();
-		
+		return strRueckgabe;
 	}
-	
-	
-//	props.load(in);
-//	in.close();
-//	String str = props.getProperty("info");
-	
-	
-	return "Slug-Datei geschrieben.";
-}
+} // Ende Funktion slugSchreiben
+
+
+
 
 public String slugLesen(File fSlugDatei) {
 	
