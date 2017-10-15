@@ -1,0 +1,34 @@
+#Konfigurations-Datei
+
+version=0.1
+datum=02.10.2017
+
+
+#Template für die template.slug Datei
+template-slug=
+
+#Pfad und Datei für Vorgaben ComboBox xml-Datei
+konfig_cmb_xml=/home/thomas/workspace/Fenster/konfig_comboboxen.xml
+
+#Fensterposition
+
+#Standardwert: nein
+#Standardwert für die linke, obere Fensterposition ist jeweils 100
+aktuelle_fensterposition_verwenden=ja
+
+fenster_x=500
+fenster_y=200
+
+#zuletzt verwendeter Pfad bei Slug-Dateien
+last_pfad=
+
+#Standard-Pfad für Slug-Dateien
+standard_pfad=/netz/krypto/stars
+
+#Logging ein oder aus
+#Standardwert: aus
+logging=ein
+
+#Pfad und Name fuer log-Datei
+log=/home/thomas/workspace/Fenster/log.txt
+

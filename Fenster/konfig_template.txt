@@ -1,0 +1,30 @@
+#Konfigurations-Datei
+
+version=0.1
+datum=02.10.2017
+
+
+#Template für die template.slug Datei
+template-slug=
+
+#Fensterposition
+
+#Standardwert: nein
+#Standardwert für die linke, obere Fensterposition ist jeweils 100
+aktuelle_fensterposition_verwenden=ja
+
+fenster_x=200
+fenster_y=150
+
+#zuletzt verwendeter Pfad bei Slug-Dateien
+last_pfad=
+
+#Standard-Pfad für Slug-Dateien
+standard_pfad=/netz/krypto/stars
+
+#Logging ein oder aus
+#Standardwert: aus
+logging=ein
+
+#Pfad und Name fuer log-Datei
+log=/home/thomas/workspace/Fenster/log.txt
