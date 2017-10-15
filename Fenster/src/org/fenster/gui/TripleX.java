@@ -141,6 +141,13 @@ public class TripleX extends JFrame {
 	private JCheckBox chckbxSlugThumbs;
 	private JCheckBox chckbxSlugVr;
 	private JCheckBox chckbxSlugRemastered;
+	private JTextField txtErstelltAmJahr;
+	private JTextField txtErstelltAmMonat;
+	private JTextField txtErstelltAmTag;
+	private JTextField txtErstelltAmZeit;
+	
+	private DateTimeFormatter dtf;
+	private LocalDate localDate;
 	
 	/**
 	 * Launch the application.
@@ -989,15 +996,50 @@ public class TripleX extends JFrame {
 												panel_2_slug.add(txtSlugReleaseJahr);
 												txtSlugReleaseJahr.setColumns(10);
 												
-												
+												/*
+												 * Bereich Datum: ErstelltAM
+												 */
 												txtSlugErstelltAm = new JTextField();
-												txtSlugErstelltAm.setBounds(440, 108, 130, 20);
+												txtSlugErstelltAm.setBounds(600, 108, 130, 20);
+												
 												// Feld mit dem heutigen Datum in der Form jjjj:mm:tt hh:mm füllen
 												DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy:MM:dd");
 												LocalDate localDate = LocalDate.now();
-												txtSlugErstelltAm.setText(dtf.format(localDate) + " 00:00");												
+												
+												txtSlugErstelltAm.setText(dtf.format(localDate) + "00:00");												
 												panel_2_slug.add(txtSlugErstelltAm);
 												txtSlugErstelltAm.setColumns(10);
+												
+												
+												// Feld mit dem heutigen Datum in der Form jjjj:mm:tt hh:mm füllen
+												dtf = DateTimeFormatter.ofPattern("yyyy");
+												localDate = LocalDate.now();
+												
+												txtErstelltAmJahr = new JTextField();
+												txtErstelltAmJahr.setBounds(440, 108, 40, 20);
+												panel_2_slug.add(txtErstelltAmJahr);
+												txtErstelltAmJahr.setColumns(10);
+												
+												dtf = DateTimeFormatter.ofPattern("MM");
+												localDate = LocalDate.now();
+												txtErstelltAmMonat = new JTextField();
+												txtErstelltAmMonat.setBounds(485, 108, 25, 20);
+												panel_2_slug.add(txtErstelltAmMonat);
+												txtErstelltAmMonat.setColumns(10);
+												
+												txtErstelltAmTag = new JTextField();
+												txtErstelltAmTag.setBounds(515, 108, 25, 20);
+												panel_2_slug.add(txtErstelltAmTag);
+												txtErstelltAmTag.setColumns(10);
+												
+												txtErstelltAmZeit = new JTextField();
+												txtErstelltAmZeit.setText("00:00");
+												txtErstelltAmZeit.setBounds(550, 108, 41, 20);
+												panel_2_slug.add(txtErstelltAmZeit);
+												txtErstelltAmZeit.setColumns(10);
+												
+												
+												
 												
 												
 												txtSlugReleaseMonat = new JTextField();
@@ -1013,7 +1055,7 @@ public class TripleX extends JFrame {
 												
 												txtSlugReleaseZeit = new JTextField();
 												txtSlugReleaseZeit.setText("00:00");
-												txtSlugReleaseZeit.setBounds(210, 108, 45, 20);
+												txtSlugReleaseZeit.setBounds(210, 108, 41, 20);
 												panel_2_slug.add(txtSlugReleaseZeit);
 												txtSlugReleaseZeit.setColumns(10);
 
@@ -1061,8 +1103,6 @@ public class TripleX extends JFrame {
 												txtSlugAnzahlParts.setBounds(660, 234, 25, 20);
 												panel_2_slug.add(txtSlugAnzahlParts);
 												txtSlugAnzahlParts.setColumns(10);
-												
-												
 												
 												/*
 												 * Ende Panel 2
