@@ -4,6 +4,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+/**
+ * @author thomas
+ *
+ */
 public class SlugDaten {
 
 	
@@ -190,6 +194,10 @@ public String slug_auf_konsole() {
 }
 	
 	
+/**
+ * @param strSlugDateiName [String]
+ * @return Text für txtStatuszeile [String]
+ */
 public String slugSchreiben(String strSlugDateiName) {
 	
 	FileWriter writer;
@@ -203,8 +211,6 @@ public String slugSchreiben(String strSlugDateiName) {
 		writer.write("#Aus der Gui-Anwendung heraus erstellt.");
 		writer.write(System.getProperty("line.separator"));
 		// Hier beginnen die Werte
-		writer.write("ERSTELLT=\"" + strErstellt + "\"");
-		writer.write(System.getProperty("line.separator"));
 		writer.write("PFAD=\"" + strPfad + "\"");
 		writer.write(System.getProperty("line.separator"));
 		writer.write("SLUG=\"" + strSlug + "\"");

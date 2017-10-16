@@ -55,14 +55,6 @@ public class TripleX extends JFrame {
 
 	String test;
 
-	// Album-Werte für Combo-Box
-	private JComboBox<String> cmbSlugStudio;
-	private JComboBox<String> cmbSlugAlbum;
-	private JComboBox<String> cmbSlugSterne;
-	
-//	private String[] datenCmbSlugStudio;
-//	private String[] datenCmbSlugAlbum;
-
 	private JTextField txtKonfigVersion;
 	private JTextField txtKonfigDatum;
 	private JTextField txtKonfigTemplateslug;
@@ -119,11 +111,15 @@ public class TripleX extends JFrame {
 	private JTextField txtSlugReleaseJahr;
 	
 	private JFileChooser jfcSlug;
-	//private File fileSlugPfad; // sollte irgendwann zu löschen sein!!! 09.10.2017
 	private File fileRibbonPfad;
 	
-	private File fXml;
+	private File fXml; // Datei mit den Daten für die Comboboxen Album und Studio
 	private JTextField txtKonfigcomboboxenxml;
+	
+	// Album-Werte für Combo-Box
+	private JComboBox<String> cmbSlugStudio;
+	private JComboBox<String> cmbSlugAlbum;
+	private JComboBox<String> cmbSlugSterne;
 
 	private JTextField txtRibbonPfad;
 	private JTextField txtRibbonSlugName;
@@ -831,21 +827,45 @@ public class TripleX extends JFrame {
 		 * 
 		 * Slug-Datei wird erzeugt
 		 */
-		
-		
-		// offen: Übernahme und Übergabe Pfad und Dateiname
-		// Info-Fenster, wenn etwas daneben geht
-		//
-		// in eigener Klasse!
-		
 		JButton btnSlugErzeugen = new JButton("Erzeugen");
 		btnSlugErzeugen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				SlugDaten sDaten = new SlugDaten();
 				SlugDaten_holen(sDaten);
-					txtStatusleiste.setText(sDaten.slugSchreiben("/home/thomas/Schreibtisch/test.slug"));
-//															txtStatusleiste.setText(sDaten.slug_auf_konsole());
+
+				// es muss vorab überprüft werden:
+				// (1) existiert Pfad
+				// (2) existiert Pfad und Datei? -> Frage nach dem Überschreiben
+
+				File fileErzeugen;
+				if (!txtRibbonPfad.getText().equals("")){
+					fileErzeugen = new File(txtRibbonPfad.getText());
+					if (fileErzeugen.isDirectory() || fileErzeugen.exists()){
+						if (!txtRibbonSlugName.getText().equals("")) {
+							String strVollstaendigerPfad = txtRibbonPfad.getText() + "/" + txtRibbonSlugName.getText() + ".slug";
+							fileErzeugen = new File(strVollstaendigerPfad);
+//							System.out.println(strVollstaendigerPfad);
+							if (fileErzeugen.exists()) {
+								int ueberschreiben = JOptionPane.showConfirmDialog(null, "Slug-Datei besteht bereits.\nÜberschreiben?", "Nachfrage", JOptionPane.YES_NO_OPTION);
+								System.out.println(ueberschreiben);
+								if (ueberschreiben == 0) {
+									txtStatusleiste.setText(sDaten.slugSchreiben(strVollstaendigerPfad));									
+								} // Ende 5. if
+							} else {
+								txtStatusleiste.setText(sDaten.slugSchreiben(strVollstaendigerPfad));
+							} // Ende 4. if
+						} else {
+							JOptionPane.showMessageDialog(null, "Die Sulg-Angabe ist nicht gefüllt!", "Hinweis", JOptionPane.WARNING_MESSAGE);
+						} // Ende 3. if
+					} else {
+						JOptionPane.showMessageDialog(null, "Die Pfad-Angabe ist kein Verzeichnis\noder existiert nicht!", "Hinweis", JOptionPane.WARNING_MESSAGE);
+					} // Ende 2. if
+				} else { // else aus 1. if
+					JOptionPane.showMessageDialog(null, "Die Pfad-Angabe ist nicht gefüllt!", "Hinweis", JOptionPane.WARNING_MESSAGE);
+				} // Ende 1. if
+
 				
+
 				
 				
 			}
