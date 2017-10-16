@@ -39,6 +39,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import javax.swing.JList;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 
 public class TripleX extends JFrame {
 
@@ -456,7 +458,7 @@ public class TripleX extends JFrame {
 		sDatenFunktion.setStrPortraetbild(txtSlugPortraitbild.getText());
 		
 		// Werte aus den Comboboxen
-		sDatenFunktion.setStrStudio(cmbSlugAlbum.getSelectedItem().toString());
+		sDatenFunktion.setStrStudio(cmbSlugStudio.getSelectedItem().toString());
 		sDatenFunktion.setStrAlbum(cmbSlugAlbum.getSelectedItem().toString());
 
 		sDatenFunktion.setStrDVD(txtSlugDvd.getText());
@@ -561,6 +563,12 @@ public class TripleX extends JFrame {
 
 		JMenu menuFenster = new JMenu("Fenster");
 		menuBar.add(menuFenster);
+		
+		JMenuItem mntmSlugtemplate = new JMenuItem("Slug-Template");
+		menuFenster.add(mntmSlugtemplate);
+		
+		JSeparator mntmSeparator_1 = new JSeparator();
+		menuFenster.add(mntmSeparator_1);
 
 		JMenuItem mntmDebug = new JMenuItem("Debug");
 		menuFenster.add(mntmDebug);
@@ -747,10 +755,13 @@ public class TripleX extends JFrame {
 		 * Register: Datei
 		 * Verzeichnis-Liste
 		 */
-		listDateiVerzeichnis = new JList();
-		listDateiVerzeichnis.setBounds(50, 70, 300, 300);
 		
-		panel_1_Datei.add(listDateiVerzeichnis);
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPane.setBounds(50, 70, 300, 300);
+		panel_1_Datei.add(scrollPane);
+		listDateiVerzeichnis = new JList();
+		scrollPane.setViewportView(listDateiVerzeichnis);
 		JPanel panel_2_slug = new JPanel();
 		tabbedPane.addTab("slug", null, panel_2_slug, null);
 		panel_2_slug.setLayout(null);

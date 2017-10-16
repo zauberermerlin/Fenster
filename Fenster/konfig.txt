@@ -8,7 +8,8 @@ datum=02.10.2017
 template-slug=
 
 #Pfad und Datei für Vorgaben ComboBox xml-Datei
-konfig_cmb_xml=/home/thomas/workspace/Fenster/konfig_comboboxen.xml
+#konfig_cmb_xml=/home/thomas/workspace/Fenster/konfig_comboboxen.xml
+konfig_cmb_xml=konfig_comboboxen.xml
 
 #Fensterposition
 
