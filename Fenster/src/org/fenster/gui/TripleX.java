@@ -29,9 +29,7 @@ import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
-import javax.swing.filechooser.FileSystemView;
 
-import org.fenster.logic.menuFunktionen;
 import org.fenster.model.SlugDaten;
 
 import org.jsoup.Jsoup;
@@ -177,18 +175,7 @@ public class TripleX extends JFrame {
 	} // Ende main Funktion
 
 	
-	/*
-	 * deprecated muss noch umprogrammiert und dann gelöscht werden!!!
-	 */
-	public void FensterVersion() {
 
-		menuFunktionen.FensterVersion();
-
-		// System.out.println("Version gedrückt");
-		// Version fenster_version = new Version();
-		// fenster_version.setVisible(true);
-
-	}
 	
 	/*
 	 * Funktion: Laden der Konfigurationsdatei i.d.R bei Programmstart
@@ -540,26 +527,17 @@ public class TripleX extends JFrame {
 		 * Statusleiste ganz weit vorne, damit dort auch alle Angaben ausgegeben
 		 * werden können
 		 */
+
+		
+		
+		/*
+		 * ======================================
+		 * Menüs
+		 * ======================================
+		 * 
+		 */
 		JMenuBar menuBar = new JMenuBar();
 		frmFenstertitel.getContentPane().add(menuBar, BorderLayout.NORTH);
-
-		JMenu menuDatei = new JMenu("Datei");
-		menuBar.add(menuDatei);
-
-		JMenuItem mntmffnen = new JMenuItem("Öffnen");
-		menuDatei.add(mntmffnen);
-
-		JSeparator separator = new JSeparator();
-		menuDatei.add(separator);
-
-		JMenuItem mntmSchliessen = new JMenuItem("Schliessen");
-		mntmSchliessen.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// Fenster schliessen und Anwendnug beenden
-				frmFenstertitel.dispose();
-			}
-		});
-		menuDatei.add(mntmSchliessen);
 
 		JMenu menuFenster = new JMenu("Fenster");
 		menuBar.add(menuFenster);
@@ -575,6 +553,18 @@ public class TripleX extends JFrame {
 
 		JMenuItem mntmKonfiguration = new JMenuItem("Konfiguration");
 		menuFenster.add(mntmKonfiguration);
+				
+		JSeparator mntmSeparator_2 = new JSeparator();
+		menuFenster.add(mntmSeparator_2);
+		
+		JMenuItem mntmSchliessen = new JMenuItem("Schliessen");
+		menuFenster.add(mntmSchliessen);
+		mntmSchliessen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Fenster schliessen und Anwendnug beenden
+				frmFenstertitel.dispose();
+			}
+		});
 
 		JMenu menuUeber = new JMenu("Über");
 		menuBar.add(menuUeber);
@@ -583,13 +573,17 @@ public class TripleX extends JFrame {
 		menu_item_version.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				menu_item_version.setEnabled(false);
-				FensterVersion();
+				JOptionPane.showMessageDialog(null, "Version");
 
 			}
 		});
 		menuUeber.add(menu_item_version);
 
+		/*
+		 * Menüs -Ende
+		 */
+		
+		
 		JPanel panel_mitte = new JPanel();
 		frmFenstertitel.getContentPane().add(panel_mitte, BorderLayout.CENTER);
 		panel_mitte.setLayout(new BorderLayout(0, 0));
