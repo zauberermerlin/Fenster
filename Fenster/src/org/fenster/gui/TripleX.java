@@ -152,6 +152,9 @@ public class TripleX extends JFrame {
 	private DateTimeFormatter dtf;
 	private LocalDate localDate;
 	
+	private JList listDateiVerzeichnis;
+	
+	
 	/**
 	 * Launch the application.
 	 */
@@ -742,23 +745,51 @@ public class TripleX extends JFrame {
 		lblDateiVerzeichnis.setBounds(50, 40, 100, 15);
 		panel_1_Datei.add(lblDateiVerzeichnis);
 		
-		JList listDateiVerzeichnis = new JList();
+		
+		/*
+		 * JList
+		 * Register: Datei
+		 * Verzeichnis-Liste
+		 */
+		listDateiVerzeichnis = new JList();
 		listDateiVerzeichnis.setBounds(50, 70, 300, 300);
+		
 		panel_1_Datei.add(listDateiVerzeichnis);
 		JPanel panel_2_slug = new JPanel();
 		tabbedPane.addTab("slug", null, panel_2_slug, null);
 		panel_2_slug.setLayout(null);
+		
+		/*
+		 * Ende Panel 1 : Datei
+		 */
+		
+
+		
+		/*
+		 * ComboBox
+		 * Register: Slug
+		 * Album
+		 */
+		
 		JLabel lblSlugAlbum = new JLabel("Album");
 		lblSlugAlbum.setBounds(30, 202, 55, 15);
 		panel_2_slug.add(lblSlugAlbum);
-
+		
+		//Hier kein ActionListener, da nur bei Studio-Auswahl sich die Combo-Boxen ändern
 		cmbSlugAlbum = new JComboBox<String>();
 		cmbSlugAlbum.setBounds(100, 199, 200, 22);
 		panel_2_slug.add(cmbSlugAlbum);
+
+		
+		/*
+		 * ComboBox
+		 * Register: Slug
+		 * Studio
+		 */
 		JLabel lblSlugStudio = new JLabel("Studio");
 		lblSlugStudio.setBounds(30, 167, 55, 15);
 		panel_2_slug.add(lblSlugStudio);
-
+		
 		cmbSlugStudio = new JComboBox<String>();
 		cmbSlugStudio.setBounds(100, 164, 120, 22);
 		panel_2_slug.add(cmbSlugStudio);
@@ -776,161 +807,168 @@ public class TripleX extends JFrame {
 			}
 		});
 
-												JLabel lblSlugActress = new JLabel("Actress");
-												lblSlugActress.setBounds(30, 237, 55, 15);
-												panel_2_slug.add(lblSlugActress);
+		JLabel lblSlugActress = new JLabel("Actress");
+		lblSlugActress.setBounds(30, 237, 55, 15);
+		panel_2_slug.add(lblSlugActress);
 
-												JLabel lblSlugActor = new JLabel("Actor");
-												lblSlugActor.setBounds(30, 272, 55, 15);
-												panel_2_slug.add(lblSlugActor);
+		JLabel lblSlugActor = new JLabel("Actor");
+		lblSlugActor.setBounds(30, 272, 55, 15);
+		panel_2_slug.add(lblSlugActor);
 
-												txtSlugActress = new JTextField();
-												txtSlugActress.setBounds(100, 234, 340, 19);
-												panel_2_slug.add(txtSlugActress);
-												txtSlugActress.setColumns(10);
+		txtSlugActress = new JTextField();
+		txtSlugActress.setBounds(100, 234, 340, 19);
+		panel_2_slug.add(txtSlugActress);
+		txtSlugActress.setColumns(10);
 
-												txtSlugActor = new JTextField();
-												txtSlugActor.setBounds(100, 270, 340, 19);
-												panel_2_slug.add(txtSlugActor);
-												txtSlugActor.setColumns(10);
+		txtSlugActor = new JTextField();
+		txtSlugActor.setBounds(100, 270, 340, 19);
+		panel_2_slug.add(txtSlugActor);
+		txtSlugActor.setColumns(10);
 
 												
-												/*
-												 * Button "Erzeugen"
-												 * 
-												 * Slug-Datei wird erzeugt
-												 */
-												JButton btnSlugErzeugen = new JButton("Erzeugen");
-												btnSlugErzeugen.addActionListener(new ActionListener() {
-													public void actionPerformed(ActionEvent e) {
-														SlugDaten sDaten = new SlugDaten();
-														SlugDaten_holen(sDaten);
-															txtStatusleiste.setText(sDaten.slugSchreiben("/home/thomas/Schreibtisch/test.slug"));
+		/*
+		 * Button "Erzeugen"
+		 * 
+		 * Slug-Datei wird erzeugt
+		 */
+		
+		
+		// offen: Übernahme und Übergabe Pfad und Dateiname
+		// Info-Fenster, wenn etwas daneben geht
+		//
+		// in eigener Klasse!
+		
+		JButton btnSlugErzeugen = new JButton("Erzeugen");
+		btnSlugErzeugen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				SlugDaten sDaten = new SlugDaten();
+				SlugDaten_holen(sDaten);
+					txtStatusleiste.setText(sDaten.slugSchreiben("/home/thomas/Schreibtisch/test.slug"));
 //															txtStatusleiste.setText(sDaten.slug_auf_konsole());
+				
+				
+				
+			}
+		});
+		btnSlugErzeugen.setBounds(660, 435, 110, 25);
+		panel_2_slug.add(btnSlugErzeugen);
+
+		JLabel lblSlugVersion = new JLabel("Version");
+		lblSlugVersion.setBounds(30, 15, 60, 15);
+		panel_2_slug.add(lblSlugVersion);
+
+		txtSlugVersion = new JTextField();
+		txtSlugVersion.setEditable(false);
+		txtSlugVersion.setBounds(100, 13, 45, 19);
+		panel_2_slug.add(txtSlugVersion);
+		txtSlugVersion.setColumns(10);
+
+		JLabel lblSlugVersionsdatum = new JLabel("Versionsdatum");
+		lblSlugVersionsdatum.setBounds(255, 15, 110, 15);
+		panel_2_slug.add(lblSlugVersionsdatum);
+
+		txtSlugVersionsdatum = new JTextField();
+		txtSlugVersionsdatum.setEditable(false);
+		txtSlugVersionsdatum.setBounds(370, 13, 114, 19);
+		panel_2_slug.add(txtSlugVersionsdatum);
+		txtSlugVersionsdatum.setColumns(10);
+
+		JLabel lblSlugBeschreibung = new JLabel("Beschreibung");
+		lblSlugBeschreibung.setBounds(30, 307, 110, 15);
+		panel_2_slug.add(lblSlugBeschreibung);
+
+		txtpnSlugBeschreibung = new JTextPane();
+		txtpnSlugBeschreibung.setBounds(145, 310, 300, 100);
+		panel_2_slug.add(txtpnSlugBeschreibung);
+
+		JLabel lblSlugBraznr = new JLabel("Braz-Nr.");
+		lblSlugBraznr.setBounds(255, 167, 70, 15);
+		panel_2_slug.add(lblSlugBraznr);
+
+		txtSlugBraznr = new JTextField();
+		txtSlugBraznr.setBounds(325, 165, 50, 19);
+		panel_2_slug.add(txtSlugBraznr);
+		txtSlugBraznr.setColumns(10);
+
+		JLabel lblSlugNa = new JLabel("NA Bild Link");
+		lblSlugNa.setBounds(420, 167, 90, 15);
+		panel_2_slug.add(lblSlugNa);
+
+		txtSlugNa = new JTextField();
+		txtSlugNa.setBounds(510, 165, 250, 19);
+		panel_2_slug.add(txtSlugNa);
+		txtSlugNa.setColumns(10);
+
+		JLabel lblSlugRelease = new JLabel("Release");
+		lblSlugRelease.setBounds(30, 110, 70, 15);
+		panel_2_slug.add(lblSlugRelease);
+
+		JLabel lblSlugErstelltAm = new JLabel("Erstellt am");
+		lblSlugErstelltAm.setBounds(350, 110, 85, 15);
+		panel_2_slug.add(lblSlugErstelltAm);
+
+		JLabel lblSlugTitelbild = new JLabel("Titelbild");
+		lblSlugTitelbild.setBounds(30, 55, 70, 15);
+		panel_2_slug.add(lblSlugTitelbild);
+
+		JLabel lblSlugPortraitbild = new JLabel("Portraitbild");
+		lblSlugPortraitbild.setBounds(255, 55, 90, 15);
+		panel_2_slug.add(lblSlugPortraitbild);
+
+												
+		/*
+		 * Checkbox First
+		 * 
+		 * Wenn angehakt (=true), dann wird das dazugehörige txt-Feld eingeschaltet
+		 * 
+		 */
+		chckbxSlugFirst = new JCheckBox("First");
+		chckbxSlugFirst.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			
+			if (chckbxSlugFirst.isSelected()){
+				txtSlugFirst.setEditable(true);
+				txtSlugFirst.setEnabled(true);
+				txtStatusleiste.setText("First: an");
+			} else {
+				txtSlugFirst.setEditable(false);
+				txtSlugFirst.setEnabled(false);
+				txtStatusleiste.setText("First: aus");
+			} // Ende else
+			
+			
+			} // Ende ActionPerformed
+		}); // Ende Listener
+		
+		chckbxSlugFirst.setBounds(465, 307, 70, 23);
+		panel_2_slug.add(chckbxSlugFirst);
+		
+		
+		/*
+		 * Checkbox Near
+		 * 
+		 * Wenn angehakt (=true), dann wird das dazugehörige txt-Feld eingeschaltet
+		 * 
+		 */
+		chckbxSlugNear = new JCheckBox("Near");
+		
+		chckbxSlugNear.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			
+			if (chckbxSlugNear.isSelected()){
+				txtSlugNear.setEditable(true);
+				txtSlugNear.setEnabled(true);
+				txtStatusleiste.setText("Near: an");
+			} else {
+				txtSlugNear.setEditable(false);
+				txtSlugNear.setEnabled(false);
+				txtStatusleiste.setText("Near: aus");
+			} // Ende else
+			
+			
+			} // Ende ActionPerformed
+		}); // Ende Listener
 														
-														
-														
-													}
-												});
-												btnSlugErzeugen.setBounds(660, 435, 110, 25);
-												panel_2_slug.add(btnSlugErzeugen);
-
-												JLabel lblSlugVersion = new JLabel("Version");
-												lblSlugVersion.setBounds(30, 15, 60, 15);
-												panel_2_slug.add(lblSlugVersion);
-
-												txtSlugVersion = new JTextField();
-												txtSlugVersion.setEditable(false);
-												txtSlugVersion.setBounds(100, 13, 45, 19);
-												panel_2_slug.add(txtSlugVersion);
-												txtSlugVersion.setColumns(10);
-
-												JLabel lblSlugVersionsdatum = new JLabel("Versionsdatum");
-												lblSlugVersionsdatum.setBounds(255, 15, 110, 15);
-												panel_2_slug.add(lblSlugVersionsdatum);
-
-												txtSlugVersionsdatum = new JTextField();
-												txtSlugVersionsdatum.setEditable(false);
-												txtSlugVersionsdatum.setBounds(370, 13, 114, 19);
-												panel_2_slug.add(txtSlugVersionsdatum);
-												txtSlugVersionsdatum.setColumns(10);
-
-												JLabel lblSlugBeschreibung = new JLabel("Beschreibung");
-												lblSlugBeschreibung.setBounds(30, 307, 110, 15);
-												panel_2_slug.add(lblSlugBeschreibung);
-
-												txtpnSlugBeschreibung = new JTextPane();
-												txtpnSlugBeschreibung.setBounds(145, 310, 300, 100);
-												panel_2_slug.add(txtpnSlugBeschreibung);
-
-												JLabel lblSlugBraznr = new JLabel("Braz-Nr.");
-												lblSlugBraznr.setBounds(255, 167, 70, 15);
-												panel_2_slug.add(lblSlugBraznr);
-
-												txtSlugBraznr = new JTextField();
-												txtSlugBraznr.setBounds(325, 165, 50, 19);
-												panel_2_slug.add(txtSlugBraznr);
-												txtSlugBraznr.setColumns(10);
-
-												JLabel lblSlugNa = new JLabel("NA Bild Link");
-												lblSlugNa.setBounds(420, 167, 90, 15);
-												panel_2_slug.add(lblSlugNa);
-
-												txtSlugNa = new JTextField();
-												txtSlugNa.setBounds(510, 165, 250, 19);
-												panel_2_slug.add(txtSlugNa);
-												txtSlugNa.setColumns(10);
-
-												JLabel lblSlugRelease = new JLabel("Release");
-												lblSlugRelease.setBounds(30, 110, 70, 15);
-												panel_2_slug.add(lblSlugRelease);
-
-												JLabel lblSlugErstelltAm = new JLabel("Erstellt am");
-												lblSlugErstelltAm.setBounds(350, 110, 85, 15);
-												panel_2_slug.add(lblSlugErstelltAm);
-
-												JLabel lblSlugTitelbild = new JLabel("Titelbild");
-												lblSlugTitelbild.setBounds(30, 55, 70, 15);
-												panel_2_slug.add(lblSlugTitelbild);
-
-												JLabel lblSlugPortraitbild = new JLabel("Portraitbild");
-												lblSlugPortraitbild.setBounds(255, 55, 90, 15);
-												panel_2_slug.add(lblSlugPortraitbild);
-
-												
-												/*
-												 * Checkbox First
-												 * 
-												 * Wenn angehakt (=true), dann wird das dazugehörige txt-Feld eingeschaltet
-												 * 
-												 */
-												chckbxSlugFirst = new JCheckBox("First");
-												chckbxSlugFirst.addActionListener(new ActionListener() {
-													public void actionPerformed(ActionEvent e) {
-													
-													if (chckbxSlugFirst.isSelected()){
-														txtSlugFirst.setEditable(true);
-														txtSlugFirst.setEnabled(true);
-														txtStatusleiste.setText("First: an");
-													} else {
-														txtSlugFirst.setEditable(false);
-														txtSlugFirst.setEnabled(false);
-														txtStatusleiste.setText("First: aus");
-													} // Ende else
-													
-													
-													} // Ende ActionPerformed
-												}); // Ende Listener
-												
-												chckbxSlugFirst.setBounds(465, 307, 70, 23);
-												panel_2_slug.add(chckbxSlugFirst);
-
-												
-												/*
-												 * Checkbox Near
-												 * 
-												 * Wenn angehakt (=true), dann wird das dazugehörige txt-Feld eingeschaltet
-												 * 
-												 */
-												chckbxSlugNear = new JCheckBox("Near");
-												
-												chckbxSlugNear.addActionListener(new ActionListener() {
-													public void actionPerformed(ActionEvent e) {
-													
-													if (chckbxSlugNear.isSelected()){
-														txtSlugNear.setEditable(true);
-														txtSlugNear.setEnabled(true);
-														txtStatusleiste.setText("Near: an");
-													} else {
-														txtSlugNear.setEditable(false);
-														txtSlugNear.setEnabled(false);
-														txtStatusleiste.setText("Near: aus");
-													} // Ende else
-													
-													
-													} // Ende ActionPerformed
-												}); // Ende Listener
-												
 												
 												chckbxSlugNear.setBounds(465, 334, 70, 23);
 												panel_2_slug.add(chckbxSlugNear);
