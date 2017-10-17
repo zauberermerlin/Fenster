@@ -1,6 +1,5 @@
 package org.fenster.model;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -281,7 +280,7 @@ public String slugSchreiben(String strSlugDateiName) {
 
 
 
-public String slugLesen(File fSlugDatei) {
+public String slugLesen(String strSlugDateiName) {
 	
 	
 	return "Slug-Daten gelesen";

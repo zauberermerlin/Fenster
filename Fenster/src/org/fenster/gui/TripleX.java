@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Properties;
 
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -381,49 +382,6 @@ public class TripleX extends JFrame {
 	} //Ende ComboBoxBefuellen
 	
 	
-
-	public void Slug_laden() {
-
-		// VERSION="0.4";
-		// VERSIONSDATUM="23.06.2017";
-		// TITEL="Don't";
-		// #Mehrere mittels ; (Semikolon) trennen und ohne Leerzeichen nach dem
-		// Semikolon
-		// ACTRESS="";
-		// ACTOR="";
-		// BESCHREIBUNG="";
-		// BRAZNR="9";
-		// #Link des ersten Bildes
-		// NA="";
-		// # Datum-Format: yyyy:mm:dd hh:mm
-		// RELEASE="00:00";
-		// ERSTELLT_AM="";
-		// #
-		// TITELBILD="";
-		// PORTRAETBILD="01";
-		// #
-		// STUDIO="Brazzers";
-		// ALBUM="";
-		//
-		// DVD="";
-		// #SERIE="Dont touch her";
-		// SERIE="";
-		// PART="1";
-		// ANZAHLPARTS="";
-		// BILDER="j";
-		// THUMBS="n";
-		// REMASTERED="n";
-		// VR="n";
-		// FIRST="n";
-		// FIRSTNAME="";
-		// NEAR="";
-		// NEARNAME="";
-	
-
-		
-
-	}
-
 	public void SlugDaten_holen(SlugDaten sDatenFunktion) {
 		sDatenFunktion.setStrSlug(txtRibbonSlugName.getText());
 		sDatenFunktion.setStrPfad(txtRibbonPfad.getText());
@@ -516,6 +474,8 @@ public class TripleX extends JFrame {
 		sDatenFunktion.setStrSterne(cmbSlugSterne.getSelectedItem().toString());
 	} // Ende Funktion
 	
+	
+	
 	/**
 	 * Create the frame.
 	 */
@@ -586,7 +546,12 @@ public class TripleX extends JFrame {
 		 * Menüs -Ende
 		 */
 		
-		
+		/*
+		 * ===========================================
+		 * Start Ribbons
+		 * ===========================================
+		 * 
+		 */
 		JPanel panel_mitte = new JPanel();
 		frmFenstertitel.getContentPane().add(panel_mitte, BorderLayout.CENTER);
 		panel_mitte.setLayout(new BorderLayout(0, 0));
@@ -721,7 +686,12 @@ public class TripleX extends JFrame {
 		
 		
 		
-		
+		/*
+		 * ========================
+		 * Start Panel 1 : Datei
+		 * ========================
+		 * 
+		 */
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		panel_mitte.add(tabbedPane);
 
@@ -752,22 +722,24 @@ public class TripleX extends JFrame {
 		 * Register: Datei
 		 * Verzeichnis-Liste
 		 */
-		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollPane.setBounds(50, 70, 300, 300);
 		panel_1_Datei.add(scrollPane);
-		listDateiVerzeichnis = new JList();
+		
+		DefaultListModel<String> dflModel = new DefaultListModel<>();
+
+		dflModel.addElement("Eins");
+		dflModel.addElement("Zwei");
+		listDateiVerzeichnis = new JList(dflModel);
 		scrollPane.setViewportView(listDateiVerzeichnis);
+		dflModel.addElement("Drei");
+		
+		
 		JPanel panel_2_slug = new JPanel();
 		tabbedPane.addTab("slug", null, panel_2_slug, null);
 		panel_2_slug.setLayout(null);
 		
-		/*
-		 * Ende Panel 1 : Datei
-		 */
-		
-
 		
 		/*
 		 * ComboBox
@@ -871,16 +843,37 @@ public class TripleX extends JFrame {
 				} else { // else aus 1. if
 					JOptionPane.showMessageDialog(null, "Die Pfad-Angabe ist nicht gefüllt!", "Hinweis", JOptionPane.WARNING_MESSAGE);
 				} // Ende 1. if
-
-				
-
-				
-				
 			}
 		});
 		btnSlugErzeugen.setBounds(660, 435, 110, 25);
 		panel_2_slug.add(btnSlugErzeugen);
 
+		
+		/*
+		 * Button "Neu Laden"
+		 * Register Slug
+		 * (1) Alle Felder leeren
+		 */
+		JButton btnSlugNeuLaden = new JButton("Neu Laden");
+		btnSlugNeuLaden.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				File fileLesen;
+				// Slug-Name setzt sich zusammen aus Pfad + Slug-Name + Endung .slug
+				
+				
+				fileLesen = new File("test");
+			
+			}
+		});
+		btnSlugNeuLaden.setBounds(660, 400, 110, 25);
+		panel_2_slug.add(btnSlugNeuLaden);
+
+		
+		
+		
+		
+		
 		JLabel lblSlugVersion = new JLabel("Version");
 		lblSlugVersion.setBounds(30, 15, 60, 15);
 		panel_2_slug.add(lblSlugVersion);
@@ -1001,75 +994,72 @@ public class TripleX extends JFrame {
 			} // Ende ActionPerformed
 		}); // Ende Listener
 														
-												
-												chckbxSlugNear.setBounds(465, 334, 70, 23);
-												panel_2_slug.add(chckbxSlugNear);
+		
+		chckbxSlugNear.setBounds(465, 334, 70, 23);
+		panel_2_slug.add(chckbxSlugNear);
 
-												chckbxSlugThumbs = new JCheckBox("Thumbs");
-												chckbxSlugThumbs.setBounds(465, 361, 129, 23);
-												panel_2_slug.add(chckbxSlugThumbs);
+		chckbxSlugThumbs = new JCheckBox("Thumbs");
+		chckbxSlugThumbs.setBounds(465, 361, 129, 23);
+		panel_2_slug.add(chckbxSlugThumbs);
 
-												chckbxSlugVr = new JCheckBox("VR");
-												chckbxSlugVr.setBounds(465, 388, 129, 23);
-												panel_2_slug.add(chckbxSlugVr);
+		chckbxSlugVr = new JCheckBox("VR");
+		chckbxSlugVr.setBounds(465, 388, 129, 23);
+		panel_2_slug.add(chckbxSlugVr);
 
-												chckbxSlugRemastered = new JCheckBox("Remastered");
-												chckbxSlugRemastered.setBounds(465, 415, 115, 23);
-												panel_2_slug.add(chckbxSlugRemastered);
+		chckbxSlugRemastered = new JCheckBox("Remastered");
+		chckbxSlugRemastered.setBounds(465, 415, 115, 23);
+		panel_2_slug.add(chckbxSlugRemastered);
 
-												txtSlugFirst = new JTextField();
-												txtSlugFirst.setEditable(false);
-												txtSlugFirst.setEnabled(false);
-												txtSlugFirst.setBounds(536, 309, 200, 19);
-												panel_2_slug.add(txtSlugFirst);
-												txtSlugFirst.setColumns(10);
+		txtSlugFirst = new JTextField();
+		txtSlugFirst.setEditable(false);
+		txtSlugFirst.setEnabled(false);
+		txtSlugFirst.setBounds(536, 309, 200, 19);
+		panel_2_slug.add(txtSlugFirst);
+		txtSlugFirst.setColumns(10);
 
-												txtSlugNear = new JTextField();
-												txtSlugNear.setEditable(false);
-												txtSlugNear.setEnabled(false);
-												txtSlugNear.setBounds(536, 336, 200, 19);
-												panel_2_slug.add(txtSlugNear);
-												txtSlugNear.setColumns(10);
+		txtSlugNear = new JTextField();
+		txtSlugNear.setEditable(false);
+		txtSlugNear.setEnabled(false);
+		txtSlugNear.setBounds(536, 336, 200, 19);
+		panel_2_slug.add(txtSlugNear);
+		txtSlugNear.setColumns(10);
 
-												JButton btnSlugNeuLaden = new JButton("Neu Laden");
-												btnSlugNeuLaden.setBounds(660, 400, 110, 25);
-												panel_2_slug.add(btnSlugNeuLaden);
 
-												chckbxSlugBilder = new JCheckBox("Bilder");
-												chckbxSlugBilder.setBounds(465, 442, 75, 23);
-												panel_2_slug.add(chckbxSlugBilder);
+		chckbxSlugBilder = new JCheckBox("Bilder");
+		chckbxSlugBilder.setBounds(465, 442, 75, 23);
+		panel_2_slug.add(chckbxSlugBilder);
 
-												JSeparator separator_1 = new JSeparator();
-												separator_1.setBounds(30, 41, 730, 2);
-												panel_2_slug.add(separator_1);
-												
-												JSeparator separator_2 = new JSeparator();
-												separator_2.setBounds(30, 80, 730, 2);
-												panel_2_slug.add(separator_2);
+		JSeparator separator_1 = new JSeparator();
+		separator_1.setBounds(30, 41, 730, 2);
+		panel_2_slug.add(separator_1);
 
-												JLabel lblSlugSterne = new JLabel("Sterne");
-												lblSlugSterne.setBounds(405, 55, 60, 15);
-												panel_2_slug.add(lblSlugSterne);
+		JSeparator separator_2 = new JSeparator();
+		separator_2.setBounds(30, 80, 730, 2);
+		panel_2_slug.add(separator_2);
 
-												cmbSlugSterne = new JComboBox<String>();
-												cmbSlugSterne.setBounds(465, 52, 40, 20);
-												
-												String[] sterneDaten = {"1","2","3","4","5"};
-												
-												ComboBoxBefuellen(cmbSlugSterne, sterneDaten);
-												panel_2_slug.add(cmbSlugSterne);
+		JLabel lblSlugSterne = new JLabel("Sterne");
+		lblSlugSterne.setBounds(405, 55, 60, 15);
+		panel_2_slug.add(lblSlugSterne);
 
-												JSeparator separator_3 = new JSeparator();
-												separator_3.setBounds(30, 155, 730, 2);
-												panel_2_slug.add(separator_3);
+		cmbSlugSterne = new JComboBox<String>();
+		cmbSlugSterne.setBounds(465, 52, 40, 20);
 
-												JLabel lblSlugDvd = new JLabel("DVD");
-												lblSlugDvd.setBounds(465, 202, 40, 15);
-												panel_2_slug.add(lblSlugDvd);
+		String[] sterneDaten = {"1","2","3","4","5"};
 
-												JLabel lblSlugPart = new JLabel("Part");
-												lblSlugPart.setBounds(465, 237, 40, 15);
-												panel_2_slug.add(lblSlugPart);
+		ComboBoxBefuellen(cmbSlugSterne, sterneDaten);
+		panel_2_slug.add(cmbSlugSterne);
+
+		JSeparator separator_3 = new JSeparator();
+		separator_3.setBounds(30, 155, 730, 2);
+		panel_2_slug.add(separator_3);
+
+		JLabel lblSlugDvd = new JLabel("DVD");
+		lblSlugDvd.setBounds(465, 202, 40, 15);
+		panel_2_slug.add(lblSlugDvd);
+
+		JLabel lblSlugPart = new JLabel("Part");
+		lblSlugPart.setBounds(465, 237, 40, 15);
+		panel_2_slug.add(lblSlugPart);
 
 												JLabel lblSlugAnzahlParts = new JLabel("Anzahl Parts");
 												lblSlugAnzahlParts.setBounds(560, 237, 100, 15);
@@ -1163,12 +1153,27 @@ public class TripleX extends JFrame {
 												 * ReleaseAm und ErstelltAm Buttons mit Grafik/Pfeilen
 												 */
 												JButton btnSlugReleaseJahrOben = new JButton("");
+												btnSlugReleaseJahrOben.addActionListener(new ActionListener() {
+													public void actionPerformed(ActionEvent e) {
+													int intReleaseJahr = Integer.parseInt(txtSlugReleaseJahr.getText());
+													intReleaseJahr++;
+													txtSlugReleaseJahr.setText(String.valueOf(intReleaseJahr));
+													}
+												});
 												btnSlugReleaseJahrOben.setBounds(110, 87, 18, 18);
 												iconSlugReleaseJahrOben = new ImageIcon(strPfeilOben);
 												btnSlugReleaseJahrOben.setIcon(iconSlugReleaseJahrOben);
 												panel_2_slug.add(btnSlugReleaseJahrOben);
 												
 												JButton btnSlugReleaseJahrUnten = new JButton("");
+												btnSlugReleaseJahrUnten.addActionListener(new ActionListener() {
+													public void actionPerformed(ActionEvent e) {
+													int intReleaseJahr = Integer.parseInt(txtSlugReleaseJahr.getText());
+													intReleaseJahr--;
+													txtSlugReleaseJahr.setText(String.valueOf(intReleaseJahr));
+													}
+												});
+
 												btnSlugReleaseJahrUnten.setBounds(110, 130, 18, 18);
 												iconSlugReleaseJahrUnten = new ImageIcon(strPfeilUnten);
 												btnSlugReleaseJahrUnten.setIcon(iconSlugReleaseJahrUnten);
