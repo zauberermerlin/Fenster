@@ -257,9 +257,11 @@ public class TripleX extends JFrame {
 	 */
 	public void Konfig_speichern() {
 		/*
-		 * Schritte: (1) Auslesen und Einsammeln aller Werte (2) Properties
-		 * anlegen und Werte setzen (3) in die Konfig-Datei schreiben (4)
-		 * Ausgabe in Statuszeile
+		 * Schritte:
+		 * (1) Auslesen und Einsammeln aller Werte
+		 * (2) Properties anlegen und Werte setzen
+		 * (3) in die Konfig-Datei schreiben
+		 * (4) Ausgabe in Statuszeile
 		 * 
 		 * Alle Parameter müssen geschrieben werden, auch die nicht geänderten.
 		 * 
