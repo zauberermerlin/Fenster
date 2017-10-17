@@ -39,6 +39,7 @@ import org.jsoup.select.Elements;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
 
 public class TripleX extends JFrame {
 
@@ -903,16 +904,20 @@ public class TripleX extends JFrame {
 		JLabel lblSlugBeschreibung = new JLabel("Beschreibung");
 		lblSlugBeschreibung.setBounds(30, 307, 110, 15);
 		panel_2_slug.add(lblSlugBeschreibung);
+		
+		JScrollPane scrollPane_1 = new JScrollPane();
+		scrollPane_1.setBounds(145, 310, 300, 100);
+		panel_2_slug.add(scrollPane_1);
 
 		txtpnSlugBeschreibung = new JTextPane();
-		txtpnSlugBeschreibung.setBounds(145, 310, 300, 100);
-		panel_2_slug.add(txtpnSlugBeschreibung);
+		scrollPane_1.setViewportView(txtpnSlugBeschreibung);
 
 		JLabel lblSlugBraznr = new JLabel("Braz-Nr.");
 		lblSlugBraznr.setBounds(255, 167, 70, 15);
 		panel_2_slug.add(lblSlugBraznr);
 
 		txtSlugBraznr = new JTextField();
+		txtSlugBraznr.setHorizontalAlignment(SwingConstants.CENTER);
 		txtSlugBraznr.setBounds(325, 165, 50, 19);
 		panel_2_slug.add(txtSlugBraznr);
 		txtSlugBraznr.setColumns(10);
@@ -1071,11 +1076,13 @@ public class TripleX extends JFrame {
 												panel_2_slug.add(lblSlugAnzahlParts);
 
 												txtSlugTitelbild = new JTextField();
+												txtSlugTitelbild.setHorizontalAlignment(SwingConstants.CENTER);
 												txtSlugTitelbild.setBounds(100, 53, 30, 19);
 												panel_2_slug.add(txtSlugTitelbild);
 												txtSlugTitelbild.setColumns(10);
 
 												txtSlugPortraitbild = new JTextField();
+												txtSlugPortraitbild.setHorizontalAlignment(SwingConstants.CENTER);
 												txtSlugPortraitbild.setText("01");
 												txtSlugPortraitbild.setBounds(345, 53, 30, 19);
 												panel_2_slug.add(txtSlugPortraitbild);
@@ -1083,25 +1090,34 @@ public class TripleX extends JFrame {
 
 												/*
 												 * Bereich Datum: ReleaseAM
+												 * Jahr: aktuelles Jahr
+												 * Monat und Tag leer
+												 * Zeit: 00:00
 												 */
+												dtf = DateTimeFormatter.ofPattern("yyyy");
+												localDate = LocalDate.now();
 												txtSlugReleaseJahr = new JTextField();
-												txtSlugReleaseJahr.setText("2017");
+												txtSlugReleaseJahr.setHorizontalAlignment(SwingConstants.CENTER);
+												txtSlugReleaseJahr.setText(dtf.format(localDate).toString());
 												txtSlugReleaseJahr.setBounds(100, 108, 40, 20);
 												panel_2_slug.add(txtSlugReleaseJahr);
 												txtSlugReleaseJahr.setColumns(10);
 												
 												txtSlugReleaseMonat = new JTextField();
+												txtSlugReleaseMonat.setHorizontalAlignment(SwingConstants.CENTER);
 												txtSlugReleaseMonat.setBounds(145, 108, 25, 20);
 												panel_2_slug.add(txtSlugReleaseMonat);
 												txtSlugReleaseMonat.setColumns(10);
 												
 												txtSlugReleaseTag = new JTextField();
+												txtSlugReleaseTag.setHorizontalAlignment(SwingConstants.CENTER);
 												txtSlugReleaseTag.setText("");
 												txtSlugReleaseTag.setBounds(175, 108, 25, 20);
 												panel_2_slug.add(txtSlugReleaseTag);
 												txtSlugReleaseTag.setColumns(10);
 												
 												txtSlugReleaseZeit = new JTextField();
+												txtSlugReleaseZeit.setHorizontalAlignment(SwingConstants.CENTER);
 												txtSlugReleaseZeit.setText("00:00");
 												txtSlugReleaseZeit.setBounds(210, 108, 41, 20);
 												panel_2_slug.add(txtSlugReleaseZeit);
@@ -1112,8 +1128,8 @@ public class TripleX extends JFrame {
 //												LocalDate localDate = LocalDate.now();
 												
 												// Feld mit dem heutigen Datum in der Form jjjj:mm:tt hh:mm füllen
-												dtf = DateTimeFormatter.ofPattern("yyyy");
-												localDate = LocalDate.now();
+//												dtf = DateTimeFormatter.ofPattern("yyyy");
+//												localDate = LocalDate.now();
 												txtSlugErstelltAmJahr = new JTextField();
 												txtSlugErstelltAmJahr.setBounds(440, 108, 40, 20);
 												txtSlugErstelltAmJahr.setText(dtf.format(localDate).toString());
@@ -1159,7 +1175,80 @@ public class TripleX extends JFrame {
 												
 												panel_2_slug.add(btnSlugReleaseJahrUnten);
 												
+												
+												/*
+												 * Leeren bedeutet soviel wie alle Felder auf den Startzustand zurücksetzen
+												 * Ausnahme: die Pfad-Angabe im Bereich Ribbon
+												 */
 												JButton btnSlugLeeren = new JButton("Leeren");
+												btnSlugLeeren.addActionListener(new ActionListener() {
+													public void actionPerformed(ActionEvent e) {
+														
+														// Bereich Ribbon
+														txtRibbonHttp.setText("");
+														txtRibbonSerie.setText("");
+														txtRibbonSlugName.setText("");
+														txtRibbonTitel.setText("");
+														
+														// Bereich Slug
+														
+														txtSlugActress.setText("");
+														txtSlugActor.setText("");
+														txtpnSlugBeschreibung.setText("");
+														txtSlugBraznr.setText("");
+														txtSlugNa.setText("");
+															
+														dtf = DateTimeFormatter.ofPattern("yyyy");
+														localDate = LocalDate.now();
+														txtSlugReleaseJahr.setText(dtf.format(localDate));
+														txtSlugReleaseMonat.setText("");
+														txtSlugReleaseTag.setText("");
+														txtSlugReleaseZeit.setText("00:00");
+														
+														dtf = DateTimeFormatter.ofPattern("yyyy");
+														localDate = LocalDate.now();
+														txtSlugErstelltAmJahr.setText(dtf.format(localDate));
+
+														dtf = DateTimeFormatter.ofPattern("MM");
+														localDate = LocalDate.now();
+														txtSlugErstelltAmMonat.setText(dtf.format(localDate));
+														
+														dtf = DateTimeFormatter.ofPattern("dd");
+														localDate = LocalDate.now();
+														txtSlugErstelltAmTag.setText(dtf.format(localDate));
+														
+														txtSlugErstelltAmZeit.setText("00:00");
+														
+														
+														txtSlugTitelbild.setText("");
+														txtSlugPortraitbild.setText("01");
+
+														// ComboBoxen werden auf den ersten Wert, also Index 0 gesetzt
+														cmbSlugAlbum.setSelectedIndex(0);
+														cmbSlugStudio.setSelectedIndex(0);
+
+														txtSlugDvd.setText("");
+														
+														txtSlugPart.setText("1");
+														txtSlugAnzahlParts.setText("");
+														chckbxSlugBilder.setSelected(false);
+														chckbxSlugThumbs.setSelected(false);
+														chckbxSlugRemastered.setSelected(false);
+														chckbxSlugVr.setSelected(false);
+														chckbxSlugFirst.setSelected(false);
+														txtSlugFirst.setText("");
+														txtSlugFirst.setEditable(false);
+														txtSlugFirst.setEnabled(false);
+														
+														chckbxSlugNear.setSelected(false);
+														txtSlugNear.setText("");
+														txtSlugNear.setEditable(false);
+														txtSlugNear.setEnabled(false);
+														
+														cmbSlugSterne.setSelectedIndex(0);
+														
+													}
+												});
 												btnSlugLeeren.setBounds(660, 365, 110, 25);
 												panel_2_slug.add(btnSlugLeeren);
 												
@@ -1169,7 +1258,6 @@ public class TripleX extends JFrame {
 												 * ====================================================
 												 * 
 												 */
-												
 												
 												/*
 												 * Pfeil tauschen zwischen Release und Erstellt
@@ -1220,11 +1308,14 @@ public class TripleX extends JFrame {
 												txtSlugDvd.setColumns(10);
 												
 												txtSlugPart = new JTextField();
+												txtSlugPart.setHorizontalAlignment(SwingConstants.CENTER);
+												txtSlugPart.setText("1");
 												txtSlugPart.setBounds(510, 234, 25, 20);
 												panel_2_slug.add(txtSlugPart);
 												txtSlugPart.setColumns(10);
 												
 												txtSlugAnzahlParts = new JTextField();
+												txtSlugAnzahlParts.setHorizontalAlignment(SwingConstants.CENTER);
 												txtSlugAnzahlParts.setBounds(660, 234, 25, 20);
 												panel_2_slug.add(txtSlugAnzahlParts);
 												txtSlugAnzahlParts.setColumns(10);
