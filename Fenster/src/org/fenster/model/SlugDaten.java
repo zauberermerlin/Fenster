@@ -216,6 +216,8 @@ public String slugSchreiben(String strSlugDateiName) {
 		writer.write(System.getProperty("line.separator"));
 		writer.write("TITEL=\"" + strTitel + "\"");
 		writer.write(System.getProperty("line.separator"));
+		writer.write("#Mehrere mittels ; (Semikolon) trennen und ohne Leerzeichen nach dem Semikolon");
+		writer.write(System.getProperty("line.separator"));
 		writer.write("ACTRESS=\"" + strActress + "\"");
 		writer.write(System.getProperty("line.separator"));
 		writer.write("ACTOR=\"" + strActor + "\"");
@@ -239,6 +241,8 @@ public String slugSchreiben(String strSlugDateiName) {
 		writer.write("ALBUM=\"" + strAlbum + "\"");
 		writer.write(System.getProperty("line.separator"));
 		writer.write("DVD=\"" + strDVD + "\"");
+		writer.write(System.getProperty("line.separator"));
+		writer.write("#SERIE=\"Dont touch her");
 		writer.write(System.getProperty("line.separator"));
 		writer.write("SERIE=\"" + strSerie + "\"");	
 		writer.write(System.getProperty("line.separator"));
