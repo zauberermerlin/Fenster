@@ -1,4 +1,4 @@
-package org.fenster.gui;
+package org.fenster.testversuche;
 
 import javax.swing.JOptionPane;
 

@@ -1263,405 +1263,401 @@ public TripleX() {
 		panel_2_slug.add(txtSlugReleaseJahr);
 		txtSlugReleaseJahr.setColumns(10);
 												
-												txtSlugReleaseMonat = new JTextField();
-												txtSlugReleaseMonat.setHorizontalAlignment(SwingConstants.CENTER);
-												txtSlugReleaseMonat.setBounds(145, 108, 25, 20);
-												panel_2_slug.add(txtSlugReleaseMonat);
-												txtSlugReleaseMonat.setColumns(10);
-												
-												txtSlugReleaseTag = new JTextField();
-												txtSlugReleaseTag.setHorizontalAlignment(SwingConstants.CENTER);
-												txtSlugReleaseTag.setText("");
-												txtSlugReleaseTag.setBounds(175, 108, 25, 20);
-												panel_2_slug.add(txtSlugReleaseTag);
-												txtSlugReleaseTag.setColumns(10);
-												
-												txtSlugReleaseZeit = new JTextField();
-												txtSlugReleaseZeit.setHorizontalAlignment(SwingConstants.CENTER);
-												txtSlugReleaseZeit.setText("00:00");
-												txtSlugReleaseZeit.setBounds(210, 108, 41, 20);
-												panel_2_slug.add(txtSlugReleaseZeit);
-												txtSlugReleaseZeit.setColumns(10);
-												
-//												// Feld mit dem heutigen Datum in der Form jjjj:mm:tt hh:mm füllen
-//												DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy:MM:dd");
-//												LocalDate localDate = LocalDate.now();
-												
-												// Feld mit dem heutigen Datum in der Form jjjj:mm:tt hh:mm füllen
-//												dtf = DateTimeFormatter.ofPattern("yyyy");
-//												localDate = LocalDate.now();
-												txtSlugErstelltAmJahr = new JTextField();
-												txtSlugErstelltAmJahr.setBounds(440, 108, 40, 20);
-												txtSlugErstelltAmJahr.setText(dtf.format(localDate).toString());
-												panel_2_slug.add(txtSlugErstelltAmJahr);
-												txtSlugErstelltAmJahr.setColumns(10);
-												
-												dtf = DateTimeFormatter.ofPattern("MM");
-												localDate = LocalDate.now();
-												txtSlugErstelltAmMonat = new JTextField();
-												txtSlugErstelltAmMonat.setBounds(485, 108, 25, 20);
-												txtSlugErstelltAmMonat.setText(dtf.format(localDate).toString());
-												panel_2_slug.add(txtSlugErstelltAmMonat);
-												txtSlugErstelltAmMonat.setColumns(10);
+		txtSlugReleaseMonat = new JTextField();
+		txtSlugReleaseMonat.setHorizontalAlignment(SwingConstants.CENTER);
+		txtSlugReleaseMonat.setBounds(145, 108, 25, 20);
+		panel_2_slug.add(txtSlugReleaseMonat);
+		txtSlugReleaseMonat.setColumns(10);
 
-												dtf = DateTimeFormatter.ofPattern("dd");
-												localDate = LocalDate.now();
-												txtSlugErstelltAmTag = new JTextField();
-												txtSlugErstelltAmTag.setBounds(515, 108, 25, 20);
-												txtSlugErstelltAmTag.setText(dtf.format(localDate).toString());
-												panel_2_slug.add(txtSlugErstelltAmTag);
-												txtSlugErstelltAmTag.setColumns(10);
-												
-												txtSlugErstelltAmZeit = new JTextField();
-												txtSlugErstelltAmZeit.setText("00:00");
-												txtSlugErstelltAmZeit.setBounds(550, 108, 41, 20);
-												panel_2_slug.add(txtSlugErstelltAmZeit);
-												txtSlugErstelltAmZeit.setColumns(10);
-												
-												
-												/*
-												 * ReleaseAm und ErstelltAm Buttons mit Grafik/Pfeilen
-												 */
-												JButton btnSlugReleaseJahrOben = new JButton("");
-												btnSlugReleaseJahrOben.addActionListener(new ActionListener() {
-													public void actionPerformed(ActionEvent e) {
-													int intReleaseJahr = Integer.parseInt(txtSlugReleaseJahr.getText());
-													intReleaseJahr++;
-													txtSlugReleaseJahr.setText(String.valueOf(intReleaseJahr));
-													}
-												});
-												btnSlugReleaseJahrOben.setBounds(110, 87, 18, 18);
-												iconSlugReleaseJahrOben = new ImageIcon(strPfeilOben);
-												btnSlugReleaseJahrOben.setIcon(iconSlugReleaseJahrOben);
-												panel_2_slug.add(btnSlugReleaseJahrOben);
-												
-												JButton btnSlugReleaseJahrUnten = new JButton("");
-												btnSlugReleaseJahrUnten.addActionListener(new ActionListener() {
-													public void actionPerformed(ActionEvent e) {
-													int intReleaseJahr = Integer.parseInt(txtSlugReleaseJahr.getText());
-													intReleaseJahr--;
-													txtSlugReleaseJahr.setText(String.valueOf(intReleaseJahr));
-													}
-												});
+		txtSlugReleaseTag = new JTextField();
+		txtSlugReleaseTag.setHorizontalAlignment(SwingConstants.CENTER);
+		txtSlugReleaseTag.setText("");
+		txtSlugReleaseTag.setBounds(175, 108, 25, 20);
+		panel_2_slug.add(txtSlugReleaseTag);
+		txtSlugReleaseTag.setColumns(10);
 
-												btnSlugReleaseJahrUnten.setBounds(110, 130, 18, 18);
-												iconSlugReleaseJahrUnten = new ImageIcon(strPfeilUnten);
-												btnSlugReleaseJahrUnten.setIcon(iconSlugReleaseJahrUnten);
-												
-												panel_2_slug.add(btnSlugReleaseJahrUnten);
-												
-												
-												/*
-												 * Leeren bedeutet soviel wie alle Felder auf den Startzustand zurücksetzen
-												 * Ausnahme: die Pfad-Angabe im Bereich Ribbon
-												 */
-												JButton btnSlugLeeren = new JButton("Leeren");
-												btnSlugLeeren.addActionListener(new ActionListener() {
-													public void actionPerformed(ActionEvent e) {
-														
-														SlugDatenLeeren();
-														txtStatusleiste.setText("Slug-Daten geleert!");
-																												
-													}
-												});
-												btnSlugLeeren.setBounds(650, 365, 115, 25);
-												panel_2_slug.add(btnSlugLeeren);
-												
-												/*
-												 * ====================================================
-												 * Pfeile zwischen den Datümern Release und Erstellt am
-												 * ====================================================
-												 * 
-												 */
-												
-												/*
-												 * Pfeil tauschen zwischen Release und Erstellt
-												 */
-												JButton btnSlugTauschen = new JButton("");
-												iconSlugTauschen = new ImageIcon(strPfeilTauschen);
-												btnSlugTauschen.setIcon(iconSlugTauschen);
-												btnSlugTauschen.setBounds(290, 110, 26, 18);
-												panel_2_slug.add(btnSlugTauschen);
-												
-													
-												JButton btnSlugErstelltAmNachRelease = new JButton("");
-												iconSlugErstelltAmNachRelase = new ImageIcon(strPfeilLinks);
-												btnSlugErstelltAmNachRelease.setIcon(iconSlugErstelltAmNachRelase);
-												btnSlugErstelltAmNachRelease.addActionListener(new ActionListener() {
-													public void actionPerformed(ActionEvent e) {
-														// Werte Jahr - Monat - Tag - Zeit von Erstellt am nach Release kopiern
-														txtSlugReleaseJahr.setText(txtSlugErstelltAmJahr.getText());
-														txtSlugReleaseMonat.setText(txtSlugErstelltAmMonat.getText());
-														txtSlugReleaseTag.setText(txtSlugErstelltAmTag.getText());
-														txtSlugReleaseZeit.setText(txtSlugErstelltAmZeit.getText());
-													}
-												});
-												btnSlugErstelltAmNachRelease.setBounds(269, 110, 18, 18);
-												panel_2_slug.add(btnSlugErstelltAmNachRelease);
-												
-												JButton btnSlugReleaseNachErstelltAm = new JButton("");
-												iconSlugRelaseNachErstelltAm = new ImageIcon(strPfeilRechts);
-												btnSlugReleaseNachErstelltAm.setBounds(320, 110, 18, 18);
-												btnSlugReleaseNachErstelltAm.setIcon(iconSlugRelaseNachErstelltAm);
-												panel_2_slug.add(btnSlugReleaseNachErstelltAm);
-												btnSlugReleaseNachErstelltAm.addActionListener(new ActionListener() {
-													public void actionPerformed(ActionEvent e) {
-														// Werte Jahr - Monat - Tag - Zeit von Release nach Erstellt am kopiern
-														txtSlugErstelltAmJahr.setText(txtSlugReleaseJahr.getText());
-														txtSlugErstelltAmMonat.setText(txtSlugReleaseMonat.getText());
-														txtSlugErstelltAmTag.setText(txtSlugReleaseTag.getText());
-														txtSlugErstelltAmZeit.setText(txtSlugReleaseZeit.getText());
-													}
-												});
+		txtSlugReleaseZeit = new JTextField();
+		txtSlugReleaseZeit.setHorizontalAlignment(SwingConstants.CENTER);
+		txtSlugReleaseZeit.setText("00:00");
+		txtSlugReleaseZeit.setBounds(210, 108, 41, 20);
+		panel_2_slug.add(txtSlugReleaseZeit);
+		txtSlugReleaseZeit.setColumns(10);
+
+		// Feld mit dem heutigen Datum in der Form jjjj:mm:tt hh:mm füllen
+		// DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy:MM:dd");
+		// LocalDate localDate = LocalDate.now();
+
+		// Feld mit dem heutigen Datum in der Form jjjj:mm:tt hh:mm füllen
+		// dtf = DateTimeFormatter.ofPattern("yyyy");
+		// localDate = LocalDate.now();
+		txtSlugErstelltAmJahr = new JTextField();
+		txtSlugErstelltAmJahr.setBounds(440, 108, 40, 20);
+		txtSlugErstelltAmJahr.setText(dtf.format(localDate).toString());
+		panel_2_slug.add(txtSlugErstelltAmJahr);
+		txtSlugErstelltAmJahr.setColumns(10);
+
+		dtf = DateTimeFormatter.ofPattern("MM");
+		localDate = LocalDate.now();
+		txtSlugErstelltAmMonat = new JTextField();
+		txtSlugErstelltAmMonat.setBounds(485, 108, 25, 20);
+		txtSlugErstelltAmMonat.setText(dtf.format(localDate).toString());
+		panel_2_slug.add(txtSlugErstelltAmMonat);
+		txtSlugErstelltAmMonat.setColumns(10);
+
+		dtf = DateTimeFormatter.ofPattern("dd");
+		localDate = LocalDate.now();
+		txtSlugErstelltAmTag = new JTextField();
+		txtSlugErstelltAmTag.setBounds(515, 108, 25, 20);
+		txtSlugErstelltAmTag.setText(dtf.format(localDate).toString());
+		panel_2_slug.add(txtSlugErstelltAmTag);
+		txtSlugErstelltAmTag.setColumns(10);
+
+		txtSlugErstelltAmZeit = new JTextField();
+		txtSlugErstelltAmZeit.setText("00:00");
+		txtSlugErstelltAmZeit.setBounds(550, 108, 41, 20);
+		panel_2_slug.add(txtSlugErstelltAmZeit);
+		txtSlugErstelltAmZeit.setColumns(10);
+
+
+		/*
+		 * ReleaseAm und ErstelltAm Buttons mit Grafik/Pfeilen
+		 */
+		JButton btnSlugReleaseJahrOben = new JButton("");
+		btnSlugReleaseJahrOben.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int intReleaseJahr = Integer.parseInt(txtSlugReleaseJahr.getText());
+				intReleaseJahr++;
+				txtSlugReleaseJahr.setText(String.valueOf(intReleaseJahr));
+			}
+		});
+		btnSlugReleaseJahrOben.setBounds(110, 87, 18, 18);
+		iconSlugReleaseJahrOben = new ImageIcon(strPfeilOben);
+		btnSlugReleaseJahrOben.setIcon(iconSlugReleaseJahrOben);
+		panel_2_slug.add(btnSlugReleaseJahrOben);
+
+		JButton btnSlugReleaseJahrUnten = new JButton("");
+		btnSlugReleaseJahrUnten.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int intReleaseJahr = Integer.parseInt(txtSlugReleaseJahr.getText());
+				intReleaseJahr--;
+				txtSlugReleaseJahr.setText(String.valueOf(intReleaseJahr));
+			}
+		});
+
+		btnSlugReleaseJahrUnten.setBounds(110, 130, 18, 18);
+		iconSlugReleaseJahrUnten = new ImageIcon(strPfeilUnten);
+		btnSlugReleaseJahrUnten.setIcon(iconSlugReleaseJahrUnten);
+
+		panel_2_slug.add(btnSlugReleaseJahrUnten);
 
 												
-												
-												
-												txtSlugDvd = new JTextField();
-												txtSlugDvd.setBounds(510, 200, 250, 20);
-												panel_2_slug.add(txtSlugDvd);
-												txtSlugDvd.setColumns(10);
-												
-												txtSlugPart = new JTextField();
-												txtSlugPart.setHorizontalAlignment(SwingConstants.CENTER);
-												txtSlugPart.setText("1");
-												txtSlugPart.setBounds(510, 234, 25, 20);
-												panel_2_slug.add(txtSlugPart);
-												txtSlugPart.setColumns(10);
-												
-												txtSlugAnzahlParts = new JTextField();
-												txtSlugAnzahlParts.setHorizontalAlignment(SwingConstants.CENTER);
-												txtSlugAnzahlParts.setBounds(660, 234, 25, 20);
-												panel_2_slug.add(txtSlugAnzahlParts);
-												txtSlugAnzahlParts.setColumns(10);
-												
-												
-												/*
-												 * Ende Panel 2
-												 */
-												
-												/*
-												 * ==========================================================
-												 * Start Panel 3: Bilder
-												 * 
-												 * Titelbild, Porträtbild und sonstige Bilder in der Vorschau
-												 * 
-												 * ==========================================================
-												 */
-												JPanel panel_3_bilder = new JPanel();
-												tabbedPane.addTab("bilder", null, panel_3_bilder, null);
-												panel_3_bilder.setLayout(null);
-												
-												
-												/*
-												 * Bild-Labels haben alle die feste Größe vom 150x100
-												 */
-												
-												JLabel lblBilderTitelbild = new JLabel("Titelbild");
-												lblBilderTitelbild.setBounds(95, 42, 57, 15);
-												panel_3_bilder.add(lblBilderTitelbild);
-												
-												JLabel lblAnzeigeBild1 = new JLabel("");
-												lblAnzeigeBild1.setHorizontalAlignment(SwingConstants.CENTER);
-												lblAnzeigeBild1.setBorder(new LineBorder(new Color(0, 0, 0)));
-												lblAnzeigeBild1.setBounds(200, 40, 225, 150);
-												
-												
-												BufferedImage img = null;
-												try {
-												    img = ImageIO.read(new File("/home/thomas/git/Fenster/Fenster/externe_dateien/01-shy-redheads-like-it-big.jpg"));
-												} catch (IOException e) {
-												    e.printStackTrace();
-												}
-												
-												// Resize
-//												System.out.println("Breite: " + img.getWidth());
-//												System.out.println("Höhe: " + img.getHeight());
-												Image dimg = null;
-												if (img.getWidth() > img.getHeight()) {
-													dimg = img.getScaledInstance(lblAnzeigeBild1.getWidth(), lblAnzeigeBild1.getHeight(),
-											        Image.SCALE_SMOOTH);
-												} else {
-													dimg = img.getScaledInstance((lblAnzeigeBild1.getWidth()/3)*2, lblAnzeigeBild1.getHeight(),
-													Image.SCALE_SMOOTH);													
-												}
-												
-													// Icon lesen
-												ImageIcon iconAnzeigeBild1 = new ImageIcon(dimg);
-												
-												lblAnzeigeBild1.setIcon(iconAnzeigeBild1);
-												
-												panel_3_bilder.add(lblAnzeigeBild1);
+		/*
+		 * Leeren bedeutet soviel wie alle Felder auf den Startzustand zurücksetzen
+		 * Ausnahme: die Pfad-Angabe im Bereich Ribbon
+		 */
+		JButton btnSlugLeeren = new JButton("Leeren");
+		btnSlugLeeren.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 
-												
-												
-												/*
-												 * Ende Panel 3
-												 */
-												
-												
-												
-												JPanel panel_4_exifmp4 = new JPanel();
-												tabbedPane.addTab("exif - mp4tag", null, panel_4_exifmp4, null);
-												panel_4_exifmp4.setLayout(null);
+				SlugDatenLeeren();
+				txtStatusleiste.setText("Slug-Daten geleert!");
 
-												JPanel panel_5_debug = new JPanel();
-												tabbedPane.addTab("debug", null, panel_5_debug, null);
-												
-												/*
-												 * ======================================================
-												 * Panel 6: Konfiguration
-												 * ======================================================
-												 */
-												
-												
-												JPanel panel_6_Konfiguration = new JPanel();
-												tabbedPane.addTab("Konfiguration", null, panel_6_Konfiguration, null);
-												panel_6_Konfiguration.setLayout(null);
+			}
+		});
+		btnSlugLeeren.setBounds(650, 365, 115, 25);
+		panel_2_slug.add(btnSlugLeeren);
 
-												JButton btnSpeichern = new JButton("Speichern");
-												btnSpeichern.addActionListener(new ActionListener() {
-													public void actionPerformed(ActionEvent e) {
-														Konfig_speichern();
+		/*
+		 * ====================================================
+		 * Pfeile zwischen den Datümern Release und Erstellt am
+		 * ====================================================
+		 * 
+		 */
 
-													}
-												});
-												btnSpeichern.setBounds(634, 340, 105, 25);
-												panel_6_Konfiguration.add(btnSpeichern);
+		/*
+		 * Pfeil tauschen zwischen Release und Erstellt
+		 */
+		JButton btnSlugTauschen = new JButton("");
+		iconSlugTauschen = new ImageIcon(strPfeilTauschen);
+		btnSlugTauschen.setIcon(iconSlugTauschen);
+		btnSlugTauschen.setBounds(290, 110, 26, 18);
+		panel_2_slug.add(btnSlugTauschen);
 
-												JButton btnLaden = new JButton("Laden");
-												btnLaden.addActionListener(new ActionListener() {
-													public void actionPerformed(ActionEvent e) {
-														Konfig_laden();
-													}
-												});
-												btnLaden.setBounds(634, 303, 105, 25);
-												panel_6_Konfiguration.add(btnLaden);
 
-												JLabel lblKonfigVersion = new JLabel("Version:");
-												lblKonfigVersion.setBounds(40, 25, 70, 15);
-												panel_6_Konfiguration.add(lblKonfigVersion);
+		JButton btnSlugErstelltAmNachRelease = new JButton("");
+		iconSlugErstelltAmNachRelase = new ImageIcon(strPfeilLinks);
+		btnSlugErstelltAmNachRelease.setIcon(iconSlugErstelltAmNachRelase);
+		btnSlugErstelltAmNachRelease.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Werte Jahr - Monat - Tag - Zeit von Erstellt am nach Release kopiern
+				txtSlugReleaseJahr.setText(txtSlugErstelltAmJahr.getText());
+				txtSlugReleaseMonat.setText(txtSlugErstelltAmMonat.getText());
+				txtSlugReleaseTag.setText(txtSlugErstelltAmTag.getText());
+				txtSlugReleaseZeit.setText(txtSlugErstelltAmZeit.getText());
+			}
+		});
+		btnSlugErstelltAmNachRelease.setBounds(269, 110, 18, 18);
+		panel_2_slug.add(btnSlugErstelltAmNachRelease);
 
-												txtKonfigVersion = new JTextField();
-												txtKonfigVersion.setBounds(110, 23, 114, 20);
-												panel_6_Konfiguration.add(txtKonfigVersion);
-												txtKonfigVersion.setColumns(10);
+		JButton btnSlugReleaseNachErstelltAm = new JButton("");
+		iconSlugRelaseNachErstelltAm = new ImageIcon(strPfeilRechts);
+		btnSlugReleaseNachErstelltAm.setBounds(320, 110, 18, 18);
+		btnSlugReleaseNachErstelltAm.setIcon(iconSlugRelaseNachErstelltAm);
+		panel_2_slug.add(btnSlugReleaseNachErstelltAm);
+		btnSlugReleaseNachErstelltAm.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Werte Jahr - Monat - Tag - Zeit von Release nach Erstellt am kopiern
+				txtSlugErstelltAmJahr.setText(txtSlugReleaseJahr.getText());
+				txtSlugErstelltAmMonat.setText(txtSlugReleaseMonat.getText());
+				txtSlugErstelltAmTag.setText(txtSlugReleaseTag.getText());
+				txtSlugErstelltAmZeit.setText(txtSlugReleaseZeit.getText());
+			}
+		});
 
-												JLabel lblKonfigDatum = new JLabel("Datum:");
-												lblKonfigDatum.setBounds(40, 60, 70, 15);
-												panel_6_Konfiguration.add(lblKonfigDatum);
 
-												txtKonfigDatum = new JTextField();
-												txtKonfigDatum.setBounds(110, 58, 114, 20);
-												panel_6_Konfiguration.add(txtKonfigDatum);
-												txtKonfigDatum.setColumns(10);
 
-												JLabel lblKonfigTemplateSlug = new JLabel("Pfad/Datei template.slug");
-												lblKonfigTemplateSlug.setBounds(40, 95, 200, 15);
-												panel_6_Konfiguration.add(lblKonfigTemplateSlug);
 
-												txtKonfigTemplateslug = new JTextField();
-												txtKonfigTemplateslug.setText("template.slug");
-												txtKonfigTemplateslug.setBounds(230, 93, 400, 20);
-												panel_6_Konfiguration.add(txtKonfigTemplateslug);
-												txtKonfigTemplateslug.setColumns(10);
+		txtSlugDvd = new JTextField();
+		txtSlugDvd.setBounds(510, 200, 250, 20);
+		panel_2_slug.add(txtSlugDvd);
+		txtSlugDvd.setColumns(10);
 
-												chckbxKonfigAkutelleFensterposition = new JCheckBox("akutelle Fensterposition verwenden");
-												chckbxKonfigAkutelleFensterposition.setBounds(33, 165, 300, 23);
-												panel_6_Konfiguration.add(chckbxKonfigAkutelleFensterposition);
+		txtSlugPart = new JTextField();
+		txtSlugPart.setHorizontalAlignment(SwingConstants.CENTER);
+		txtSlugPart.setText("1");
+		txtSlugPart.setBounds(510, 234, 25, 20);
+		panel_2_slug.add(txtSlugPart);
+		txtSlugPart.setColumns(10);
 
-												chckbxKonfigLogging = new JCheckBox("Logging");
-												chckbxKonfigLogging.setBounds(33, 215, 100, 23);
-												panel_6_Konfiguration.add(chckbxKonfigLogging);
+		txtSlugAnzahlParts = new JTextField();
+		txtSlugAnzahlParts.setHorizontalAlignment(SwingConstants.CENTER);
+		txtSlugAnzahlParts.setBounds(660, 234, 25, 20);
+		panel_2_slug.add(txtSlugAnzahlParts);
+		txtSlugAnzahlParts.setColumns(10);
 
-												lblKonfigLogdatei = new JLabel("Pfad/Datei für Log-Datei");
-												lblKonfigLogdatei.setEnabled(false);
-												lblKonfigLogdatei.setBounds(160, 220, 180, 15);
-												panel_6_Konfiguration.add(lblKonfigLogdatei);
 
-												txtKonfigLogdatei = new JTextField();
-												txtKonfigLogdatei.setEnabled(false);
-												txtKonfigLogdatei.setBounds(340, 218, 114, 20);
-												panel_6_Konfiguration.add(txtKonfigLogdatei);
-												txtKonfigLogdatei.setColumns(10);
+		/*
+		 * Ende Panel 2
+		 */
 
-												JLabel lblKonfigLetzterPfad = new JLabel("Letzter Pfad");
-												lblKonfigLetzterPfad.setBounds(40, 262, 100, 15);
-												panel_6_Konfiguration.add(lblKonfigLetzterPfad);
+		/*
+		 * ==========================================================
+		 * Start Panel 3: Bilder
+		 * 
+		 * Titelbild, Porträtbild und sonstige Bilder in der Vorschau
+		 * 
+		 * ==========================================================
+		 */
+		JPanel panel_3_bilder = new JPanel();
+		tabbedPane.addTab("bilder", null, panel_3_bilder, null);
+		panel_3_bilder.setLayout(null);
 
-												JLabel lblKonfigStandardPfad = new JLabel("Standard Pfad");
-												lblKonfigStandardPfad.setBounds(40, 300, 110, 15);
-												panel_6_Konfiguration.add(lblKonfigStandardPfad);
 
-												txtKonfigLetzterPfad = new JTextField();
-												txtKonfigLetzterPfad.setBounds(175, 260, 300, 20);
-												panel_6_Konfiguration.add(txtKonfigLetzterPfad);
-												txtKonfigLetzterPfad.setColumns(10);
+		/*
+		 * Bild-Labels haben alle die feste Größe vom 150x100
+		 */
 
-												txtKonfigStandardPfad = new JTextField();
-												txtKonfigStandardPfad.setBounds(175, 298, 300, 20);
-												panel_6_Konfiguration.add(txtKonfigStandardPfad);
-												txtKonfigStandardPfad.setColumns(10);
+		JLabel lblBilderTitelbild = new JLabel("Titelbild");
+		lblBilderTitelbild.setBounds(95, 42, 57, 15);
+		panel_3_bilder.add(lblBilderTitelbild);
 
-												lblKonfigXpos = new JLabel("x-Pos:");
-												lblKonfigXpos.setEnabled(false);
-												lblKonfigXpos.setBounds(340, 149, 50, 15);
-												panel_6_Konfiguration.add(lblKonfigXpos);
+		JLabel lblAnzeigeBild1 = new JLabel("");
+		lblAnzeigeBild1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblAnzeigeBild1.setBorder(new LineBorder(new Color(0, 0, 0)));
+		lblAnzeigeBild1.setBounds(200, 40, 225, 150);
 
-												lblKonfigYpos = new JLabel("Y-Pos:");
-												lblKonfigYpos.setEnabled(false);
-												lblKonfigYpos.setBounds(340, 176, 50, 15);
-												panel_6_Konfiguration.add(lblKonfigYpos);
 
-												txtKonfigXpos = new JTextField();
-												txtKonfigXpos.setEnabled(false);
-												txtKonfigXpos.setBounds(395, 147, 40, 20);
-												panel_6_Konfiguration.add(txtKonfigXpos);
-												txtKonfigXpos.setColumns(10);
+		BufferedImage img = null;
+		try {
+			img = ImageIO.read(new File("/home/thomas/git/Fenster/Fenster/externe_dateien/01-shy-redheads-like-it-big.jpg"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
-												txtKonfigYpos = new JTextField();
-												txtKonfigYpos.setEnabled(false);
-												txtKonfigYpos.setBounds(395, 174, 40, 20);
-												panel_6_Konfiguration.add(txtKonfigYpos);
-												txtKonfigYpos.setColumns(10);
+		// Resize
+		Image dimg = null;
+		if (img.getWidth() > img.getHeight()) {
+			dimg = img.getScaledInstance(lblAnzeigeBild1.getWidth(), lblAnzeigeBild1.getHeight(),
+					Image.SCALE_SMOOTH);
+		} else {
+			dimg = img.getScaledInstance((lblAnzeigeBild1.getWidth()/3)*2, lblAnzeigeBild1.getHeight(),
+					Image.SCALE_SMOOTH);													
+		}
 
-												btnKonfigReload = new JButton(iconKonfigReload);
-												btnKonfigReload.setIcon(iconKonfigReload);
+		// Icon lesen
+		ImageIcon iconAnzeigeBild1 = new ImageIcon(dimg);
+		lblAnzeigeBild1.setIcon(iconAnzeigeBild1);
+		panel_3_bilder.add(lblAnzeigeBild1);
 
-												btnKonfigReload.setBounds(445, 159, 20, 20);
-												panel_6_Konfiguration.add(btnKonfigReload);
 
-												JLabel lblKonfigPythonPfad = new JLabel("Python/mp4 Pfad");
-												lblKonfigPythonPfad.setBounds(40, 338, 130, 15);
-												panel_6_Konfiguration.add(lblKonfigPythonPfad);
 
-												JLabel lblKopnfigXxxshPfad = new JLabel("xxx.sh Pfad");
-												lblKopnfigXxxshPfad.setBounds(40, 376, 100, 15);
-												panel_6_Konfiguration.add(lblKopnfigXxxshPfad);
+		/*
+		 * Ende Panel 3
+		 */
 
-												txtKonfigPythonpfad = new JTextField();
-												txtKonfigPythonpfad.setBounds(175, 336, 300, 20);
-												panel_6_Konfiguration.add(txtKonfigPythonpfad);
-												txtKonfigPythonpfad.setColumns(10);
 
-												txtKonfigXxxshpfad = new JTextField();
-												txtKonfigXxxshpfad.setBounds(175, 374, 114, 20);
-												panel_6_Konfiguration.add(txtKonfigXxxshpfad);
-												txtKonfigXxxshpfad.setColumns(10);
 
-												JLabel lblKonfigComboboxenxml = new JLabel("Pfad/Datei konfig_comboboxen.xml");
-												lblKonfigComboboxenxml.setBounds(40, 122, 260, 15);
-												panel_6_Konfiguration.add(lblKonfigComboboxenxml);
+		JPanel panel_4_exifmp4 = new JPanel();
+		tabbedPane.addTab("exif - mp4tag", null, panel_4_exifmp4, null);
+		panel_4_exifmp4.setLayout(null);
 
-												txtKonfigcomboboxenxml = new JTextField();
-												txtKonfigcomboboxenxml.setBounds(310, 120, 320, 20);
-												panel_6_Konfiguration.add(txtKonfigcomboboxenxml);
-												txtKonfigcomboboxenxml.setColumns(10);
-												
-												JCheckBox chckbxKonfigBeimBeenden = new JCheckBox("Konfig beim beenden Speichern");
-												chckbxKonfigBeimBeenden.setSelected(true);
-												chckbxKonfigBeimBeenden.setBounds(380, 23, 250, 23);
-												panel_6_Konfiguration.add(chckbxKonfigBeimBeenden);
+		JPanel panel_5_debug = new JPanel();
+		tabbedPane.addTab("debug", null, panel_5_debug, null);
+
+		/*
+		 * ======================================================
+		 * Panel 6: Konfiguration
+		 * ======================================================
+		 */
+
+
+		JPanel panel_6_Konfiguration = new JPanel();
+		tabbedPane.addTab("Konfiguration", null, panel_6_Konfiguration, null);
+		panel_6_Konfiguration.setLayout(null);
+
+		JButton btnSpeichern = new JButton("Speichern");
+		btnSpeichern.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Konfig_speichern();
+
+			}
+		});
+		btnSpeichern.setBounds(634, 340, 105, 25);
+		panel_6_Konfiguration.add(btnSpeichern);
+
+		JButton btnLaden = new JButton("Laden");
+		btnLaden.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Konfig_laden();
+			}
+		});
+		btnLaden.setBounds(634, 303, 105, 25);
+		panel_6_Konfiguration.add(btnLaden);
+
+		JLabel lblKonfigVersion = new JLabel("Version:");
+		lblKonfigVersion.setBounds(40, 25, 70, 15);
+		panel_6_Konfiguration.add(lblKonfigVersion);
+
+		txtKonfigVersion = new JTextField();
+		txtKonfigVersion.setBounds(110, 23, 114, 20);
+		panel_6_Konfiguration.add(txtKonfigVersion);
+		txtKonfigVersion.setColumns(10);
+
+		JLabel lblKonfigDatum = new JLabel("Datum:");
+		lblKonfigDatum.setBounds(40, 60, 70, 15);
+		panel_6_Konfiguration.add(lblKonfigDatum);
+
+		txtKonfigDatum = new JTextField();
+		txtKonfigDatum.setBounds(110, 58, 114, 20);
+		panel_6_Konfiguration.add(txtKonfigDatum);
+		txtKonfigDatum.setColumns(10);
+
+		JLabel lblKonfigTemplateSlug = new JLabel("Pfad/Datei template.slug");
+		lblKonfigTemplateSlug.setBounds(40, 95, 200, 15);
+		panel_6_Konfiguration.add(lblKonfigTemplateSlug);
+
+		txtKonfigTemplateslug = new JTextField();
+		txtKonfigTemplateslug.setText("template.slug");
+		txtKonfigTemplateslug.setBounds(230, 93, 400, 20);
+		panel_6_Konfiguration.add(txtKonfigTemplateslug);
+		txtKonfigTemplateslug.setColumns(10);
+
+		chckbxKonfigAkutelleFensterposition = new JCheckBox("akutelle Fensterposition verwenden");
+		chckbxKonfigAkutelleFensterposition.setBounds(33, 165, 300, 23);
+		panel_6_Konfiguration.add(chckbxKonfigAkutelleFensterposition);
+
+		chckbxKonfigLogging = new JCheckBox("Logging");
+		chckbxKonfigLogging.setBounds(33, 215, 100, 23);
+		panel_6_Konfiguration.add(chckbxKonfigLogging);
+
+		lblKonfigLogdatei = new JLabel("Pfad/Datei für Log-Datei");
+		lblKonfigLogdatei.setEnabled(false);
+		lblKonfigLogdatei.setBounds(160, 220, 180, 15);
+		panel_6_Konfiguration.add(lblKonfigLogdatei);
+
+		txtKonfigLogdatei = new JTextField();
+		txtKonfigLogdatei.setEnabled(false);
+		txtKonfigLogdatei.setBounds(340, 218, 114, 20);
+		panel_6_Konfiguration.add(txtKonfigLogdatei);
+		txtKonfigLogdatei.setColumns(10);
+
+		JLabel lblKonfigLetzterPfad = new JLabel("Letzter Pfad");
+		lblKonfigLetzterPfad.setBounds(40, 262, 100, 15);
+		panel_6_Konfiguration.add(lblKonfigLetzterPfad);
+
+		JLabel lblKonfigStandardPfad = new JLabel("Standard Pfad");
+		lblKonfigStandardPfad.setBounds(40, 300, 110, 15);
+		panel_6_Konfiguration.add(lblKonfigStandardPfad);
+
+		txtKonfigLetzterPfad = new JTextField();
+		txtKonfigLetzterPfad.setBounds(175, 260, 300, 20);
+		panel_6_Konfiguration.add(txtKonfigLetzterPfad);
+		txtKonfigLetzterPfad.setColumns(10);
+
+		txtKonfigStandardPfad = new JTextField();
+		txtKonfigStandardPfad.setBounds(175, 298, 300, 20);
+		panel_6_Konfiguration.add(txtKonfigStandardPfad);
+		txtKonfigStandardPfad.setColumns(10);
+
+		lblKonfigXpos = new JLabel("x-Pos:");
+		lblKonfigXpos.setEnabled(false);
+		lblKonfigXpos.setBounds(340, 149, 50, 15);
+		panel_6_Konfiguration.add(lblKonfigXpos);
+
+		lblKonfigYpos = new JLabel("Y-Pos:");
+		lblKonfigYpos.setEnabled(false);
+		lblKonfigYpos.setBounds(340, 176, 50, 15);
+		panel_6_Konfiguration.add(lblKonfigYpos);
+
+		txtKonfigXpos = new JTextField();
+		txtKonfigXpos.setEnabled(false);
+		txtKonfigXpos.setBounds(395, 147, 40, 20);
+		panel_6_Konfiguration.add(txtKonfigXpos);
+		txtKonfigXpos.setColumns(10);
+
+		txtKonfigYpos = new JTextField();
+		txtKonfigYpos.setEnabled(false);
+		txtKonfigYpos.setBounds(395, 174, 40, 20);
+		panel_6_Konfiguration.add(txtKonfigYpos);
+		txtKonfigYpos.setColumns(10);
+
+		btnKonfigReload = new JButton(iconKonfigReload);
+		btnKonfigReload.setIcon(iconKonfigReload);
+
+		btnKonfigReload.setBounds(445, 159, 20, 20);
+		panel_6_Konfiguration.add(btnKonfigReload);
+
+		JLabel lblKonfigPythonPfad = new JLabel("Python/mp4 Pfad");
+		lblKonfigPythonPfad.setBounds(40, 338, 130, 15);
+		panel_6_Konfiguration.add(lblKonfigPythonPfad);
+
+		JLabel lblKopnfigXxxshPfad = new JLabel("xxx.sh Pfad");
+		lblKopnfigXxxshPfad.setBounds(40, 376, 100, 15);
+		panel_6_Konfiguration.add(lblKopnfigXxxshPfad);
+
+		txtKonfigPythonpfad = new JTextField();
+		txtKonfigPythonpfad.setBounds(175, 336, 300, 20);
+		panel_6_Konfiguration.add(txtKonfigPythonpfad);
+		txtKonfigPythonpfad.setColumns(10);
+
+		txtKonfigXxxshpfad = new JTextField();
+		txtKonfigXxxshpfad.setBounds(175, 374, 114, 20);
+		panel_6_Konfiguration.add(txtKonfigXxxshpfad);
+		txtKonfigXxxshpfad.setColumns(10);
+
+		JLabel lblKonfigComboboxenxml = new JLabel("Pfad/Datei konfig_comboboxen.xml");
+		lblKonfigComboboxenxml.setBounds(40, 122, 260, 15);
+		panel_6_Konfiguration.add(lblKonfigComboboxenxml);
+
+		txtKonfigcomboboxenxml = new JTextField();
+		txtKonfigcomboboxenxml.setBounds(310, 120, 320, 20);
+		panel_6_Konfiguration.add(txtKonfigcomboboxenxml);
+		txtKonfigcomboboxenxml.setColumns(10);
+
+		JCheckBox chckbxKonfigBeimBeenden = new JCheckBox("Konfig beim beenden Speichern");
+		chckbxKonfigBeimBeenden.setSelected(true);
+		chckbxKonfigBeimBeenden.setBounds(380, 23, 250, 23);
+		panel_6_Konfiguration.add(chckbxKonfigBeimBeenden);
 		txtStatusleiste = new JTextField();
 		txtStatusleiste.setText("Statusleiste");
 		frmFenstertitel.getContentPane().add(txtStatusleiste, BorderLayout.SOUTH);
