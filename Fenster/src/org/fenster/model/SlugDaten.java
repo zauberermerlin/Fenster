@@ -1,7 +1,10 @@
 package org.fenster.model;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Properties;
 
 /**
  * @author thomas
@@ -62,6 +65,10 @@ public void setStrTitel(String strTitel) {
 public void setStrSlug(String strSlug) {
 		this.strSlug = strSlug;
 	}
+
+public String getStrSlug() {
+	return strSlug;
+}
 
 public void setStrSerie(String strSerie) {
 	this.strSerie = strSerie;
@@ -286,6 +293,18 @@ public String slugSchreiben(String strSlugDateiName) {
 
 public String slugLesen(String strSlugDateiName) {
 	
+	try {
+		FileInputStream fis = new FileInputStream(strSlugDateiName);
+		Properties properties = new Properties();
+		properties.load(fis);
+	
+		this.setStrSlug(properties.getProperty("SLUG"));
+		System.out.println(properties.getProperty("SLUG"));
+		
+	} catch (IOException e) {
+		e.printStackTrace();
+	}
+
 	
 	return "Slug-Daten gelesen";
 }

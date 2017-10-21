@@ -2,9 +2,11 @@ package org.fenster.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -14,6 +16,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Properties;
 
+import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -44,6 +47,8 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import java.awt.Component;
 import java.awt.ComponentOrientation;
+import javax.swing.border.LineBorder;
+import java.awt.Color;
 
 public class TripleX extends JFrame {
 
@@ -389,15 +394,15 @@ public class TripleX extends JFrame {
 	
 	
 	public void SlugDaten_holen(SlugDaten sDatenFunktion) {
-		sDatenFunktion.setStrSlug(txtRibbonSlugName.getText());
+		sDatenFunktion.setStrSlug(txtRibbonSlugName.getText().trim());
 		sDatenFunktion.setStrPfad(txtRibbonPfad.getText());
-		sDatenFunktion.setStrTitel(txtRibbonTitel.getText());
-		sDatenFunktion.setStrSerie(txtRibbonSerie.getText());
+		sDatenFunktion.setStrTitel(txtRibbonTitel.getText().trim());
+		sDatenFunktion.setStrSerie(txtRibbonSerie.getText().trim());
 		
-		sDatenFunktion.setStrActress(txtSlugActress.getText());
-		sDatenFunktion.setStrActor(txtSlugActor.getText());
+		sDatenFunktion.setStrActress(txtSlugActress.getText().trim());
+		sDatenFunktion.setStrActor(txtSlugActor.getText().trim());
 		sDatenFunktion.setStrBeschreibung(txtpnSlugBeschreibung.getText().trim());
-		sDatenFunktion.setStrBraznr(txtSlugBraznr.getText());
+		sDatenFunktion.setStrBraznr(txtSlugBraznr.getText().trim());
 
 		sDatenFunktion.setStrNA(txtSlugNa.getText());
 
@@ -479,13 +484,88 @@ public class TripleX extends JFrame {
 		
 		sDatenFunktion.setStrSterne(cmbSlugSterne.getSelectedItem().toString());
 	} // Ende Funktion
+
 	
+public void SlugDatenLeeren() {
+	// Bereich Ribbon
+	txtRibbonHttp.setText("");
+	txtRibbonSerie.setText("");
+	txtRibbonSlugName.setText("");
+	txtRibbonTitel.setText("");
+	
+	// Bereich Slug
+	
+	txtSlugActress.setText("");
+	txtSlugActor.setText("");
+	txtpnSlugBeschreibung.setText("");
+	txtSlugBraznr.setText("");
+	txtSlugNa.setText("");
+		
+	dtf = DateTimeFormatter.ofPattern("yyyy");
+	localDate = LocalDate.now();
+	txtSlugReleaseJahr.setText(dtf.format(localDate));
+	txtSlugReleaseMonat.setText("");
+	txtSlugReleaseTag.setText("");
+	txtSlugReleaseZeit.setText("00:00");
+	
+	dtf = DateTimeFormatter.ofPattern("yyyy");
+	localDate = LocalDate.now();
+	txtSlugErstelltAmJahr.setText(dtf.format(localDate));
+
+	dtf = DateTimeFormatter.ofPattern("MM");
+	localDate = LocalDate.now();
+	txtSlugErstelltAmMonat.setText(dtf.format(localDate));
+	
+	dtf = DateTimeFormatter.ofPattern("dd");
+	localDate = LocalDate.now();
+	txtSlugErstelltAmTag.setText(dtf.format(localDate));
+	
+	txtSlugErstelltAmZeit.setText("00:00");
+	
+	
+	txtSlugTitelbild.setText("01");
+	txtSlugPortraitbild.setText("01");
+
+	// ComboBoxen werden auf den ersten Wert, also Index 0 gesetzt
+	cmbSlugAlbum.setSelectedIndex(0);
+	cmbSlugStudio.setSelectedIndex(0);
+
+	txtSlugDvd.setText("");
+	
+	txtSlugPart.setText("1");
+	txtSlugAnzahlParts.setText("");
+	chckbxSlugBilder.setSelected(false);
+	chckbxSlugThumbs.setSelected(false);
+	chckbxSlugRemastered.setSelected(false);
+	chckbxSlugVr.setSelected(false);
+	chckbxSlugFirst.setSelected(false);
+	txtSlugFirst.setText("");
+	txtSlugFirst.setEditable(false);
+	txtSlugFirst.setEnabled(false);
+	
+	chckbxSlugNear.setSelected(false);
+	txtSlugNear.setText("");
+	txtSlugNear.setEditable(false);
+	txtSlugNear.setEnabled(false);
+	
+	cmbSlugSterne.setSelectedIndex(0);
+
+} // Ende Funktion SlugDatenLeeren
+
+public String SlugDatenSetzen(SlugDaten sDatenFunktion) {
+
+	txtRibbonSlugName.setText(sDatenFunktion.getStrSlug().trim());
+	
+	return "Gesetzt.";
+} // Ende Funktion SlugDatenSetzen
+
+
 	
 	
 	/**
 	 * Create the frame.
 	 */
-	public TripleX() {
+public TripleX() {
 		frmFenstertitel = new JFrame();
 		frmFenstertitel.setTitle("Hauptfenster");
 		frmFenstertitel.setBounds(100, 100, 800, 670);
@@ -870,34 +950,34 @@ public class TripleX extends JFrame {
 				fileLesen = new File(txtRibbonPfad.getText());
 				if (fileLesen.isDirectory() || fileLesen.exists()) {
 					// Verzeichnis auslesen, ob dort eine Slug-Datei enthalten ist.
-					String[] Dateiliste = fileLesen.list();
+					File[] Dateiliste = fileLesen.listFiles();
 					int intAnzahldateien = Dateiliste.length;
 
 					for(int i=0; i < intAnzahldateien; i++) {
-						if (Dateiliste[i].endsWith(".slug")) {
+						if (Dateiliste[i].toString().endsWith(".slug")) {
 							
 							/*
 							 * Hier startet das Laden der Slug-Datei.
 							 */
+							SlugDatenLeeren();
+							SlugDaten sDaten = new SlugDaten();
+							System.out.println("Pfad: " + Dateiliste[i].getPath());
+
+							txtStatusleiste.setText(sDaten.slugLesen(Dateiliste[i].getPath().toString()));
+							SlugDatenSetzen(sDaten);
 							
-							
-							txtStatusleiste.setText("Lade Slug-Datei");
 							break;
 						} else {
 							if (i == intAnzahldateien - 1) {
 								JOptionPane.showMessageDialog(null, "Keine Slug-Datei im Pfad:\n\n" + txtRibbonPfad.getText() + "\n\nvorhanden!");
 							}
 						}
-					} 
+					} // Ende For-Schleife
 				} else {
 					JOptionPane.showMessageDialog(null, "Es konnte keine Slug-Datei gelesen werden.\nDie Pfadangabe ist falsch oder nicht erreichbar!     \n\nPfad: " + txtRibbonPfad.getText());
 				}
-				
-				
-				fileLesen = new File("test");
-			
 			}
-		});
+		}); // Ende ActionListener
 		btnSlugDateiLaden.setBounds(650, 400, 115, 25);
 		panel_2_slug.add(btnSlugDateiLaden);
 
@@ -1279,69 +1359,9 @@ public class TripleX extends JFrame {
 												btnSlugLeeren.addActionListener(new ActionListener() {
 													public void actionPerformed(ActionEvent e) {
 														
-														// Bereich Ribbon
-														txtRibbonHttp.setText("");
-														txtRibbonSerie.setText("");
-														txtRibbonSlugName.setText("");
-														txtRibbonTitel.setText("");
-														
-														// Bereich Slug
-														
-														txtSlugActress.setText("");
-														txtSlugActor.setText("");
-														txtpnSlugBeschreibung.setText("");
-														txtSlugBraznr.setText("");
-														txtSlugNa.setText("");
-															
-														dtf = DateTimeFormatter.ofPattern("yyyy");
-														localDate = LocalDate.now();
-														txtSlugReleaseJahr.setText(dtf.format(localDate));
-														txtSlugReleaseMonat.setText("");
-														txtSlugReleaseTag.setText("");
-														txtSlugReleaseZeit.setText("00:00");
-														
-														dtf = DateTimeFormatter.ofPattern("yyyy");
-														localDate = LocalDate.now();
-														txtSlugErstelltAmJahr.setText(dtf.format(localDate));
-
-														dtf = DateTimeFormatter.ofPattern("MM");
-														localDate = LocalDate.now();
-														txtSlugErstelltAmMonat.setText(dtf.format(localDate));
-														
-														dtf = DateTimeFormatter.ofPattern("dd");
-														localDate = LocalDate.now();
-														txtSlugErstelltAmTag.setText(dtf.format(localDate));
-														
-														txtSlugErstelltAmZeit.setText("00:00");
-														
-														
-														txtSlugTitelbild.setText("");
-														txtSlugPortraitbild.setText("01");
-
-														// ComboBoxen werden auf den ersten Wert, also Index 0 gesetzt
-														cmbSlugAlbum.setSelectedIndex(0);
-														cmbSlugStudio.setSelectedIndex(0);
-
-														txtSlugDvd.setText("");
-														
-														txtSlugPart.setText("1");
-														txtSlugAnzahlParts.setText("");
-														chckbxSlugBilder.setSelected(false);
-														chckbxSlugThumbs.setSelected(false);
-														chckbxSlugRemastered.setSelected(false);
-														chckbxSlugVr.setSelected(false);
-														chckbxSlugFirst.setSelected(false);
-														txtSlugFirst.setText("");
-														txtSlugFirst.setEditable(false);
-														txtSlugFirst.setEnabled(false);
-														
-														chckbxSlugNear.setSelected(false);
-														txtSlugNear.setText("");
-														txtSlugNear.setEditable(false);
-														txtSlugNear.setEnabled(false);
-														
-														cmbSlugSterne.setSelectedIndex(0);
-														
+														SlugDatenLeeren();
+														txtStatusleiste.setText("Slug-Daten geleert!");
+																												
 													}
 												});
 												btnSlugLeeren.setBounds(650, 365, 115, 25);
@@ -1420,12 +1440,70 @@ public class TripleX extends JFrame {
 												 * Ende Panel 2
 												 */
 												
+												/*
+												 * ==========================================================
+												 * Start Panel 3: Bilder
+												 * 
+												 * Titelbild, Porträtbild und sonstige Bilder in der Vorschau
+												 * 
+												 * ==========================================================
+												 */
+												JPanel panel_3_bilder = new JPanel();
+												tabbedPane.addTab("bilder", null, panel_3_bilder, null);
+												panel_3_bilder.setLayout(null);
+												
+												
+												/*
+												 * Bild-Labels haben alle die feste Größe vom 150x100
+												 */
+												
+												JLabel lblBilderTitelbild = new JLabel("Titelbild");
+												lblBilderTitelbild.setBounds(95, 42, 57, 15);
+												panel_3_bilder.add(lblBilderTitelbild);
+												
+												JLabel lblAnzeigeBild1 = new JLabel("");
+												lblAnzeigeBild1.setHorizontalAlignment(SwingConstants.CENTER);
+												lblAnzeigeBild1.setBorder(new LineBorder(new Color(0, 0, 0)));
+												lblAnzeigeBild1.setBounds(200, 40, 225, 150);
+												
+												
+												BufferedImage img = null;
+												try {
+												    img = ImageIO.read(new File("/home/thomas/git/Fenster/Fenster/externe_dateien/01-shy-redheads-like-it-big.jpg"));
+												} catch (IOException e) {
+												    e.printStackTrace();
+												}
+												
+												// Resize
+//												System.out.println("Breite: " + img.getWidth());
+//												System.out.println("Höhe: " + img.getHeight());
+												Image dimg = null;
+												if (img.getWidth() > img.getHeight()) {
+													dimg = img.getScaledInstance(lblAnzeigeBild1.getWidth(), lblAnzeigeBild1.getHeight(),
+											        Image.SCALE_SMOOTH);
+												} else {
+													dimg = img.getScaledInstance((lblAnzeigeBild1.getWidth()/3)*2, lblAnzeigeBild1.getHeight(),
+													Image.SCALE_SMOOTH);													
+												}
+												
+													// Icon lesen
+												ImageIcon iconAnzeigeBild1 = new ImageIcon(dimg);
+												
+												lblAnzeigeBild1.setIcon(iconAnzeigeBild1);
+												
+												panel_3_bilder.add(lblAnzeigeBild1);
 
-												JPanel panel_3_mp4tag = new JPanel();
-												tabbedPane.addTab("mp4tag", null, panel_3_mp4tag, null);
-
-												JPanel panel_4_exif = new JPanel();
-												tabbedPane.addTab("exif", null, panel_4_exif, null);
+												
+												
+												/*
+												 * Ende Panel 3
+												 */
+												
+												
+												
+												JPanel panel_4_exifmp4 = new JPanel();
+												tabbedPane.addTab("exif - mp4tag", null, panel_4_exifmp4, null);
+												panel_4_exifmp4.setLayout(null);
 
 												JPanel panel_5_debug = new JPanel();
 												tabbedPane.addTab("debug", null, panel_5_debug, null);

@@ -24,7 +24,7 @@ fenster_y=200
 last_pfad=
 
 #Standard-Pfad für Slug-Dateien
-standard_pfad=/netz/krypto/stars
+standard_pfad=/netz/krypto/stars/abella_danger/sit-on-it-and-spin/
 
 #Logging ein oder aus
 #Standardwert: aus
