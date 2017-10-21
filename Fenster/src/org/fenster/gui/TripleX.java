@@ -554,7 +554,12 @@ public void SlugDatenLeeren() {
 
 public String SlugDatenSetzen(SlugDaten sDatenFunktion) {
 
+	txtRibbonPfad.setText(sDatenFunktion.getStrPfad());
 	txtRibbonSlugName.setText(sDatenFunktion.getStrSlug().trim());
+	txtRibbonTitel.setText(sDatenFunktion.getStrTitel());
+	
+	txtSlugActress.setText(sDatenFunktion.getStrActress());
+	txtSlugActor.setText(sDatenFunktion.getStrActor());
 	
 	return "Gesetzt.";
 } // Ende Funktion SlugDatenSetzen
@@ -915,10 +920,10 @@ public TripleX() {
 								int ueberschreiben = JOptionPane.showConfirmDialog(null, "Slug-Datei besteht bereits.\nÜberschreiben?", "Nachfrage", JOptionPane.YES_NO_OPTION);
 								System.out.println(ueberschreiben);
 								if (ueberschreiben == 0) {
-									txtStatusleiste.setText(sDaten.slugSchreiben(strVollstaendigerPfad));									
+									txtStatusleiste.setText(sDaten.slugDatenLaden(strVollstaendigerPfad));									
 								} // Ende 5. if
 							} else {
-								txtStatusleiste.setText(sDaten.slugSchreiben(strVollstaendigerPfad));
+								txtStatusleiste.setText(sDaten.slugDatenLaden(strVollstaendigerPfad));
 							} // Ende 4. if
 						} else {
 							JOptionPane.showMessageDialog(null, "Die Sulg-Angabe ist nicht gefüllt!", "Hinweis", JOptionPane.WARNING_MESSAGE);
@@ -963,7 +968,7 @@ public TripleX() {
 							SlugDaten sDaten = new SlugDaten();
 							System.out.println("Pfad: " + Dateiliste[i].getPath());
 
-							txtStatusleiste.setText(sDaten.slugLesen(Dateiliste[i].getPath().toString()));
+							txtStatusleiste.setText(sDaten.slugDatenSpeichern(Dateiliste[i].getPath().toString()));
 							SlugDatenSetzen(sDaten);
 							
 							break;

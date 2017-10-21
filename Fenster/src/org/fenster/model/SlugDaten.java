@@ -11,11 +11,122 @@ import java.util.Properties;
  *
  */
 public class SlugDaten {
-
 	
+	public static String getStrVersion() {
+		return strVersion;
+	}
+
+	public static String getStrVersionsdatum() {
+		return strVersionsdatum;
+	}
+
+	public String getStrPfad() {
+		return strPfad;
+	}
+
+	public String getStrTitel() {
+		return strTitel;
+	}
+
+	public String getStrActress() {
+		return strActress;
+	}
+
+	public String getStrActor() {
+		return strActor;
+	}
+
+	public String getStrBeschreibung() {
+		return strBeschreibung;
+	}
+
+	public String getStrBraznr() {
+		return strBraznr;
+	}
+
+	public String getStrNA() {
+		return strNA;
+	}
+
+	public String getStrRelease() {
+		return strRelease;
+	}
+
+	public String getStrErstellt() {
+		return strErstellt;
+	}
+
+	public String getStrTitelbild() {
+		return strTitelbild;
+	}
+
+	public String getStrPortraetbild() {
+		return strPortraetbild;
+	}
+
+	public String getStrStudio() {
+		return strStudio;
+	}
+
+	public String getStrAlbum() {
+		return strAlbum;
+	}
+
+	public String getStrDVD() {
+		return strDVD;
+	}
+
+	public String getStrSerie() {
+		return strSerie;
+	}
+
+	public String getStrPart() {
+		return strPart;
+	}
+
+	public String getStrAnzahlparts() {
+		return strAnzahlparts;
+	}
+
+	public String getStrBilder() {
+		return strBilder;
+	}
+
+	public String getStrThumbs() {
+		return strThumbs;
+	}
+
+	public String getStrRemastered() {
+		return strRemastered;
+	}
+
+	public String getStrVR() {
+		return strVR;
+	}
+
+	public String getStrFirst() {
+		return strFirst;
+	}
+
+	public String getStrFirstname() {
+		return strFirstname;
+	}
+
+	public String getStrNear() {
+		return strNear;
+	}
+
+	public String getStrNearname() {
+		return strNearname;
+	}
+
+	public String getStrSterne() {
+		return strSterne;
+	}
+
 	private static String strVersion = "0.5";
 	private static String strVersionsdatum = "11.10.2017";
-	
+
 	private String strSlug;
 	private String strPfad;
 	private String strTitel;
@@ -204,7 +315,7 @@ public String slug_auf_konsole() {
  * @param strSlugDateiName [String]
  * @return Text für txtStatuszeile [String]
  */
-public String slugSchreiben(String strSlugDateiName) {
+public String slugDatenLaden(String strSlugDateiName) {
 	
 	FileWriter writer;
 	
@@ -286,28 +397,58 @@ public String slugSchreiben(String strSlugDateiName) {
 		e.printStackTrace();
 		return strRueckgabe;
 	}
-} // Ende Funktion slugSchreiben
+} // Ende Funktion slugDatenLaden
 
 
 
 
-public String slugLesen(String strSlugDateiName) {
+/**
+ * @param strSlugDateiName
+ * @return
+ */
+public String slugDatenSpeichern(String strSlugDateiName) {
+	
+	String strRueckgabe = "";
 	
 	try {
 		FileInputStream fis = new FileInputStream(strSlugDateiName);
 		Properties properties = new Properties();
 		properties.load(fis);
+
+		// erstes und Letztes doppelte Anführungszeichen löschen
+		this.setStrPfad(properties.getProperty("PFAD").replaceFirst("^\"", "").replaceAll("\"$", ""));
+		this.setStrSlug(properties.getProperty("SLUG").replaceFirst("^\"", "").replaceAll("\"$", ""));
+		this.setStrTitel(properties.getProperty("TITEL").replaceFirst("^\"", "").replaceAll("\"$", ""));
+		this.setStrActress(properties.getProperty("ACTRESS").replaceFirst("^\"", "").replaceAll("\"$", ""));
+		this.setStrActor(properties.getProperty("ACTOR").replaceFirst("^\"", "").replaceAll("\"$", ""));
+		this.setStrBeschreibung(properties.getProperty("BESCHREIBUNG").replaceFirst("^\"", "").replaceAll("\"$", ""));
+		this.setStrBraznr(properties.getProperty("BRAZNR").replaceFirst("^\"", "").replaceAll("\"$", ""));
+
+		
+//		System.out.println(properties.getProperty("SLUG").replaceFirst("^\"", "").replaceAll("\"$", ""));
+		
+		
+		
+		
+//		writer.write("TITEL=\"" + strTitel + "\"");
+//		writer.write("ACTRESS=\"" + strActress + "\"");
+//		writer.write("ACTOR=\"" + strActor + "\"");
+//		writer.write("BESCHREIBUNG=\"" + strBeschreibung + "\"");
+//		writer.write("BRAZNR=\"" + strBraznr + "\"");
 	
-		this.setStrSlug(properties.getProperty("SLUG"));
-		System.out.println(properties.getProperty("SLUG"));
+		
+		
+		
+		
+		strRueckgabe = "Slug-Datei " + strSlugDateiName + " wurde erfolgreich geladen."; 
+		return strRueckgabe;
 		
 	} catch (IOException e) {
+		strRueckgabe = "Fehler beim Laden der Slug-Datei " + strSlugDateiName + "."; 
 		e.printStackTrace();
+		return strRueckgabe;
 	}
-
-	
-	return "Slug-Daten gelesen";
-}
+} // Ende SlugDatenSpeichern
 
 
 public static String getVersion() {
