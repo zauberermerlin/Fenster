@@ -360,7 +360,7 @@ public String slugDatenLaden(String strSlugDateiName) {
 		writer.write(System.getProperty("line.separator"));
 		writer.write("DVD=\"" + strDVD + "\"");
 		writer.write(System.getProperty("line.separator"));
-		writer.write("#SERIE=\"Dont touch her");
+		writer.write("#SERIE=\"Dont touch her\"");
 		writer.write(System.getProperty("line.separator"));
 		writer.write("SERIE=\"" + strSerie + "\"");	
 		writer.write(System.getProperty("line.separator"));
@@ -380,7 +380,7 @@ public String slugDatenLaden(String strSlugDateiName) {
 		writer.write(System.getProperty("line.separator"));
 		writer.write("FIRSTNAME=\"" + strFirstname + "\"");
 		writer.write(System.getProperty("line.separator"));
-		writer.write("Near=\"" + strNear + "\"");	
+		writer.write("NEAR=\"" + strNear + "\"");	
 		writer.write(System.getProperty("line.separator"));
 		writer.write("NEARNAME=\"" + strNearname + "\"");
 		writer.write(System.getProperty("line.separator"));
@@ -423,22 +423,26 @@ public String slugDatenSpeichern(String strSlugDateiName) {
 		this.setStrActor(properties.getProperty("ACTOR").replaceFirst("^\"", "").replaceAll("\"$", ""));
 		this.setStrBeschreibung(properties.getProperty("BESCHREIBUNG").replaceFirst("^\"", "").replaceAll("\"$", ""));
 		this.setStrBraznr(properties.getProperty("BRAZNR").replaceFirst("^\"", "").replaceAll("\"$", ""));
-
-		
-//		System.out.println(properties.getProperty("SLUG").replaceFirst("^\"", "").replaceAll("\"$", ""));
-		
-		
-		
-		
-//		writer.write("TITEL=\"" + strTitel + "\"");
-//		writer.write("ACTRESS=\"" + strActress + "\"");
-//		writer.write("ACTOR=\"" + strActor + "\"");
-//		writer.write("BESCHREIBUNG=\"" + strBeschreibung + "\"");
-//		writer.write("BRAZNR=\"" + strBraznr + "\"");
-	
-		
-		
-		
+		this.setStrNA(properties.getProperty("NA").replaceFirst("^\"", "").replaceAll("\"$", ""));
+		this.setStrRelease(properties.getProperty("RELEASE").replaceFirst("^\"", "").replaceAll("\"$", ""));
+		this.setStrErstellt(properties.getProperty("ERSTELLT").replaceFirst("^\"", "").replaceAll("\"$", ""));
+		this.setStrTitelbild(properties.getProperty("TITELBILD").replaceFirst("^\"", "").replaceAll("\"$", ""));
+		this.setStrPortraetbild(properties.getProperty("PORTRAETBILD").replaceFirst("^\"", "").replaceAll("\"$", ""));
+		this.setStrStudio(properties.getProperty("STUDIO").replaceFirst("^\"", "").replaceAll("\"$", ""));
+		this.setStrAlbum(properties.getProperty("ALBUM").replaceFirst("^\"", "").replaceAll("\"$", ""));
+		this.setStrDVD(properties.getProperty("DVD").replaceFirst("^\"", "").replaceAll("\"$", ""));
+		this.setStrSerie(properties.getProperty("SERIE").replaceFirst("^\"", "").replaceAll("\"$", ""));
+		this.setStrPart(properties.getProperty("PART").replaceFirst("^\"", "").replaceAll("\"$", ""));
+		this.setStrAnzahlparts(properties.getProperty("ANZAHLPARTS").replaceFirst("^\"", "").replaceAll("\"$", ""));
+		this.setStrBilder(properties.getProperty("BILDER").replaceFirst("^\"", "").replaceAll("\"$", ""));
+		this.setStrThumbs(properties.getProperty("THUMBS").replaceFirst("^\"", "").replaceAll("\"$", ""));
+		this.setStrRemastered(properties.getProperty("REMASTERED").replaceFirst("^\"", "").replaceAll("\"$", ""));
+		this.setStrVR(properties.getProperty("VR").replaceFirst("^\"", "").replaceAll("\"$", ""));
+		this.setStrFirst(properties.getProperty("FIRST").replaceFirst("^\"", "").replaceAll("\"$", ""));
+		this.setStrFirstname(properties.getProperty("FIRSTNAME").replaceFirst("^\"", "").replaceAll("\"$", ""));
+		this.setStrNear(properties.getProperty("NEAR").replaceFirst("^\"", "").replaceAll("\"$", ""));
+		this.setStrNearname(properties.getProperty("NEARNAME").replaceFirst("^\"", "").replaceAll("\"$", ""));
+		this.setStrSterne(properties.getProperty("STERNE").replaceFirst("^\"", "").replaceAll("\"$", ""));
 		
 		strRueckgabe = "Slug-Datei " + strSlugDateiName + " wurde erfolgreich geladen."; 
 		return strRueckgabe;

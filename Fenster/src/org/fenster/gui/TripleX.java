@@ -2,11 +2,14 @@ package org.fenster.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
+import java.awt.image.ImageProducer;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -560,8 +563,90 @@ public String SlugDatenSetzen(SlugDaten sDatenFunktion) {
 	
 	txtSlugActress.setText(sDatenFunktion.getStrActress());
 	txtSlugActor.setText(sDatenFunktion.getStrActor());
+	txtpnSlugBeschreibung.setText(sDatenFunktion.getStrBeschreibung());
+	txtSlugBraznr.setText(sDatenFunktion.getStrBraznr());
+	txtSlugNa.setText(sDatenFunktion.getStrNA());
 	
-	return "Gesetzt.";
+	// Format: 2017:08:07 00:00
+	txtSlugReleaseJahr.setText(sDatenFunktion.getStrRelease().substring(0, 4));
+	txtSlugReleaseMonat.setText(sDatenFunktion.getStrRelease().substring(5, 7));
+	txtSlugReleaseTag.setText(sDatenFunktion.getStrRelease().substring(8, 10));
+	txtSlugReleaseZeit.setText(sDatenFunktion.getStrRelease().substring(11, 16));
+	
+	txtSlugErstelltAmJahr.setText(sDatenFunktion.getStrErstellt().substring(0, 4));
+	txtSlugErstelltAmMonat.setText(sDatenFunktion.getStrErstellt().substring(5, 7));
+	txtSlugErstelltAmTag.setText(sDatenFunktion.getStrErstellt().substring(8, 10));
+	txtSlugErstelltAmZeit.setText(sDatenFunktion.getStrErstellt().substring(11, 16));
+
+	txtSlugTitelbild.setText(sDatenFunktion.getStrTitelbild());
+	txtSlugPortraitbild.setText(sDatenFunktion.getStrPortraetbild());
+	
+	// In ComboBoxen
+//	writer.write("STUDIO=\"" + strStudio + "\"");
+//	writer.write("ALBUM=\"" + strAlbum + "\"");
+	
+	txtSlugDvd.setText(sDatenFunktion.getStrDVD());
+	txtRibbonSerie.setText(sDatenFunktion.getStrSerie());
+	
+	txtSlugPart.setText(sDatenFunktion.getStrPart());
+	txtSlugAnzahlParts.setText(sDatenFunktion.getStrAnzahlparts());
+	
+	// Bilder
+	if (sDatenFunktion.getStrBilder().equals("j") | sDatenFunktion.getStrBilder().equals("J")) {
+		chckbxSlugBilder.setSelected(true);
+	} else {
+		chckbxSlugBilder.setSelected(false);
+	}
+	
+	// Thumbs
+	if (sDatenFunktion.getStrThumbs().equals("j") | sDatenFunktion.getStrThumbs().equals("J")) {
+		chckbxSlugThumbs.setSelected(true);
+	} else {
+		chckbxSlugThumbs.setSelected(false);
+	}
+	
+	// Remastered
+	if (sDatenFunktion.getStrRemastered().equals("j") | sDatenFunktion.getStrRemastered().equals("J")) {
+		chckbxSlugRemastered.setSelected(true);
+	} else {
+		chckbxSlugRemastered.setSelected(false);
+	}
+
+	// VR
+	if (sDatenFunktion.getStrVR().equals("j") | sDatenFunktion.getStrVR().equals("J")) {
+		chckbxSlugVr.setSelected(true);
+	} else {
+		chckbxSlugVr.setSelected(false);
+	}
+	
+	// First
+	if (sDatenFunktion.getStrFirst().equals("j") | sDatenFunktion.getStrFirst().equals("J")) {
+		chckbxSlugFirst.setSelected(true);
+	} else {
+		chckbxSlugFirst.setSelected(false);
+	}
+
+	txtSlugFirst.setText(sDatenFunktion.getStrFirstname());
+	
+	// Near
+	if (sDatenFunktion.getStrNear().equals("j") | sDatenFunktion.getStrNear().equals("J")) {
+		chckbxSlugNear.setSelected(true);
+	} else {
+		chckbxSlugNear.setSelected(false);
+	}
+
+	txtSlugNear.setText(sDatenFunktion.getStrFirstname());
+
+	// Sterne
+	int intStern = 1;
+	if (sDatenFunktion.getStrSterne().equals("")) {
+		intStern = 1;
+	}
+	
+	cmbSlugSterne.setSelectedIndex(Integer.valueOf(sDatenFunktion.getStrSterne())-1);
+	
+	
+	return "Slug-Daten geladen";
 } // Ende Funktion SlugDatenSetzen
 
 
@@ -1489,6 +1574,8 @@ public TripleX() {
 					Image.SCALE_SMOOTH);													
 		}
 
+		
+		
 		// Icon lesen
 		ImageIcon iconAnzeigeBild1 = new ImageIcon(dimg);
 		lblAnzeigeBild1.setIcon(iconAnzeigeBild1);
