@@ -540,6 +540,9 @@ public void SlugDatenLeeren() {
 	
 	txtSlugTitelbild.setText("01");
 	txtSlugPortraitbild.setText("01");
+	
+	lblSlugTitelbildAnzeige.setIcon(null);
+	lblSlugTitelbildAnzeige.setText("");
 
 	// ComboBoxen werden auf den ersten Wert, also Index 0 gesetzt
 	cmbSlugAlbum.setSelectedIndex(0);
@@ -743,6 +746,7 @@ public void TitelbildAnzeigen() {
 		System.out.println("Kein Titelbild");
 		
 		// Text des Labels auf "Kein Titelbild" / "No" setzen
+		lblSlugTitelbildAnzeige.setIcon(null);
 		lblSlugTitelbildAnzeige.setText("Kein Titelbild");
 
 		
