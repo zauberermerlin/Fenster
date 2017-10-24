@@ -6,6 +6,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Properties;
 
+import javax.swing.JOptionPane;
+
 /**
  * @author thomas
  *
@@ -181,6 +183,14 @@ public String getStrSlug() {
 	return strSlug;
 }
 
+public static String getVersion() {
+	return strVersion;
+}
+
+public static String getVersionsdatum() {
+	return strVersionsdatum;
+}
+
 public void setStrSerie(String strSerie) {
 	this.strSerie = strSerie;
 }
@@ -321,7 +331,6 @@ public String slugDatenLaden(String strSlugDateiName) {
 	
 	String strRueckgabe = "";
 	
-//	FileOutputStream fisDatei;
 	try {
 		writer = new FileWriter(strSlugDateiName);
 		
@@ -406,7 +415,7 @@ public String slugDatenLaden(String strSlugDateiName) {
  * @param strSlugDateiName
  * @return
  */
-public String slugDatenSpeichern(String strSlugDateiName) {
+public String slugDatenSetzen(String strSlugDateiName) {
 	
 	String strRueckgabe = "";
 	
@@ -416,33 +425,47 @@ public String slugDatenSpeichern(String strSlugDateiName) {
 		properties.load(fis);
 
 		// erstes und Letztes doppelte Anführungszeichen löschen
-		this.setStrPfad(properties.getProperty("PFAD").replaceFirst("^\"", "").replaceAll("\"$", ""));
-		this.setStrSlug(properties.getProperty("SLUG").replaceFirst("^\"", "").replaceAll("\"$", ""));
-		this.setStrTitel(properties.getProperty("TITEL").replaceFirst("^\"", "").replaceAll("\"$", ""));
-		this.setStrActress(properties.getProperty("ACTRESS").replaceFirst("^\"", "").replaceAll("\"$", ""));
-		this.setStrActor(properties.getProperty("ACTOR").replaceFirst("^\"", "").replaceAll("\"$", ""));
-		this.setStrBeschreibung(properties.getProperty("BESCHREIBUNG").replaceFirst("^\"", "").replaceAll("\"$", ""));
-		this.setStrBraznr(properties.getProperty("BRAZNR").replaceFirst("^\"", "").replaceAll("\"$", ""));
-		this.setStrNA(properties.getProperty("NA").replaceFirst("^\"", "").replaceAll("\"$", ""));
-		this.setStrRelease(properties.getProperty("RELEASE").replaceFirst("^\"", "").replaceAll("\"$", ""));
-		this.setStrErstellt(properties.getProperty("ERSTELLT").replaceFirst("^\"", "").replaceAll("\"$", ""));
-		this.setStrTitelbild(properties.getProperty("TITELBILD").replaceFirst("^\"", "").replaceAll("\"$", ""));
-		this.setStrPortraetbild(properties.getProperty("PORTRAETBILD").replaceFirst("^\"", "").replaceAll("\"$", ""));
-		this.setStrStudio(properties.getProperty("STUDIO").replaceFirst("^\"", "").replaceAll("\"$", ""));
-		this.setStrAlbum(properties.getProperty("ALBUM").replaceFirst("^\"", "").replaceAll("\"$", ""));
-		this.setStrDVD(properties.getProperty("DVD").replaceFirst("^\"", "").replaceAll("\"$", ""));
-		this.setStrSerie(properties.getProperty("SERIE").replaceFirst("^\"", "").replaceAll("\"$", ""));
-		this.setStrPart(properties.getProperty("PART").replaceFirst("^\"", "").replaceAll("\"$", ""));
-		this.setStrAnzahlparts(properties.getProperty("ANZAHLPARTS").replaceFirst("^\"", "").replaceAll("\"$", ""));
-		this.setStrBilder(properties.getProperty("BILDER").replaceFirst("^\"", "").replaceAll("\"$", ""));
-		this.setStrThumbs(properties.getProperty("THUMBS").replaceFirst("^\"", "").replaceAll("\"$", ""));
-		this.setStrRemastered(properties.getProperty("REMASTERED").replaceFirst("^\"", "").replaceAll("\"$", ""));
-		this.setStrVR(properties.getProperty("VR").replaceFirst("^\"", "").replaceAll("\"$", ""));
-		this.setStrFirst(properties.getProperty("FIRST").replaceFirst("^\"", "").replaceAll("\"$", ""));
-		this.setStrFirstname(properties.getProperty("FIRSTNAME").replaceFirst("^\"", "").replaceAll("\"$", ""));
-		this.setStrNear(properties.getProperty("NEAR").replaceFirst("^\"", "").replaceAll("\"$", ""));
-		this.setStrNearname(properties.getProperty("NEARNAME").replaceFirst("^\"", "").replaceAll("\"$", ""));
-		this.setStrSterne(properties.getProperty("STERNE").replaceFirst("^\"", "").replaceAll("\"$", ""));
+		// was ist mit abschliessendem Strichpunkt
+		// zum Teil heisst das Datenfeld ERSTELLT_AM
+		// Fehler bzw. Null-Pointer-Exception, wenn Datenfeld nicht vorhanden
+		
+		this.setStrPfad(propertiesBereinigen(properties.getProperty("PFAD")));
+		this.setStrSlug(propertiesBereinigen(properties.getProperty("SLUG")));
+		this.setStrTitel(propertiesBereinigen(properties.getProperty("TITEL")));
+		this.setStrActress(propertiesBereinigen(properties.getProperty("ACTRESS")));
+		this.setStrActor(propertiesBereinigen(properties.getProperty("ACTOR")));
+		this.setStrBeschreibung(propertiesBereinigen(properties.getProperty("BESCHREIBUNG")));
+		
+		
+		// felht das Feld BRAZNR überall, wo es sich um NaughtyAmerica handelt???
+		this.setStrBraznr(propertiesBereinigen(properties.getProperty("BRAZNR")));
+		this.setStrNA(propertiesBereinigen(properties.getProperty("NA")));
+		this.setStrRelease(propertiesBereinigen(properties.getProperty("RELEASE")));
+		
+		if (properties.getProperty("ERSTELLT") != null ) {
+			this.setStrErstellt(propertiesBereinigen(properties.getProperty("ERSTELLT")));
+		} else {
+			JOptionPane.showMessageDialog(null,	"Fehler beim Lesen der Slug-Datei:\n" + strSlugDateiName + "\n\nDie Eigenschaft ERSTELLT existiert nicht.");
+			this.setStrErstellt(propertiesBereinigen(properties.getProperty("ERSTELLT_AM")));
+		}
+		
+		this.setStrTitelbild(propertiesBereinigen(properties.getProperty("TITELBILD")));
+		this.setStrPortraetbild(propertiesBereinigen(properties.getProperty("PORTRAETBILD")));
+		this.setStrStudio(propertiesBereinigen(properties.getProperty("STUDIO")));
+		this.setStrAlbum(propertiesBereinigen(properties.getProperty("ALBUM")));
+		this.setStrDVD(propertiesBereinigen(properties.getProperty("DVD")));
+		this.setStrSerie(propertiesBereinigen(properties.getProperty("SERIE")));
+		this.setStrPart(propertiesBereinigen(properties.getProperty("PART")));
+		this.setStrAnzahlparts(propertiesBereinigen(properties.getProperty("ANZAHLPARTS")));
+		this.setStrBilder(propertiesBereinigen(properties.getProperty("BILDER")));
+		this.setStrThumbs(propertiesBereinigen(properties.getProperty("THUMBS")));
+		this.setStrRemastered(propertiesBereinigen(properties.getProperty("REMASTERED")));
+		this.setStrVR(propertiesBereinigen(properties.getProperty("VR")));
+		this.setStrFirst(propertiesBereinigen(properties.getProperty("FIRST")));
+		this.setStrFirstname(propertiesBereinigen(properties.getProperty("FIRSTNAME")));
+		this.setStrNear(propertiesBereinigen(properties.getProperty("NEAR")));
+		this.setStrNearname(propertiesBereinigen(properties.getProperty("NEARNAME")));
+		this.setStrSterne(propertiesBereinigen(properties.getProperty("STERNE")));
 		
 		strRueckgabe = "Slug-Datei " + strSlugDateiName + " wurde erfolgreich geladen."; 
 		return strRueckgabe;
@@ -454,13 +477,18 @@ public String slugDatenSpeichern(String strSlugDateiName) {
 	}
 } // Ende SlugDatenSpeichern
 
-
-public static String getVersion() {
-	return strVersion;
-}
-
-public static String getVersionsdatum() {
-	return strVersionsdatum;
+/**
+ * @param strProperties
+ * @return Bereinigten Wert; Datentyp [String]
+ */
+public String propertiesBereinigen (String strProperties) {
+	
+	// Semikolon bzw. Strichpunkt am Ende entfernen
+	if (strProperties.endsWith(";")) {
+		strProperties = strProperties.substring(0, strProperties.length() - 1);
+	}
+	
+	return strProperties.replaceFirst("^\"", "").replaceAll("\"$", "");
 }
 
 	

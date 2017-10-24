@@ -24,7 +24,8 @@ fenster_y=200
 last_pfad=
 
 #Standard-Pfad für Slug-Dateien
-standard_pfad=/netz/krypto/stars/abella_danger/sit-on-it-and-spin/
+standard_pfad=/netz/krypto/stars/alison_tyler/wives-on-vacation-alison-tyler-heather-vahn-mark-ashley
+
 
 #Logging ein oder aus
 #Standardwert: aus

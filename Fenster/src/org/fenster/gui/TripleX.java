@@ -17,6 +17,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Properties;
 
 import javax.imageio.ImageIO;
@@ -52,6 +53,8 @@ import java.awt.Component;
 import java.awt.ComponentOrientation;
 import javax.swing.border.LineBorder;
 import java.awt.Color;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
 
 public class TripleX extends JFrame {
 
@@ -68,6 +71,14 @@ public class TripleX extends JFrame {
 
 	String test;
 
+	private JTabbedPane tabbedPane;
+	private JPanel panel_1_Datei;
+	private JPanel panel_3_bilder;
+	
+	private JLabel lblSlugTitelbild;
+	private JLabel lblSlugPortraitbild;
+	private JLabel lblSlugTitelbildAnzeige;
+	
 	private JTextField txtKonfigVersion;
 	private JTextField txtKonfigDatum;
 	private JTextField txtKonfigTemplateslug;
@@ -116,8 +127,6 @@ public class TripleX extends JFrame {
 	private JButton btnKonfigReload;
 	private JTextField txtKonfigPythonpfad;
 	private JTextField txtKonfigXxxshpfad;
-	private JTextField txtSlugVersion;
-	private JTextField txtSlugVersionsdatum;
 	private JTextField txtSlugBraznr;
 	private JTextField txtSlugNa;
 	private JTextField txtSlugFirst;
@@ -164,7 +173,10 @@ public class TripleX extends JFrame {
 	private DateTimeFormatter dtf;
 	private LocalDate localDate;
 	
-	private JList listDateiVerzeichnis;
+	private JList<String> listDateiVerzeichnis;
+	private DefaultListModel<String> dflModel;
+	private JTextField txtRibbonVersion;
+	private JTextField txtRibbonVersionsdatum;
 	
 	
 	/**
@@ -638,19 +650,207 @@ public String SlugDatenSetzen(SlugDaten sDatenFunktion) {
 	txtSlugNear.setText(sDatenFunktion.getStrFirstname());
 
 	// Sterne
-	int intStern = 1;
 	if (sDatenFunktion.getStrSterne().equals("")) {
-		intStern = 1;
+		cmbSlugSterne.setSelectedIndex(0);
+	} else {
+		cmbSlugSterne.setSelectedIndex(Integer.valueOf(sDatenFunktion.getStrSterne())-1);
 	}
-	
-	cmbSlugSterne.setSelectedIndex(Integer.valueOf(sDatenFunktion.getStrSterne())-1);
-	
 	
 	return "Slug-Daten geladen";
 } // Ende Funktion SlugDatenSetzen
 
 
+/**
+ * @param strPfad
+ * @param dflModel
+ * @return
+ */
+public String VerzeichnisAkutalisieren(String strPfad, DefaultListModel<String> dflModel) {
+
+//	System.out.println("Funktionsaufruf: " + strPfad);
+	File fPfad = new File(strPfad);
 	
+	if (fPfad.isDirectory() && fPfad.exists()) {
+		
+		String strArrayInhalt[] = fPfad.list();
+
+		// Liste leeren
+		this.dflModel.removeAllElements();
+		
+		// Liste alphabetisch sortieren
+		Arrays.sort(strArrayInhalt);
+		for (int i = 0; i < strArrayInhalt.length; i++) {
+			this.dflModel.addElement(strArrayInhalt[i]);
+		}
+		
+		return "Verzeichnis aktualisiert.";
+	} else {
+//		System.out.println("123Datei existiert NICHT!");
+		return "Pfad konnte nicht gefunden werden!.";
+	}
+}
+
+
+/**
+ * 
+ */
+public void TitelbildAnzeigen() {
+	// Ablauf
+	// Pfad holen
+	// Slug holen
+	// Bildnummer holen
+//	Bild als SetIcon setzen
+
+	String strTitelbildPfad;
+	String strTitelbildNamePfad;
+	File fTitelbild;
+	
+	// abschliessendes Slash (sofern vorhanden) entfernen
+	if (txtRibbonPfad.getText().endsWith("/")) {
+		strTitelbildPfad = txtRibbonPfad.getText().substring(0, txtRibbonPfad.getText().length() - 1);
+	} else {
+		strTitelbildPfad = txtRibbonPfad.getText();
+	}
+	
+	strTitelbildNamePfad = strTitelbildPfad + "/" + txtSlugTitelbild.getText() + "-" + txtRibbonSlugName.getText() + ".jpg";
+	
+	fTitelbild = new File(strTitelbildNamePfad);
+	if (fTitelbild.isFile() && fTitelbild.exists()) {
+			
+			BufferedImage bufferedimg = null;
+			try {
+				bufferedimg = ImageIO.read(new File(strTitelbildNamePfad));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			// Resize
+			Image dimg = null;
+				if (bufferedimg.getWidth() > bufferedimg.getHeight()) {
+					dimg = bufferedimg.getScaledInstance(lblSlugTitelbildAnzeige.getWidth(), lblSlugTitelbildAnzeige.getHeight(),
+							Image.SCALE_SMOOTH);
+				} else {
+					// hochkant
+					dimg = bufferedimg.getScaledInstance((lblSlugTitelbildAnzeige.getWidth()/3)*2, lblSlugTitelbildAnzeige.getHeight(),
+							Image.SCALE_SMOOTH);													
+				}
+
+			// Icon lesen
+			ImageIcon iconSlugTitelbild = new ImageIcon(dimg);
+			lblSlugTitelbildAnzeige.setIcon(iconSlugTitelbild);
+		
+	} else {
+		System.out.println("Kein Titelbild");
+		
+		// Text des Labels auf "Kein Titelbild" / "No" setzen
+		lblSlugTitelbildAnzeige.setText("Kein Titelbild");
+
+		
+	} // Ende if
+	
+	
+} // Ende TitelbildAnzeigen Funktion
+
+
+
+/**
+ * @param strPortraetbild
+ */
+public void PortraetbildAnzeigen(String strPortraetbild) {
+	
+}
+
+
+/**
+ * 
+ */
+public void BilderAnzeigen() {
+	
+	/*
+	 * Ablauf:
+	 * (1) RibbonPfad als String holen
+	 * (2) endet der String mit "/", dann entfernen
+	 * (3) String splitten nach "/"
+	 * (4) Letztes Feld = Teil des Dateinamens
+	 * (5) Dateinamen zusammensetzen
+	 * 
+	 * Anzeige: pro Reihe 3 Bilder
+	 */
+
+	
+	// ungelöster Fehler: keine Aktualisierung
+	
+	String strBildName;
+	String strBildPfad;
+	String strBildPfadName;
+	
+	// Wenn Pfad nicht gefüllt, dann braucht auch nix angezeigt zu werden
+	if ( ! txtRibbonPfad.getText().equals("")) {
+
+		// nur für Linux
+		// Letzes Slash wird entfernt
+		if (txtRibbonPfad.getText().endsWith("/")) {
+			strBildPfad = txtRibbonPfad.getText().substring(0, txtRibbonPfad.getText().length() - 1);
+		} else {
+			strBildPfad = txtRibbonPfad.getText();
+		} // Ende if
+
+		String[] strArrayPfad = strBildPfad.split("/");	
+		int intAnzahl = strArrayPfad.length;
+		strBildName = strArrayPfad[intAnzahl - 1];
+		
+	
+	/*
+	 * Bild-Labels haben alle die feste Größe vom 150x100
+	 */
+
+	JLabel lblBilderTitelbild = new JLabel("Titelbild 01");
+	lblBilderTitelbild.setBounds(95, 42, 80, 15);
+	panel_3_bilder.add(lblBilderTitelbild);
+
+	JLabel lblAnzeigeBild1 = new JLabel("");
+	lblAnzeigeBild1.setHorizontalAlignment(SwingConstants.CENTER);
+	lblAnzeigeBild1.setBorder(new LineBorder(new Color(0, 0, 0)));
+	lblAnzeigeBild1.setBounds(200, 40, 150, 100);
+	
+	strBildPfadName = strBildPfad + "/02-" + strBildName + ".jpg";
+	System.out.println(strBildPfadName);
+	
+	
+	File fBildDatei = new File(strBildPfadName);
+
+	if (fBildDatei.isFile() && fBildDatei.exists()) {
+	
+		BufferedImage bufferedimg = null;
+		try {
+			bufferedimg = ImageIO.read(new File(strBildPfadName));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// Resize
+		Image dimg = null;
+			if (bufferedimg.getWidth() > bufferedimg.getHeight()) {
+				dimg = bufferedimg.getScaledInstance(lblAnzeigeBild1.getWidth(), lblAnzeigeBild1.getHeight(),
+						Image.SCALE_SMOOTH);
+			} else {
+				// hochkant
+				dimg = bufferedimg.getScaledInstance((lblAnzeigeBild1.getWidth()/3)*2, lblAnzeigeBild1.getHeight(),
+						Image.SCALE_SMOOTH);													
+			}
+
+		// Icon lesen
+		ImageIcon iconAnzeigeBild1 = new ImageIcon(dimg);
+		lblAnzeigeBild1.setIcon(iconAnzeigeBild1);
+	} // Ende if fBildDatei
+	
+	
+	panel_3_bilder.add(lblAnzeigeBild1);
+
+	
+	} // Ende der 1. if-Abfrage und Funktionsende	
+} // Ende BilderAnzeigen - Funktion
+
 	
 	/**
 	 * Create the frame.
@@ -662,12 +862,7 @@ public TripleX() {
 		frmFenstertitel.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frmFenstertitel.getContentPane().setLayout(new BorderLayout(0, 0));
 
-		/*
-		 * Statusleiste ganz weit vorne, damit dort auch alle Angaben ausgegeben
-		 * werden können
-		 */
 
-		
 		
 		/*
 		 * ======================================
@@ -763,7 +958,7 @@ public TripleX() {
 		iconRibbonSlugUmwandeln = new ImageIcon(strReload16);
 		
 		btnRibbonSlugUmwandeln.setIcon(iconRibbonSlugUmwandeln);
-		btnRibbonSlugUmwandeln.setBounds(500, 42, 20, 20);
+		btnRibbonSlugUmwandeln.setBounds(490, 42, 20, 20);
 		panel_ribbon.add(btnRibbonSlugUmwandeln);
 		
 		
@@ -794,11 +989,6 @@ public TripleX() {
 
 				fileRibbonPfad = new File(txtRibbonPfad.getText());
 
-//				Kann Problem mit FileSystemView gelöst werden?
-//				FileSystemView fsv = FileSystemView.getFileSystemView();
-//				fileRibbonPfad = fsv.getParentDirectory(fileRibbonPfad);
-
-				
 				jfcSlug = new JFileChooser();
 				jfcSlug.setCurrentDirectory(fileRibbonPfad);
 				
@@ -813,6 +1003,8 @@ public TripleX() {
 					txtRibbonPfad.setText(jfcSlug.getSelectedFile().toString());
 				}
 
+				txtStatusleiste.setText(VerzeichnisAkutalisieren(txtRibbonPfad.getText(), dflModel));
+				
 			}
 		});
 		
@@ -822,7 +1014,7 @@ public TripleX() {
 		iconRibbonPfadDialogbox = new ImageIcon(strSchublade16);
 		
 		btnRibbonPfaddialogbox.setIcon(iconRibbonPfadDialogbox);
-		btnRibbonPfaddialogbox.setBounds(500, 9, 20, 20);
+		btnRibbonPfaddialogbox.setBounds(490, 9, 20, 20);
 		panel_ribbon.add(btnRibbonPfaddialogbox);
 		
 		JLabel lblRibbonSerie = new JLabel("Serie");
@@ -844,7 +1036,7 @@ public TripleX() {
 		});
 		iconRibbonTitelZuSerie = new ImageIcon(strPfeilRechts);
 		btnRibbonTitelZuSerie.setIcon(iconRibbonTitelZuSerie);
-		btnRibbonTitelZuSerie.setBounds(500, 74, 20, 20);
+		btnRibbonTitelZuSerie.setBounds(490, 74, 20, 20);
 		panel_ribbon.add(btnRibbonTitelZuSerie);
 		
 		JLabel lblRibbonHttp = new JLabel("http");
@@ -860,6 +1052,22 @@ public TripleX() {
 		btnRibbonHttp.setBounds(739, 42, 20, 19);
 		panel_ribbon.add(btnRibbonHttp);
 		
+		JLabel lblRibbonVersion = new JLabel("Version");
+		lblRibbonVersion.setBounds(530, 10, 70, 15);
+		panel_ribbon.add(lblRibbonVersion);
+		
+		txtRibbonVersion = new JTextField();
+		txtRibbonVersion.setEditable(false);
+		txtRibbonVersion.setBounds(595, 9, 35, 20);
+		panel_ribbon.add(txtRibbonVersion);
+		txtRibbonVersion.setColumns(10);
+		
+		txtRibbonVersionsdatum = new JTextField();
+		txtRibbonVersionsdatum.setEditable(false);
+		txtRibbonVersionsdatum.setBounds(640, 9, 100, 20);
+		panel_ribbon.add(txtRibbonVersionsdatum);
+		txtRibbonVersionsdatum.setColumns(10);
+		
 		
 		
 		/*
@@ -868,10 +1076,46 @@ public TripleX() {
 		 * ========================
 		 * 
 		 */
-		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		/*
+		 * ======================
+		 * ChangeListener
+		 * Welcher Tab ist aktiv?
+		 * SelectedIndex: 0 -> erster Tab
+		 * 
+		 * ======================
+		 * 
+		 */
+		tabbedPane.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				
+				switch (tabbedPane.getSelectedIndex()) {
+				
+				// Panel: Datei
+				case 0:
+				
+					break;
+				
+				// Panel: Slug
+				case 1:
+					
+					break;
+				
+				// Panel: Bild
+				case 2:
+					BilderAnzeigen();
+					
+					break;
+					
+
+				default:
+					break;
+				} // Ende switch - case
+			}
+		}); // Ende ChangeListener
 		panel_mitte.add(tabbedPane);
 
-		JPanel panel_1_Datei = new JPanel();
+		panel_1_Datei = new JPanel();
 		tabbedPane.addTab("Datei", null, panel_1_Datei, null);
 		tabbedPane.setEnabledAt(0, true);
 		panel_1_Datei.setLayout(null);
@@ -899,19 +1143,27 @@ public TripleX() {
 		 * Verzeichnis-Liste
 		 */
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollPane.setBounds(50, 70, 300, 300);
 		panel_1_Datei.add(scrollPane);
 		
-		DefaultListModel<String> dflModel = new DefaultListModel<>();
 
-		dflModel.addElement("../");
-		dflModel.addElement("Zwei");
+		
+		dflModel = new DefaultListModel<>();
 		listDateiVerzeichnis = new JList(dflModel);
 		scrollPane.setViewportView(listDateiVerzeichnis);
-		dflModel.addElement("Drei");
+
+//		VerzeichnisAkutalisieren(txtRibbonPfad.getText(), dflModel);
 		
+//		dflModel.addElement("../");
+//		dflModel.addElement("Zwei");
+//		dflModel.addElement("Drei");
 		
+		/*
+		 * ========================
+		 * Start Panel 2 : Slug
+		 * ========================
+		 * 
+		 */
 		JPanel panel_2_slug = new JPanel();
 		tabbedPane.addTab("slug", null, panel_2_slug, null);
 		panel_2_slug.setLayout(null);
@@ -1051,10 +1303,11 @@ public TripleX() {
 							 */
 							SlugDatenLeeren();
 							SlugDaten sDaten = new SlugDaten();
-							System.out.println("Pfad: " + Dateiliste[i].getPath());
+//							System.out.println("Pfad: " + Dateiliste[i].getPath());
 
-							txtStatusleiste.setText(sDaten.slugDatenSpeichern(Dateiliste[i].getPath().toString()));
+							txtStatusleiste.setText(sDaten.slugDatenSetzen(Dateiliste[i].getPath().toString()));
 							SlugDatenSetzen(sDaten);
+							TitelbildAnzeigen();
 							
 							break;
 						} else {
@@ -1070,31 +1323,6 @@ public TripleX() {
 		}); // Ende ActionListener
 		btnSlugDateiLaden.setBounds(650, 400, 115, 25);
 		panel_2_slug.add(btnSlugDateiLaden);
-
-		
-		
-		
-		
-		
-		JLabel lblSlugVersion = new JLabel("Version");
-		lblSlugVersion.setBounds(30, 15, 60, 15);
-		panel_2_slug.add(lblSlugVersion);
-
-		txtSlugVersion = new JTextField();
-		txtSlugVersion.setEditable(false);
-		txtSlugVersion.setBounds(100, 13, 45, 19);
-		panel_2_slug.add(txtSlugVersion);
-		txtSlugVersion.setColumns(10);
-
-		JLabel lblSlugVersionsdatum = new JLabel("Versionsdatum");
-		lblSlugVersionsdatum.setBounds(255, 15, 110, 15);
-		panel_2_slug.add(lblSlugVersionsdatum);
-
-		txtSlugVersionsdatum = new JTextField();
-		txtSlugVersionsdatum.setEditable(false);
-		txtSlugVersionsdatum.setBounds(370, 13, 114, 19);
-		panel_2_slug.add(txtSlugVersionsdatum);
-		txtSlugVersionsdatum.setColumns(10);
 
 		JLabel lblSlugBeschreibung = new JLabel("Beschreibung");
 		lblSlugBeschreibung.setBounds(30, 307, 110, 15);
@@ -1134,12 +1362,17 @@ public TripleX() {
 		lblSlugErstelltAm.setBounds(350, 110, 85, 15);
 		panel_2_slug.add(lblSlugErstelltAm);
 
-		JLabel lblSlugTitelbild = new JLabel("Titelbild");
-		lblSlugTitelbild.setBounds(30, 55, 70, 15);
+		lblSlugTitelbild = new JLabel("Titelbild");
+		lblSlugTitelbild.setBounds(30, 10, 70, 15);
 		panel_2_slug.add(lblSlugTitelbild);
+		
+		lblSlugTitelbildAnzeige = new JLabel((String) null);
+		lblSlugTitelbildAnzeige.setBorder(new LineBorder(new Color(0, 0, 0)));
+		lblSlugTitelbildAnzeige.setBounds(120, 10, 90, 60);
+		panel_2_slug.add(lblSlugTitelbildAnzeige);
 
-		JLabel lblSlugPortraitbild = new JLabel("Portraitbild");
-		lblSlugPortraitbild.setBounds(255, 55, 90, 15);
+		lblSlugPortraitbild = new JLabel("Portraitbild");
+		lblSlugPortraitbild.setBounds(255, 10, 90, 15);
 		panel_2_slug.add(lblSlugPortraitbild);
 
 												
@@ -1231,20 +1464,16 @@ public TripleX() {
 		chckbxSlugBilder.setBounds(465, 442, 75, 23);
 		panel_2_slug.add(chckbxSlugBilder);
 
-		JSeparator separator_1 = new JSeparator();
-		separator_1.setBounds(30, 41, 730, 2);
-		panel_2_slug.add(separator_1);
-
 		JSeparator separator_2 = new JSeparator();
 		separator_2.setBounds(30, 80, 730, 2);
 		panel_2_slug.add(separator_2);
 
 		JLabel lblSlugSterne = new JLabel("Sterne");
-		lblSlugSterne.setBounds(405, 55, 60, 15);
+		lblSlugSterne.setBounds(555, 10, 60, 15);
 		panel_2_slug.add(lblSlugSterne);
 
 		cmbSlugSterne = new JComboBox<String>();
-		cmbSlugSterne.setBounds(465, 52, 40, 20);
+		cmbSlugSterne.setBounds(610, 7, 40, 20);
 
 		String[] sterneDaten = {"1","2","3","4","5"};
 
@@ -1276,10 +1505,9 @@ public TripleX() {
 		txtSlugTitelbild = new JTextField();
 		txtSlugTitelbild.setHorizontalAlignment(SwingConstants.CENTER);
 		txtSlugTitelbild.setText("01");
-		txtSlugTitelbild.setBounds(100, 53, 30, 19);
+		txtSlugTitelbild.setBounds(40, 45, 30, 20);
 		panel_2_slug.add(txtSlugTitelbild);
 		txtSlugTitelbild.setColumns(10);
-
 
 			JButton btnSlugTitelbildOben = new JButton("");
 			iconSlugTitelbildOben = new ImageIcon(strPfeilOben);
@@ -1299,9 +1527,11 @@ public TripleX() {
 					} else {
 						txtSlugTitelbild.setText(String.valueOf(intTitelbild));
 					}
+					// geändertes Titelbild anzeigen
+					TitelbildAnzeigen();
 				}
 			});
-			btnSlugTitelbildOben.setBounds(140, 47, 18, 18);
+			btnSlugTitelbildOben.setBounds(45, 25, 18, 18);
 			panel_2_slug.add(btnSlugTitelbildOben);
 
 			// Titelbild: Button Pfeil nach unten
@@ -1324,9 +1554,11 @@ public TripleX() {
 					} else {
 						txtSlugTitelbild.setText(String.valueOf(intTitelbild));
 					}
+					// geändertes Titelbild anzeigen
+					TitelbildAnzeigen();
 				}
 			});
-			btnSlugTitelbildUnten.setBounds(162, 59, 18, 18);
+			btnSlugTitelbildUnten.setBounds(77, 59, 18, 18);
 			panel_2_slug.add(btnSlugTitelbildUnten);
 
 
@@ -1524,8 +1756,7 @@ public TripleX() {
 		txtSlugAnzahlParts.setBounds(660, 234, 25, 20);
 		panel_2_slug.add(txtSlugAnzahlParts);
 		txtSlugAnzahlParts.setColumns(10);
-
-
+		
 		/*
 		 * Ende Panel 2
 		 */
@@ -1538,48 +1769,11 @@ public TripleX() {
 		 * 
 		 * ==========================================================
 		 */
-		JPanel panel_3_bilder = new JPanel();
+		panel_3_bilder = new JPanel();
 		tabbedPane.addTab("bilder", null, panel_3_bilder, null);
 		panel_3_bilder.setLayout(null);
 
 
-		/*
-		 * Bild-Labels haben alle die feste Größe vom 150x100
-		 */
-
-		JLabel lblBilderTitelbild = new JLabel("Titelbild");
-		lblBilderTitelbild.setBounds(95, 42, 57, 15);
-		panel_3_bilder.add(lblBilderTitelbild);
-
-		JLabel lblAnzeigeBild1 = new JLabel("");
-		lblAnzeigeBild1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblAnzeigeBild1.setBorder(new LineBorder(new Color(0, 0, 0)));
-		lblAnzeigeBild1.setBounds(200, 40, 225, 150);
-
-
-		BufferedImage img = null;
-		try {
-			img = ImageIO.read(new File("/home/thomas/git/Fenster/Fenster/externe_dateien/01-shy-redheads-like-it-big.jpg"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		// Resize
-		Image dimg = null;
-		if (img.getWidth() > img.getHeight()) {
-			dimg = img.getScaledInstance(lblAnzeigeBild1.getWidth(), lblAnzeigeBild1.getHeight(),
-					Image.SCALE_SMOOTH);
-		} else {
-			dimg = img.getScaledInstance((lblAnzeigeBild1.getWidth()/3)*2, lblAnzeigeBild1.getHeight(),
-					Image.SCALE_SMOOTH);													
-		}
-
-		
-		
-		// Icon lesen
-		ImageIcon iconAnzeigeBild1 = new ImageIcon(dimg);
-		lblAnzeigeBild1.setIcon(iconAnzeigeBild1);
-		panel_3_bilder.add(lblAnzeigeBild1);
 
 
 
@@ -1588,11 +1782,23 @@ public TripleX() {
 		 */
 
 
-
+		/*
+		 * ==========================================================
+		 * Start Panel 4: exif und mp4
+		 * 
+		 * 
+		 * ==========================================================
+		 */
 		JPanel panel_4_exifmp4 = new JPanel();
 		tabbedPane.addTab("exif - mp4tag", null, panel_4_exifmp4, null);
 		panel_4_exifmp4.setLayout(null);
 
+		
+		/*
+		 * ==========================================================
+		 * Start Panel 5: Debug
+		 * ==========================================================
+		 */
 		JPanel panel_5_debug = new JPanel();
 		tabbedPane.addTab("debug", null, panel_5_debug, null);
 
@@ -1766,7 +1972,7 @@ public TripleX() {
 		 * Inhalte bzw. Konfiguration laden
 		 */
 		Konfig_laden();
-
+		
 		/*
 		 * Pfade in Panel 2 - Slug setzen
 		 */
@@ -1778,7 +1984,11 @@ public TripleX() {
 		} else {
 			txtRibbonPfad.setText(txtKonfigStandardPfad.getText());
 		}
-
+		// initialer Aufruf beim Programmstart
+		// vorher ist das Feld txtRibbonPfad nicht gefüllt-
+		VerzeichnisAkutalisieren(txtRibbonPfad.getText(), dflModel);
+		
+		
 		/*
 		 * ===================================================================
 		 * ComboBoxen Studio und Album (NICHT: Sterne) in Panel2 Slug befüllen
