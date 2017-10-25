@@ -76,8 +76,10 @@ public class TripleX extends JFrame {
 	private JPanel panel_3_bilder;
 	
 	private JLabel lblSlugTitelbild;
-	private JLabel lblSlugPortraitbild;
 	private JLabel lblSlugTitelbildAnzeige;
+	private JLabel lblSlugPortraitbild;
+	private JLabel lblSlugPortraetbildAnzeige;
+
 	
 	private JTextField txtKonfigVersion;
 	private JTextField txtKonfigDatum;
@@ -118,6 +120,9 @@ public class TripleX extends JFrame {
 	private ImageIcon iconSlugRelaseNachErstelltAm;
 	private ImageIcon iconSlugTitelbildOben;
 	private ImageIcon iconSlugTitelbildUnten;
+	private ImageIcon iconSlugPortraetbildOben;
+	private ImageIcon iconSlugPortraetbildUnten;
+
 	
 	
 	private ImageIcon iconSlugReleaseJahrOben;
@@ -537,13 +542,16 @@ public void SlugDatenLeeren() {
 	
 	txtSlugErstelltAmZeit.setText("00:00");
 	
-	
+	// Titelbild leeren
 	txtSlugTitelbild.setText("01");
-	txtSlugPortraitbild.setText("01");
-	
 	lblSlugTitelbildAnzeige.setIcon(null);
 	lblSlugTitelbildAnzeige.setText("");
 
+	// Portraetbild leeren
+	txtSlugPortraitbild.setText("01");
+	lblSlugPortraetbildAnzeige.setIcon(null);
+	lblSlugPortraetbildAnzeige.setText("");
+	
 	// ComboBoxen werden auf den ersten Wert, also Index 0 gesetzt
 	cmbSlugAlbum.setSelectedIndex(0);
 	cmbSlugStudio.setSelectedIndex(0);
@@ -702,7 +710,7 @@ public void TitelbildAnzeigen() {
 	// Pfad holen
 	// Slug holen
 	// Bildnummer holen
-//	Bild als SetIcon setzen
+	//	Bild als SetIcon setzen
 
 	String strTitelbildPfad;
 	String strTitelbildNamePfad;
@@ -743,7 +751,63 @@ public void TitelbildAnzeigen() {
 			lblSlugTitelbildAnzeige.setIcon(iconSlugTitelbild);
 		
 	} else {
-		System.out.println("Kein Titelbild");
+		// Text des Labels auf "Kein Titelbild" / "No" setzen
+		lblSlugTitelbildAnzeige.setIcon(null);
+		lblSlugTitelbildAnzeige.setText("Kein Titelbild");
+	} // Ende if
+} // Ende TitelbildAnzeigen Funktion
+
+
+
+/**
+ *
+ */
+public void PortraetbildAnzeigen() {
+	// Ablauf
+	// Pfad holen
+	// Slug holen
+	// Bildnummer holen
+	//	Bild als SetIcon setzen
+
+	String strPortraetbildPfad;
+	String strPortraetbildNamePfad;
+	File fPortraetbild;
+	
+	// abschliessendes Slash (sofern vorhanden) entfernen
+	if (txtRibbonPfad.getText().endsWith("/")) {
+		strPortraetbildPfad = txtRibbonPfad.getText().substring(0, txtRibbonPfad.getText().length() - 1);
+	} else {
+		strPortraetbildPfad = txtRibbonPfad.getText();
+	}
+	
+	strPortraetbildNamePfad = strPortraetbildPfad + "/" + txtSlugPortraitbild.getText() + "-" + txtRibbonSlugName.getText() + ".jpg";
+	
+	fPortraetbild = new File(strPortraetbildNamePfad);
+	if (fPortraetbild.isFile() && fPortraetbild.exists()) {
+			
+			BufferedImage bufferedimg = null;
+			try {
+				bufferedimg = ImageIO.read(new File(strPortraetbildNamePfad));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			// Resize
+			Image dimg = null;
+				if (bufferedimg.getWidth() > bufferedimg.getHeight()) {
+					dimg = bufferedimg.getScaledInstance(lblSlugPortraetbildAnzeige.getWidth(), lblSlugPortraetbildAnzeige.getHeight(),
+							Image.SCALE_SMOOTH);
+				} else {
+					// hochkant
+					dimg = bufferedimg.getScaledInstance((lblSlugPortraetbildAnzeige.getWidth()/3)*2, lblSlugPortraetbildAnzeige.getHeight(),
+							Image.SCALE_SMOOTH);													
+				}
+
+			// Icon lesen
+			ImageIcon iconSlugPortraetbild = new ImageIcon(dimg);
+			lblSlugPortraetbildAnzeige.setIcon(iconSlugPortraetbild);
+		
+	} else {
 		
 		// Text des Labels auf "Kein Titelbild" / "No" setzen
 		lblSlugTitelbildAnzeige.setIcon(null);
@@ -751,18 +815,7 @@ public void TitelbildAnzeigen() {
 
 		
 	} // Ende if
-	
-	
-} // Ende TitelbildAnzeigen Funktion
-
-
-
-/**
- * @param strPortraetbild
- */
-public void PortraetbildAnzeigen(String strPortraetbild) {
-	
-}
+} // Ende Funktion PortraetbildAnzeigen
 
 
 /**
@@ -1155,12 +1208,26 @@ public TripleX() {
 		dflModel = new DefaultListModel<>();
 		listDateiVerzeichnis = new JList(dflModel);
 		scrollPane.setViewportView(listDateiVerzeichnis);
-
-//		VerzeichnisAkutalisieren(txtRibbonPfad.getText(), dflModel);
 		
-//		dflModel.addElement("../");
-//		dflModel.addElement("Zwei");
-//		dflModel.addElement("Drei");
+												
+		/*
+		 * Button "Erzeugen"
+		 * 
+		 * Slug-Datei wird erzeugt
+		 */
+
+		
+		/*
+		 * Button "Neu Laden"
+		 * Register Slug
+		 * (1) Alle Felder leeren
+		 */
+
+
+
+		String[] sterneDaten = {"1","2","3","4","5"};
+
+
 		
 		/*
 		 * ========================
@@ -1171,14 +1238,12 @@ public TripleX() {
 		JPanel panel_2_slug = new JPanel();
 		tabbedPane.addTab("slug", null, panel_2_slug, null);
 		panel_2_slug.setLayout(null);
-		
-		
+
 		/*
 		 * ComboBox
 		 * Register: Slug
 		 * Album
 		 */
-		
 		JLabel lblSlugAlbum = new JLabel("Album");
 		lblSlugAlbum.setBounds(30, 202, 55, 15);
 		panel_2_slug.add(lblSlugAlbum);
@@ -1187,17 +1252,15 @@ public TripleX() {
 		cmbSlugAlbum = new JComboBox<String>();
 		cmbSlugAlbum.setBounds(100, 199, 200, 22);
 		panel_2_slug.add(cmbSlugAlbum);
+		JLabel lblSlugStudio = new JLabel("Studio");
+		lblSlugStudio.setBounds(30, 167, 55, 15);
+		panel_2_slug.add(lblSlugStudio);
 
-		
 		/*
 		 * ComboBox
 		 * Register: Slug
 		 * Studio
 		 */
-		JLabel lblSlugStudio = new JLabel("Studio");
-		lblSlugStudio.setBounds(30, 167, 55, 15);
-		panel_2_slug.add(lblSlugStudio);
-		
 		cmbSlugStudio = new JComboBox<String>();
 		cmbSlugStudio.setBounds(100, 164, 120, 22);
 		panel_2_slug.add(cmbSlugStudio);
@@ -1214,7 +1277,7 @@ public TripleX() {
 				txtStatusleiste.setText("Studio: " + cmbSlugStudio.getSelectedItem() + " ausgewählt.");
 			}
 		});
-
+		
 		JLabel lblSlugActress = new JLabel("Actress");
 		lblSlugActress.setBounds(30, 237, 55, 15);
 		panel_2_slug.add(lblSlugActress);
@@ -1227,18 +1290,11 @@ public TripleX() {
 		txtSlugActress.setBounds(100, 234, 340, 19);
 		panel_2_slug.add(txtSlugActress);
 		txtSlugActress.setColumns(10);
-
+								
 		txtSlugActor = new JTextField();
 		txtSlugActor.setBounds(100, 270, 340, 19);
 		panel_2_slug.add(txtSlugActor);
 		txtSlugActor.setColumns(10);
-
-												
-		/*
-		 * Button "Erzeugen"
-		 * 
-		 * Slug-Datei wird erzeugt
-		 */
 		JButton btnSlugErzeugen = new JButton("Erzeugen");
 		btnSlugErzeugen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -1256,7 +1312,7 @@ public TripleX() {
 						if (!txtRibbonSlugName.getText().equals("")) {
 							String strVollstaendigerPfad = txtRibbonPfad.getText() + "/" + txtRibbonSlugName.getText() + ".slug";
 							fileErzeugen = new File(strVollstaendigerPfad);
-//							System.out.println(strVollstaendigerPfad);
+							//							System.out.println(strVollstaendigerPfad);
 							if (fileErzeugen.exists()) {
 								int ueberschreiben = JOptionPane.showConfirmDialog(null, "Slug-Datei besteht bereits.\nÜberschreiben?", "Nachfrage", JOptionPane.YES_NO_OPTION);
 								System.out.println(ueberschreiben);
@@ -1280,18 +1336,12 @@ public TripleX() {
 		btnSlugErzeugen.setBounds(650, 435, 115, 25);
 		panel_2_slug.add(btnSlugErzeugen);
 
-		
-		/*
-		 * Button "Neu Laden"
-		 * Register Slug
-		 * (1) Alle Felder leeren
-		 */
 		JButton btnSlugDateiLaden = new JButton("Slug Laden");
 		btnSlugDateiLaden.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
 				File fileLesen;
-				
+
 				// Slug-Name setzt sich zusammen aus Pfad + Slug-Name + Endung .slug
 				fileLesen = new File(txtRibbonPfad.getText());
 				if (fileLesen.isDirectory() || fileLesen.exists()) {
@@ -1301,18 +1351,19 @@ public TripleX() {
 
 					for(int i=0; i < intAnzahldateien; i++) {
 						if (Dateiliste[i].toString().endsWith(".slug")) {
-							
+
 							/*
 							 * Hier startet das Laden der Slug-Datei.
 							 */
 							SlugDatenLeeren();
 							SlugDaten sDaten = new SlugDaten();
-//							System.out.println("Pfad: " + Dateiliste[i].getPath());
+							//							System.out.println("Pfad: " + Dateiliste[i].getPath());
 
 							txtStatusleiste.setText(sDaten.slugDatenSetzen(Dateiliste[i].getPath().toString()));
 							SlugDatenSetzen(sDaten);
 							TitelbildAnzeigen();
-							
+							PortraetbildAnzeigen();
+
 							break;
 						} else {
 							if (i == intAnzahldateien - 1) {
@@ -1325,15 +1376,16 @@ public TripleX() {
 				}
 			}
 		}); // Ende ActionListener
+		
 		btnSlugDateiLaden.setBounds(650, 400, 115, 25);
 		panel_2_slug.add(btnSlugDateiLaden);
 
 		JLabel lblSlugBeschreibung = new JLabel("Beschreibung");
-		lblSlugBeschreibung.setBounds(30, 307, 110, 15);
+		lblSlugBeschreibung.setBounds(30, 357, 110, 15);
 		panel_2_slug.add(lblSlugBeschreibung);
-		
+
 		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(145, 310, 300, 100);
+		scrollPane_1.setBounds(145, 361, 300, 100);
 		panel_2_slug.add(scrollPane_1);
 
 		txtpnSlugBeschreibung = new JTextPane();
@@ -1358,28 +1410,7 @@ public TripleX() {
 		panel_2_slug.add(txtSlugNa);
 		txtSlugNa.setColumns(10);
 
-		JLabel lblSlugRelease = new JLabel("Release");
-		lblSlugRelease.setBounds(30, 110, 70, 15);
-		panel_2_slug.add(lblSlugRelease);
 
-		JLabel lblSlugErstelltAm = new JLabel("Erstellt am");
-		lblSlugErstelltAm.setBounds(350, 110, 85, 15);
-		panel_2_slug.add(lblSlugErstelltAm);
-
-		lblSlugTitelbild = new JLabel("Titelbild");
-		lblSlugTitelbild.setBounds(30, 10, 70, 15);
-		panel_2_slug.add(lblSlugTitelbild);
-		
-		lblSlugTitelbildAnzeige = new JLabel((String) null);
-		lblSlugTitelbildAnzeige.setBorder(new LineBorder(new Color(0, 0, 0)));
-		lblSlugTitelbildAnzeige.setBounds(120, 10, 90, 60);
-		panel_2_slug.add(lblSlugTitelbildAnzeige);
-
-		lblSlugPortraitbild = new JLabel("Portraitbild");
-		lblSlugPortraitbild.setBounds(255, 10, 90, 15);
-		panel_2_slug.add(lblSlugPortraitbild);
-
-												
 		/*
 		 * Checkbox First
 		 * 
@@ -1389,23 +1420,24 @@ public TripleX() {
 		chckbxSlugFirst = new JCheckBox("First");
 		chckbxSlugFirst.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-			
-			if (chckbxSlugFirst.isSelected()){
-				txtSlugFirst.setEditable(true);
-				txtSlugFirst.setEnabled(true);
-				txtStatusleiste.setText("First: an");
-			} else {
-				txtSlugFirst.setEditable(false);
-				txtSlugFirst.setEnabled(false);
-				txtStatusleiste.setText("First: aus");
-			} // Ende else
-			
-			
+
+				if (chckbxSlugFirst.isSelected()){
+					txtSlugFirst.setEditable(true);
+					txtSlugFirst.setEnabled(true);
+					txtStatusleiste.setText("First: an");
+				} else {
+					txtSlugFirst.setEditable(false);
+					txtSlugFirst.setEnabled(false);
+					txtStatusleiste.setText("First: aus");
+				} // Ende else
+
+
 			} // Ende ActionPerformed
 		}); // Ende Listener
-		
-		chckbxSlugFirst.setBounds(465, 307, 70, 23);
+
+		chckbxSlugFirst.setBounds(465, 237, 70, 23);
 		panel_2_slug.add(chckbxSlugFirst);
+		
 		
 		
 		/*
@@ -1415,32 +1447,32 @@ public TripleX() {
 		 * 
 		 */
 		chckbxSlugNear = new JCheckBox("Near");
-		
+
 		chckbxSlugNear.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-			
-			if (chckbxSlugNear.isSelected()){
-				txtSlugNear.setEditable(true);
-				txtSlugNear.setEnabled(true);
-				txtStatusleiste.setText("Near: an");
-			} else {
-				txtSlugNear.setEditable(false);
-				txtSlugNear.setEnabled(false);
-				txtStatusleiste.setText("Near: aus");
-			} // Ende else
-			
-			
+
+				if (chckbxSlugNear.isSelected()){
+					txtSlugNear.setEditable(true);
+					txtSlugNear.setEnabled(true);
+					txtStatusleiste.setText("Near: an");
+				} else {
+					txtSlugNear.setEditable(false);
+					txtSlugNear.setEnabled(false);
+					txtStatusleiste.setText("Near: aus");
+				} // Ende else
+
+
 			} // Ende ActionPerformed
 		}); // Ende Listener
-														
-		
-		chckbxSlugNear.setBounds(465, 334, 70, 23);
-		panel_2_slug.add(chckbxSlugNear);
 
+		
+		chckbxSlugNear.setBounds(465, 264, 70, 23);
+		panel_2_slug.add(chckbxSlugNear);
+		
 		chckbxSlugThumbs = new JCheckBox("Thumbs");
 		chckbxSlugThumbs.setBounds(465, 361, 129, 23);
 		panel_2_slug.add(chckbxSlugThumbs);
-
+		
 		chckbxSlugVr = new JCheckBox("VR");
 		chckbxSlugVr.setBounds(465, 388, 129, 23);
 		panel_2_slug.add(chckbxSlugVr);
@@ -1452,14 +1484,14 @@ public TripleX() {
 		txtSlugFirst = new JTextField();
 		txtSlugFirst.setEditable(false);
 		txtSlugFirst.setEnabled(false);
-		txtSlugFirst.setBounds(536, 309, 200, 19);
+		txtSlugFirst.setBounds(536, 239, 200, 19);
 		panel_2_slug.add(txtSlugFirst);
 		txtSlugFirst.setColumns(10);
 
 		txtSlugNear = new JTextField();
 		txtSlugNear.setEditable(false);
 		txtSlugNear.setEnabled(false);
-		txtSlugNear.setBounds(536, 336, 200, 19);
+		txtSlugNear.setBounds(536, 266, 200, 19);
 		panel_2_slug.add(txtSlugNear);
 		txtSlugNear.setColumns(10);
 
@@ -1468,18 +1500,12 @@ public TripleX() {
 		chckbxSlugBilder.setBounds(465, 442, 75, 23);
 		panel_2_slug.add(chckbxSlugBilder);
 
-		JSeparator separator_2 = new JSeparator();
-		separator_2.setBounds(30, 80, 730, 2);
-		panel_2_slug.add(separator_2);
-
 		JLabel lblSlugSterne = new JLabel("Sterne");
 		lblSlugSterne.setBounds(555, 10, 60, 15);
 		panel_2_slug.add(lblSlugSterne);
 
 		cmbSlugSterne = new JComboBox<String>();
 		cmbSlugSterne.setBounds(610, 7, 40, 20);
-
-		String[] sterneDaten = {"1","2","3","4","5"};
 
 		ComboBoxBefuellen(cmbSlugSterne, sterneDaten);
 		panel_2_slug.add(cmbSlugSterne);
@@ -1492,19 +1518,26 @@ public TripleX() {
 		lblSlugDvd.setBounds(465, 202, 40, 15);
 		panel_2_slug.add(lblSlugDvd);
 
-		JLabel lblSlugPart = new JLabel("Part");
-		lblSlugPart.setBounds(465, 237, 40, 15);
-		panel_2_slug.add(lblSlugPart);
 
-		JLabel lblSlugAnzahlParts = new JLabel("Anzahl Parts");
-		lblSlugAnzahlParts.setBounds(560, 237, 100, 15);
-		panel_2_slug.add(lblSlugAnzahlParts);
 
 		/*
 		 * 
 		 * Bereich: Titelbild
 		 * 
 		 */
+		iconSlugTitelbildOben = new ImageIcon(strPfeilOben);
+		iconSlugTitelbildUnten = new ImageIcon(strPfeilUnten);
+		
+		lblSlugTitelbild = new JLabel("Titelbild");
+		lblSlugTitelbild.setBounds(30, 9, 70, 15);
+		panel_2_slug.add(lblSlugTitelbild);
+
+		lblSlugTitelbildAnzeige = new JLabel((String) null);
+		lblSlugTitelbildAnzeige.setBorder(new LineBorder(new Color(0, 0, 0)));
+		lblSlugTitelbildAnzeige.setBounds(95, 10, 90, 60);
+		panel_2_slug.add(lblSlugTitelbildAnzeige);
+
+		
 		// Titelbild: Button Pfeil nach oben
 		txtSlugTitelbild = new JTextField();
 		txtSlugTitelbild.setHorizontalAlignment(SwingConstants.CENTER);
@@ -1512,67 +1545,162 @@ public TripleX() {
 		txtSlugTitelbild.setBounds(40, 45, 30, 20);
 		panel_2_slug.add(txtSlugTitelbild);
 		txtSlugTitelbild.setColumns(10);
-
-			JButton btnSlugTitelbildOben = new JButton("");
-			iconSlugTitelbildOben = new ImageIcon(strPfeilOben);
-			btnSlugTitelbildOben.setIcon(iconSlugTitelbildOben);
-			btnSlugTitelbildOben.addActionListener(new ActionListener() {
+		
+				JButton btnSlugTitelbildOben = new JButton("");
+				btnSlugTitelbildOben.setIcon(iconSlugTitelbildOben);
+				btnSlugTitelbildOben.addActionListener(new ActionListener() {
+					// Wert muss zweistellig abgeildet werden, bswp. 01 anstelle von 1
+					// Wert 00 soll 0 als Integer sein
+					public void actionPerformed(ActionEvent e) {
+						int intTitelbild = Integer.valueOf(txtSlugTitelbild.getText());
+						String strTitelbild = txtSlugTitelbild.getText();
+						
+						if (strTitelbild.equals("00")) {
+							intTitelbild = 0;
+						}
+						intTitelbild++;
+						
+						if (intTitelbild < 10){
+							txtSlugTitelbild.setText("0" + String.valueOf(intTitelbild));
+						} else {
+							txtSlugTitelbild.setText(String.valueOf(intTitelbild));
+						}
+						// geändertes Titelbild anzeigen
+						TitelbildAnzeigen();
+					}
+				});
+				btnSlugTitelbildOben.setBounds(45, 25, 18, 18);
+				panel_2_slug.add(btnSlugTitelbildOben);
+				
+		// Titelbild: Button Pfeil nach unten
+		JButton btnSlugTitelbildUnten = new JButton();
+		btnSlugTitelbildUnten.setIcon(iconSlugTitelbildUnten);
+		btnSlugTitelbildUnten.addActionListener(new ActionListener() {
+			// Wert 00 soll 0 als Integer sein
+			// Wert 00 oder 01 oder 1 oder 0 und Button gedrückt soll 15 werden
+			public void actionPerformed(ActionEvent e) {
+				int intTitelbild = Integer.valueOf(txtSlugTitelbild.getText());
+				String strTitelbild = txtSlugTitelbild.getText();
+				
+				if (strTitelbild.equals("00") | strTitelbild.equals("0") | strTitelbild.equals("01") | strTitelbild.equals("1")) {
+					intTitelbild = 15;
+				} else {
+					intTitelbild--;
+				}
+				
+				if (intTitelbild < 10){
+					txtSlugTitelbild.setText("0" + String.valueOf(intTitelbild));
+				} else {
+					txtSlugTitelbild.setText(String.valueOf(intTitelbild));
+				}
+				// geändertes Titelbild anzeigen
+				TitelbildAnzeigen();
+			}
+		});
+		btnSlugTitelbildUnten.setBounds(45, 66, 18, 18);
+		panel_2_slug.add(btnSlugTitelbildUnten);
+		
+		
+		/*
+		 * 
+		 * Bereich: Porträtbild
+		 * 
+		 */
+		iconSlugPortraetbildOben = new ImageIcon(strPfeilOben);
+		iconSlugPortraetbildUnten = new ImageIcon(strPfeilUnten);
+		
+		lblSlugPortraitbild = new JLabel("Portraitbild");
+		lblSlugPortraitbild.setBounds(255, 9, 90, 15);
+		panel_2_slug.add(lblSlugPortraitbild);
+		
+		JButton btnSlugPortraetbildOben = new JButton("");
+		btnSlugPortraetbildOben.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				// Wert muss zweistellig abgeildet werden, bswp. 01 anstelle von 1
 				// Wert 00 soll 0 als Integer sein
-				public void actionPerformed(ActionEvent e) {
-					int intTitelbild = Integer.valueOf(txtSlugTitelbild.getText());
-					String strTitelbild = txtSlugTitelbild.getText();
-					if (strTitelbild.equals("00")) {
-						intTitelbild = 0;
-					}
-					intTitelbild++;
-					if (intTitelbild < 10){
-						txtSlugTitelbild.setText("0" + String.valueOf(intTitelbild));
-					} else {
-						txtSlugTitelbild.setText(String.valueOf(intTitelbild));
-					}
-					// geändertes Titelbild anzeigen
-					TitelbildAnzeigen();
+				int intPortraetbild = Integer.valueOf(txtSlugPortraitbild.getText());
+				String strPortraetbild = txtSlugPortraitbild.getText();
+
+				if (strPortraetbild.equals("00")) {
+					intPortraetbild = 0;
 				}
-			});
-			btnSlugTitelbildOben.setBounds(45, 25, 18, 18);
-			panel_2_slug.add(btnSlugTitelbildOben);
+				intPortraetbild++;
 
-			// Titelbild: Button Pfeil nach unten
-			JButton btnSlugTitelbildUnten = new JButton();
-			iconSlugTitelbildUnten = new ImageIcon(strPfeilUnten);
-			btnSlugTitelbildUnten.setIcon(iconSlugTitelbildUnten);
-			btnSlugTitelbildUnten.addActionListener(new ActionListener() {
-				// Wert 00 soll 0 als Integer sein
-				// Wert 00 oder 01 oder 1 oder 0 und Button gedrückt soll 15 werden
-				public void actionPerformed(ActionEvent e) {
-					int intTitelbild = Integer.valueOf(txtSlugTitelbild.getText());
-					String strTitelbild = txtSlugTitelbild.getText();
-					if (strTitelbild.equals("00") | strTitelbild.equals("0") | strTitelbild.equals("01") | strTitelbild.equals("1")) {
-						intTitelbild = 15;
-					} else {
-						intTitelbild--;
-					}
-					if (intTitelbild < 10){
-						txtSlugTitelbild.setText("0" + String.valueOf(intTitelbild));
-					} else {
-						txtSlugTitelbild.setText(String.valueOf(intTitelbild));
-					}
-					// geändertes Titelbild anzeigen
-					TitelbildAnzeigen();
+				if (intPortraetbild < 10){
+					txtSlugPortraitbild.setText("0" + String.valueOf(intPortraetbild));
+				} else {
+					txtSlugPortraitbild.setText(String.valueOf(intPortraetbild));
 				}
-			});
-			btnSlugTitelbildUnten.setBounds(77, 59, 18, 18);
-			panel_2_slug.add(btnSlugTitelbildUnten);
+				// geändertes Porträtbild anzeigen
+				PortraetbildAnzeigen();
+			}
+		});
+		btnSlugPortraetbildOben.setIcon(iconSlugPortraetbildOben);
+		btnSlugPortraetbildOben.setBounds(295, 25, 18, 18);
+		panel_2_slug.add(btnSlugPortraetbildOben);
+			
+		JButton btnSlugPortraetbildUnten = new JButton("");
+		btnSlugPortraetbildUnten.addActionListener(new ActionListener() {
+			// Wert 00 soll 0 als Integer sein
+			// Wert 00 oder 01 oder 1 oder 0 und Button gedrückt soll 15 werden
+			public void actionPerformed(ActionEvent e) {
+				int intPortraetbild = Integer.valueOf(txtSlugPortraitbild.getText());
+				String strPortraetbild = txtSlugPortraitbild.getText();
 
+				if (strPortraetbild.equals("00") | strPortraetbild.equals("0") | strPortraetbild.equals("01") | strPortraetbild.equals("1")) {
+					intPortraetbild = 15;
+				} else {
+					intPortraetbild--;
+				}
 
+				if (intPortraetbild < 10){
+					txtSlugPortraitbild.setText("0" + String.valueOf(intPortraetbild));
+				} else {
+					txtSlugPortraitbild.setText(String.valueOf(intPortraetbild));
+				}
+				// geändertes Porträtbild anzeigen
+				PortraetbildAnzeigen();
+			}
+		});
+
+		btnSlugPortraetbildUnten.setIcon(iconSlugPortraetbildUnten);
+		btnSlugPortraetbildUnten.setBounds(295, 66, 18, 18);
+		panel_2_slug.add(btnSlugPortraetbildUnten);
+
+		lblSlugPortraetbildAnzeige = new JLabel("");
+		lblSlugPortraetbildAnzeige.setBorder(new LineBorder(new Color(0, 0, 0)));
+		lblSlugPortraetbildAnzeige.setBounds(350, 10, 90, 60);
+		panel_2_slug.add(lblSlugPortraetbildAnzeige);
 
 		txtSlugPortraitbild = new JTextField();
 		txtSlugPortraitbild.setHorizontalAlignment(SwingConstants.CENTER);
 		txtSlugPortraitbild.setText("01");
-		txtSlugPortraitbild.setBounds(345, 53, 30, 19);
+		txtSlugPortraitbild.setBounds(290, 45, 30, 19);
 		panel_2_slug.add(txtSlugPortraitbild);
 		txtSlugPortraitbild.setColumns(10);
+
+
+
+		/*
+		 * ReleaseAm und ErstelltAm Buttons mit Grafik/Pfeilen
+		 */
+		iconSlugReleaseJahrOben = new ImageIcon(strPfeilOben);
+		iconSlugReleaseJahrUnten = new ImageIcon(strPfeilUnten);
+
+		iconSlugTauschen = new ImageIcon(strPfeilTauschen);
+		
+		iconSlugErstelltAmNachRelase = new ImageIcon(strPfeilLinks);
+		iconSlugRelaseNachErstelltAm = new ImageIcon(strPfeilRechts);
+
+		JLabel lblSlugRelease = new JLabel("Release");
+		lblSlugRelease.setBounds(30, 110, 70, 15);
+		panel_2_slug.add(lblSlugRelease);
+
+		JLabel lblSlugErstelltAm = new JLabel("Erstellt am");
+		lblSlugErstelltAm.setBounds(350, 110, 85, 15);
+		panel_2_slug.add(lblSlugErstelltAm);
+
+		
 
 		/*
 		 * Bereich Datum: ReleaseAM
@@ -1582,33 +1710,36 @@ public TripleX() {
 		 */
 		dtf = DateTimeFormatter.ofPattern("yyyy");
 		localDate = LocalDate.now();
+
 		txtSlugReleaseJahr = new JTextField();
 		txtSlugReleaseJahr.setHorizontalAlignment(SwingConstants.CENTER);
 		txtSlugReleaseJahr.setText(dtf.format(localDate).toString());
 		txtSlugReleaseJahr.setBounds(100, 108, 40, 20);
 		panel_2_slug.add(txtSlugReleaseJahr);
 		txtSlugReleaseJahr.setColumns(10);
-												
+
+		
 		txtSlugReleaseMonat = new JTextField();
 		txtSlugReleaseMonat.setHorizontalAlignment(SwingConstants.CENTER);
 		txtSlugReleaseMonat.setBounds(145, 108, 25, 20);
 		panel_2_slug.add(txtSlugReleaseMonat);
 		txtSlugReleaseMonat.setColumns(10);
 
+		
 		txtSlugReleaseTag = new JTextField();
 		txtSlugReleaseTag.setHorizontalAlignment(SwingConstants.CENTER);
 		txtSlugReleaseTag.setText("");
 		txtSlugReleaseTag.setBounds(175, 108, 25, 20);
 		panel_2_slug.add(txtSlugReleaseTag);
 		txtSlugReleaseTag.setColumns(10);
-
+		
 		txtSlugReleaseZeit = new JTextField();
 		txtSlugReleaseZeit.setHorizontalAlignment(SwingConstants.CENTER);
 		txtSlugReleaseZeit.setText("00:00");
 		txtSlugReleaseZeit.setBounds(210, 108, 41, 20);
 		panel_2_slug.add(txtSlugReleaseZeit);
 		txtSlugReleaseZeit.setColumns(10);
-
+		
 		// Feld mit dem heutigen Datum in der Form jjjj:mm:tt hh:mm füllen
 		// DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy:MM:dd");
 		// LocalDate localDate = LocalDate.now();
@@ -1621,33 +1752,33 @@ public TripleX() {
 		txtSlugErstelltAmJahr.setText(dtf.format(localDate).toString());
 		panel_2_slug.add(txtSlugErstelltAmJahr);
 		txtSlugErstelltAmJahr.setColumns(10);
-
+		
 		dtf = DateTimeFormatter.ofPattern("MM");
 		localDate = LocalDate.now();
+		
 		txtSlugErstelltAmMonat = new JTextField();
 		txtSlugErstelltAmMonat.setBounds(485, 108, 25, 20);
 		txtSlugErstelltAmMonat.setText(dtf.format(localDate).toString());
 		panel_2_slug.add(txtSlugErstelltAmMonat);
 		txtSlugErstelltAmMonat.setColumns(10);
 
+		
 		dtf = DateTimeFormatter.ofPattern("dd");
 		localDate = LocalDate.now();
+		
 		txtSlugErstelltAmTag = new JTextField();
 		txtSlugErstelltAmTag.setBounds(515, 108, 25, 20);
 		txtSlugErstelltAmTag.setText(dtf.format(localDate).toString());
 		panel_2_slug.add(txtSlugErstelltAmTag);
 		txtSlugErstelltAmTag.setColumns(10);
-
+		
 		txtSlugErstelltAmZeit = new JTextField();
 		txtSlugErstelltAmZeit.setText("00:00");
 		txtSlugErstelltAmZeit.setBounds(550, 108, 41, 20);
 		panel_2_slug.add(txtSlugErstelltAmZeit);
 		txtSlugErstelltAmZeit.setColumns(10);
-
-
-		/*
-		 * ReleaseAm und ErstelltAm Buttons mit Grafik/Pfeilen
-		 */
+		
+		
 		JButton btnSlugReleaseJahrOben = new JButton("");
 		btnSlugReleaseJahrOben.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -1657,10 +1788,9 @@ public TripleX() {
 			}
 		});
 		btnSlugReleaseJahrOben.setBounds(110, 87, 18, 18);
-		iconSlugReleaseJahrOben = new ImageIcon(strPfeilOben);
 		btnSlugReleaseJahrOben.setIcon(iconSlugReleaseJahrOben);
 		panel_2_slug.add(btnSlugReleaseJahrOben);
-
+		
 		JButton btnSlugReleaseJahrUnten = new JButton("");
 		btnSlugReleaseJahrUnten.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -1671,16 +1801,9 @@ public TripleX() {
 		});
 
 		btnSlugReleaseJahrUnten.setBounds(110, 130, 18, 18);
-		iconSlugReleaseJahrUnten = new ImageIcon(strPfeilUnten);
 		btnSlugReleaseJahrUnten.setIcon(iconSlugReleaseJahrUnten);
 
 		panel_2_slug.add(btnSlugReleaseJahrUnten);
-
-												
-		/*
-		 * Leeren bedeutet soviel wie alle Felder auf den Startzustand zurücksetzen
-		 * Ausnahme: die Pfad-Angabe im Bereich Ribbon
-		 */
 		JButton btnSlugLeeren = new JButton("Leeren");
 		btnSlugLeeren.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -1692,26 +1815,13 @@ public TripleX() {
 		});
 		btnSlugLeeren.setBounds(650, 365, 115, 25);
 		panel_2_slug.add(btnSlugLeeren);
-
-		/*
-		 * ====================================================
-		 * Pfeile zwischen den Datümern Release und Erstellt am
-		 * ====================================================
-		 * 
-		 */
-
-		/*
-		 * Pfeil tauschen zwischen Release und Erstellt
-		 */
 		JButton btnSlugTauschen = new JButton("");
-		iconSlugTauschen = new ImageIcon(strPfeilTauschen);
 		btnSlugTauschen.setIcon(iconSlugTauschen);
 		btnSlugTauschen.setBounds(290, 110, 26, 18);
 		panel_2_slug.add(btnSlugTauschen);
 
-
+				
 		JButton btnSlugErstelltAmNachRelease = new JButton("");
-		iconSlugErstelltAmNachRelase = new ImageIcon(strPfeilLinks);
 		btnSlugErstelltAmNachRelease.setIcon(iconSlugErstelltAmNachRelase);
 		btnSlugErstelltAmNachRelease.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -1726,7 +1836,6 @@ public TripleX() {
 		panel_2_slug.add(btnSlugErstelltAmNachRelease);
 
 		JButton btnSlugReleaseNachErstelltAm = new JButton("");
-		iconSlugRelaseNachErstelltAm = new ImageIcon(strPfeilRechts);
 		btnSlugReleaseNachErstelltAm.setBounds(320, 110, 18, 18);
 		btnSlugReleaseNachErstelltAm.setIcon(iconSlugRelaseNachErstelltAm);
 		panel_2_slug.add(btnSlugReleaseNachErstelltAm);
@@ -1740,6 +1849,28 @@ public TripleX() {
 			}
 		});
 
+		JLabel lblSlugPart = new JLabel("Part");
+		lblSlugPart.setBounds(536, 67, 40, 15);
+		panel_2_slug.add(lblSlugPart);
+
+		txtSlugPart = new JTextField();
+		txtSlugPart.setHorizontalAlignment(SwingConstants.CENTER);
+		txtSlugPart.setText("1");
+		txtSlugPart.setBounds(581, 64, 25, 20);
+		panel_2_slug.add(txtSlugPart);
+		txtSlugPart.setColumns(10);
+
+
+
+		JLabel lblSlugAnzahlParts = new JLabel("Anzahl Parts");
+		lblSlugAnzahlParts.setBounds(631, 67, 100, 15);
+		panel_2_slug.add(lblSlugAnzahlParts);
+
+		txtSlugAnzahlParts = new JTextField();
+		txtSlugAnzahlParts.setHorizontalAlignment(SwingConstants.CENTER);
+		txtSlugAnzahlParts.setBounds(731, 64, 25, 20);
+		panel_2_slug.add(txtSlugAnzahlParts);
+		txtSlugAnzahlParts.setColumns(10);
 
 
 
@@ -1748,19 +1879,6 @@ public TripleX() {
 		panel_2_slug.add(txtSlugDvd);
 		txtSlugDvd.setColumns(10);
 
-		txtSlugPart = new JTextField();
-		txtSlugPart.setHorizontalAlignment(SwingConstants.CENTER);
-		txtSlugPart.setText("1");
-		txtSlugPart.setBounds(510, 234, 25, 20);
-		panel_2_slug.add(txtSlugPart);
-		txtSlugPart.setColumns(10);
-
-		txtSlugAnzahlParts = new JTextField();
-		txtSlugAnzahlParts.setHorizontalAlignment(SwingConstants.CENTER);
-		txtSlugAnzahlParts.setBounds(660, 234, 25, 20);
-		panel_2_slug.add(txtSlugAnzahlParts);
-		txtSlugAnzahlParts.setColumns(10);
-		
 		/*
 		 * Ende Panel 2
 		 */
@@ -1773,12 +1891,11 @@ public TripleX() {
 		 * 
 		 * ==========================================================
 		 */
+
+
 		panel_3_bilder = new JPanel();
 		tabbedPane.addTab("bilder", null, panel_3_bilder, null);
 		panel_3_bilder.setLayout(null);
-
-
-
 
 
 		/*
@@ -1960,6 +2077,8 @@ public TripleX() {
 		chckbxKonfigBeimBeenden.setSelected(true);
 		chckbxKonfigBeimBeenden.setBounds(380, 23, 250, 23);
 		panel_6_Konfiguration.add(chckbxKonfigBeimBeenden);
+
+		
 		txtStatusleiste = new JTextField();
 		txtStatusleiste.setText("Statusleiste");
 		frmFenstertitel.getContentPane().add(txtStatusleiste, BorderLayout.SOUTH);
