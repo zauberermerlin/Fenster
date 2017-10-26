@@ -112,6 +112,13 @@ public class TripleX extends JFrame {
 	String strPfeilRechts = "externe_dateien/pfeil_rechts.png";
 	String strPfeilTauschen = "externe_dateien/pfeil_tauschen.png";
 	
+	String strReload ="";
+	String strSlugActressToFirst ="externe_dateien/first.png";
+	String strSlugActressToNear ="externe_dateien/near.png";
+	String strCheck = "externe_dateien/check.png";
+	String strDownload = "externe_dateien/download.png";
+	
+	
 	private ImageIcon iconRibbonPfadDialogbox;
 	private ImageIcon iconRibbonTitelZuSerie;
 	private ImageIcon iconRibbonSlugUmwandeln;
@@ -122,6 +129,11 @@ public class TripleX extends JFrame {
 	private ImageIcon iconSlugTitelbildUnten;
 	private ImageIcon iconSlugPortraetbildOben;
 	private ImageIcon iconSlugPortraetbildUnten;
+
+	private ImageIcon iconSlugActressToFrist;
+	private ImageIcon iconSlugActressToNear;
+	private ImageIcon iconSlugActressCheck;
+	private ImageIcon iconSlugBilderDownload;
 
 	
 	
@@ -1279,20 +1291,20 @@ public TripleX() {
 		});
 		
 		JLabel lblSlugActress = new JLabel("Actress");
-		lblSlugActress.setBounds(30, 237, 55, 15);
+		lblSlugActress.setBounds(30, 290, 55, 15);
 		panel_2_slug.add(lblSlugActress);
 
 		JLabel lblSlugActor = new JLabel("Actor");
-		lblSlugActor.setBounds(30, 272, 55, 15);
+		lblSlugActor.setBounds(30, 325, 55, 15);
 		panel_2_slug.add(lblSlugActor);
 
 		txtSlugActress = new JTextField();
-		txtSlugActress.setBounds(100, 234, 340, 19);
+		txtSlugActress.setBounds(100, 290, 290, 20);
 		panel_2_slug.add(txtSlugActress);
 		txtSlugActress.setColumns(10);
 								
 		txtSlugActor = new JTextField();
-		txtSlugActor.setBounds(100, 270, 340, 19);
+		txtSlugActor.setBounds(100, 325, 290, 20);
 		panel_2_slug.add(txtSlugActor);
 		txtSlugActor.setColumns(10);
 		JButton btnSlugErzeugen = new JButton("Erzeugen");
@@ -1381,7 +1393,7 @@ public TripleX() {
 		panel_2_slug.add(btnSlugDateiLaden);
 
 		JLabel lblSlugBeschreibung = new JLabel("Beschreibung");
-		lblSlugBeschreibung.setBounds(30, 357, 110, 15);
+		lblSlugBeschreibung.setBounds(30, 360, 110, 15);
 		panel_2_slug.add(lblSlugBeschreibung);
 
 		JScrollPane scrollPane_1 = new JScrollPane();
@@ -1411,6 +1423,24 @@ public TripleX() {
 		txtSlugNa.setColumns(10);
 
 
+		iconSlugBilderDownload = new ImageIcon(strDownload);
+		JButton btnSlugBilderDownload = new JButton("");
+		btnSlugBilderDownload.setBounds(390, 165, 18, 18);
+		btnSlugBilderDownload.setIcon(iconSlugBilderDownload);
+		btnSlugBilderDownload.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+//				URL url = new URL("http://www.avajava.com/images/avajavalogo.jpg");
+//		        BufferedImage img = ImageIO.read(url);
+//		        File file = new File("D:\\image\\downloaded.jpg");
+//		        ImageIO.write(img, "jpg", file);
+//				
+				
+			}
+		}); // Ende ActionListener
+		panel_2_slug.add(btnSlugBilderDownload);
+		
+		
 		/*
 		 * Checkbox First
 		 * 
@@ -1435,7 +1465,7 @@ public TripleX() {
 			} // Ende ActionPerformed
 		}); // Ende Listener
 
-		chckbxSlugFirst.setBounds(465, 237, 70, 23);
+		chckbxSlugFirst.setBounds(465, 290, 70, 23);
 		panel_2_slug.add(chckbxSlugFirst);
 		
 		
@@ -1466,7 +1496,7 @@ public TripleX() {
 		}); // Ende Listener
 
 		
-		chckbxSlugNear.setBounds(465, 264, 70, 23);
+		chckbxSlugNear.setBounds(465, 325, 70, 23);
 		panel_2_slug.add(chckbxSlugNear);
 		
 		chckbxSlugThumbs = new JCheckBox("Thumbs");
@@ -1484,14 +1514,14 @@ public TripleX() {
 		txtSlugFirst = new JTextField();
 		txtSlugFirst.setEditable(false);
 		txtSlugFirst.setEnabled(false);
-		txtSlugFirst.setBounds(536, 239, 200, 19);
+		txtSlugFirst.setBounds(536, 290, 200, 20);
 		panel_2_slug.add(txtSlugFirst);
 		txtSlugFirst.setColumns(10);
 
 		txtSlugNear = new JTextField();
 		txtSlugNear.setEditable(false);
 		txtSlugNear.setEnabled(false);
-		txtSlugNear.setBounds(536, 266, 200, 19);
+		txtSlugNear.setBounds(536, 325, 200, 20);
 		panel_2_slug.add(txtSlugNear);
 		txtSlugNear.setColumns(10);
 
@@ -1815,6 +1845,15 @@ public TripleX() {
 		});
 		btnSlugLeeren.setBounds(650, 365, 115, 25);
 		panel_2_slug.add(btnSlugLeeren);
+		
+		
+		/*
+		 * Buttons zwischen den Datümern
+		 * 
+		 * Release nach Erstellt_am
+		 * Tauschen
+		 * Erstellt_am nach Release
+		 */
 		JButton btnSlugTauschen = new JButton("");
 		btnSlugTauschen.setIcon(iconSlugTauschen);
 		btnSlugTauschen.setBounds(290, 110, 26, 18);
@@ -1878,6 +1917,32 @@ public TripleX() {
 		txtSlugDvd.setBounds(510, 200, 250, 20);
 		panel_2_slug.add(txtSlugDvd);
 		txtSlugDvd.setColumns(10);
+		
+		
+		/*
+		 * Button rund um Actress und Actor
+		 */
+		
+		iconSlugActressCheck = new ImageIcon(strCheck);
+		iconSlugActressToFrist = new ImageIcon(strSlugActressToFirst);
+		iconSlugActressToNear = new ImageIcon(strSlugActressToNear);
+		
+		JButton btnSlugCheckActress = new JButton("");
+		btnSlugCheckActress.setBounds(395, 291, 18, 18);
+		btnSlugCheckActress.setIcon(iconSlugActressCheck);
+		panel_2_slug.add(btnSlugCheckActress);
+		
+		JButton btnSlugActressToFirst = new JButton("");
+		btnSlugActressToFirst.setBounds(420, 280, 18, 18);
+		btnSlugActressToFirst.setIcon(iconSlugActressToFrist);
+		panel_2_slug.add(btnSlugActressToFirst);
+		
+		JButton btnSlugActressToNear = new JButton("");
+		btnSlugActressToNear.setBounds(420, 305, 18, 18);
+		btnSlugActressToNear.setIcon(iconSlugActressToNear);
+		panel_2_slug.add(btnSlugActressToNear);
+		
+
 
 		/*
 		 * Ende Panel 2
