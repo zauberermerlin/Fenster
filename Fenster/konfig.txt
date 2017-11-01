@@ -3,6 +3,10 @@
 version=0.1
 datum=02.10.2017
 
+# Konfiguration beim Verlassen speichern
+# mögliche Werte an oder aus
+KONFIG_SPEICHERN=aus
+
 
 #Template für die template.slug Datei
 template-slug=
@@ -17,19 +21,19 @@ konfig_cmb_xml=konfig_comboboxen.xml
 #Standardwert für die linke, obere Fensterposition ist jeweils 100
 aktuelle_fensterposition_verwenden=ja
 
-fenster_x=500
-fenster_y=200
+fenster_x=300
+fenster_y=300
 
 #zuletzt verwendeter Pfad bei Slug-Dateien
 last_pfad=
 
 #Standard-Pfad für Slug-Dateien
-standard_pfad=/netz/krypto/stars/alison_tyler/wives-on-vacation-alison-tyler-heather-vahn-mark-ashley
+standard_pfad=/netz/krypto/stars/alison_tyler/
 
 
-#Logging ein oder aus
+#Logging an oder aus
 #Standardwert: aus
-logging=ein
+logging=aus
 
 #Pfad und Name fuer log-Datei
 log=/home/thomas/workspace/Fenster/log.txt

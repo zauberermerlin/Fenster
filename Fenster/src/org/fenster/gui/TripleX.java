@@ -5,18 +5,17 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
-import java.awt.image.ImageProducer;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Properties;
 
@@ -39,6 +38,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 
+import org.fenster.model.ClassKonfig;
 import org.fenster.model.SlugDaten;
 
 import org.jsoup.Jsoup;
@@ -89,9 +89,11 @@ public class TripleX extends JFrame {
 	private JTextField txtKonfigStandardPfad;
 	
 	private JTextPane txtpnSlugBeschreibung;
-
+	private JTextPane txtpnLog;
+	
 	private JCheckBox chckbxKonfigAkutelleFensterposition;
 	private JCheckBox chckbxKonfigLogging;
+	private JCheckBox chckbxKonfigSpeichernBeimBeenden;
 	private JTextField txtKonfigXpos;
 	private JTextField txtKonfigYpos;
 	private JLabel lblKonfigXpos;
@@ -194,29 +196,42 @@ public class TripleX extends JFrame {
 	private DefaultListModel<String> dflModel;
 	private JTextField txtRibbonVersion;
 	private JTextField txtRibbonVersionsdatum;
-	
+
+	// Register Bilder, als ArrayList
+	private ArrayList<JLabel> lblBilderNummer;
+	private ArrayList<JCheckBox> chckbxTitelbild;
+	private ArrayList<JCheckBox> chckbxPortraitbild;
 	
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-					
-				
+
+
+		// Konfig initialisieren und laden
+		ClassKonfig konfiguration = new ClassKonfig();
+
+		TripleX window_start = new TripleX();
 		
-					TripleX window_start = new TripleX();
-					
-					if (window_start.txtKonfigXpos.getText().equals("")) {
-						window_start.txtKonfigXpos.setText("100");
-					}
+		konfiguration.KonfigLaden();
+		
+//		if (window_start.txtKonfigXpos.getText().equals("")) {
+//			window_start.txtKonfigXpos.setText("100");
+//		}
+//
+//		if (window_start.txtKonfigYpos.getText().equals("")) {
+//			window_start.txtKonfigYpos.setText("100");
+//		}
 
-					if (window_start.txtKonfigYpos.getText().equals("")) {
-						window_start.txtKonfigYpos.setText("100");
-					}
+//		window_start.frmFenstertitel.setLocation(Integer.valueOf(window_start.txtKonfigXpos.getText()),
+//				Integer.valueOf(window_start.txtKonfigYpos.getText()));
 
-					window_start.frmFenstertitel.setLocation(Integer.valueOf(window_start.txtKonfigXpos.getText()),
-							Integer.valueOf(window_start.txtKonfigYpos.getText()));
-					window_start.frmFenstertitel.setVisible(true);
-					
+		window_start.frmFenstertitel.setLocation(konfiguration.getIntXPos(), konfiguration.getIntYPos());
+		
+		window_start.frmFenstertitel.setVisible(true);
+
+		
+		
 	} // Ende main Funktion
 
 	
@@ -297,53 +312,61 @@ public class TripleX extends JFrame {
 
 	} // Funktion wird geschlossen
 
+/*
+ * Funktion: Speichern der Konfigurationsdatei
+ */
+public void Konfig_speichern() {
 	/*
-	 * Funktion: Speichern der Konfigurationsdatei
+	 * Schritte:
+	 * (1) Auslesen und Einsammeln aller Werte
+	 * (2) Properties anlegen und Werte setzen
+	 * (3) in die Konfig-Datei schreiben
+	 * (4) Ausgabe in Statuszeile
+	 * 
+	 * Alle Parameter müssen geschrieben werden, auch die nicht geänderten.
+	 * 
 	 */
-	public void Konfig_speichern() {
-		/*
-		 * Schritte:
-		 * (1) Auslesen und Einsammeln aller Werte
-		 * (2) Properties anlegen und Werte setzen
-		 * (3) in die Konfig-Datei schreiben
-		 * (4) Ausgabe in Statuszeile
-		 * 
-		 * Alle Parameter müssen geschrieben werden, auch die nicht geänderten.
-		 * 
-		 */
 
-		/*
-		 * Werte in Version 0.2 vom 03.10.2017:
-		 * 
-		 * version datum template-slug konfig_cmb_xml <-neu
-		 * aktuelle_fensterposition_verwenden fenster_x fenster_y last_pfad
-		 * standard_pfad logging log
-		 */
+	/*
+	 * Werte in Version 0.2 vom 03.10.2017:
+	 * 
+	 * version datum template-slug konfig_cmb_xml <-neu
+	 * aktuelle_fensterposition_verwenden fenster_x fenster_y last_pfad
+	 * standard_pfad logging log
+	 */
 
-		Properties konfigProperSchreiben = new Properties();
+	Properties konfigProperSchreiben = new Properties();
 
-		Point fensterPosition;
-		fensterPosition = frmFenstertitel.getLocation();
-		txtStatusleiste.setText("x-Pos: " + fensterPosition.x + " // y-Pos: " + fensterPosition.y);
-		konfigProperSchreiben.setProperty("fenster_x", String.valueOf(fensterPosition.x));
-		konfigProperSchreiben.setProperty("fenster_y", String.valueOf(fensterPosition.y));
+	Point fensterPosition;
+	fensterPosition = frmFenstertitel.getLocation();
+	txtStatusleiste.setText("x-Pos: " + fensterPosition.x + " // y-Pos: " + fensterPosition.y);
+	konfigProperSchreiben.setProperty("fenster_x", String.valueOf(fensterPosition.x));
+	konfigProperSchreiben.setProperty("fenster_y", String.valueOf(fensterPosition.y));
 
-		konfigDatei = new File("konfig.txt");
+	konfigDatei = new File("konfig.txt");
 
-		try {
-			FileOutputStream fos = new FileOutputStream(konfigDatei);
-			konfigProperSchreiben.store(fos, null);
-			fos.close();
-		} catch (IOException e) {
-			// TODO Automatisch generierter Erfassungsblock
-			e.printStackTrace();
-		}
+	try {
+		FileOutputStream fos = new FileOutputStream(konfigDatei);
+		konfigProperSchreiben.store(fos, null);
+		fos.close();
+	} catch (IOException e) {
+		// TODO Automatisch generierter Erfassungsblock
+		e.printStackTrace();
+	}
 
-		txtStatusleiste.setText("Konfiguration gespeichert");
+	txtStatusleiste.setText("Konfiguration gespeichert");
 
-	} // Ende Funktion Konfig_speichern
+} // Ende Funktion Konfig_speichern
 
 	
+public void KonfigDatenSetzen(ClassKonfig konfigDaten) {
+	// Konfig beim Verlassen speichern
+	
+	chckbxKonfigSpeichernBeimBeenden.setSelected(konfigDaten.isKonfigSpeichern());
+	
+	txtKonfigXpos.setText(String.valueOf(konfigDaten.getIntXPos()));
+}
+
 	
 	/**
 	 * Laden der Daten für die beiden ComboBoxem im Reiter Slug.
@@ -867,6 +890,8 @@ public void BilderAnzeigen() {
 		String[] strArrayPfad = strBildPfad.split("/");	
 		int intAnzahl = strArrayPfad.length;
 		strBildName = strArrayPfad[intAnzahl - 1];
+	
+		
 		
 	
 	/*
@@ -1952,7 +1977,9 @@ public TripleX() {
 		 * ==========================================================
 		 * Start Panel 3: Bilder
 		 * 
-		 * Titelbild, Porträtbild und sonstige Bilder in der Vorschau
+		 * Bilder im Verzeichnis in der Vorschau
+		 * 
+		 * Vorschau wird erst dann erzeugt, wenn das Registerblatt aufgerufen wird
 		 * 
 		 * ==========================================================
 		 */
@@ -1979,6 +2006,70 @@ public TripleX() {
 		tabbedPane.addTab("exif - mp4tag", null, panel_4_exifmp4, null);
 		panel_4_exifmp4.setLayout(null);
 
+		// Exif Button erzeugen
+		JButton btnExifErzeugen = new JButton("Exif erzeugen");
+		btnExifErzeugen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		btnExifErzeugen.setBounds(395, 291, 150, 25);
+		panel_4_exifmp4.add(btnExifErzeugen);
+		
+		// Button Exif-Daten schreiben
+		JButton btnExifDatenSchreiben = new JButton("Exif Daten schreiben");
+		btnExifDatenSchreiben.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+			    
+				try {
+				Process process = Runtime.getRuntime().exec("exiftool -overwrite_original -@ 01.slug /home/thomas/workspace/Xxx//a-tip-to-the-school-nurse/01.jpg");
+				
+			    } catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			System.out.println("Exif geschrieben");
+			
+			}
+			
+		});
+		btnExifDatenSchreiben.setBounds(395, 200, 180, 25);
+		panel_4_exifmp4.add(btnExifDatenSchreiben);
+		
+		// Button mp4 Tag Schreiben
+
+		/*
+		 * 
+		 * mp4tag: eigenes Python-Script mit zwingend diesen 9 Parametern
+		 * 
+		 * # print 'Argument List:', str(sys.argv)
+		 * # 1. Parameter: Dateiname
+		 * # 2. Parameter: Titel
+		 * # 3. Artist
+		 * # 4. Album
+		 * # 5. Jahr
+		 * # 6. Nummer/Track
+		 * # 7. Genre/Studio
+		 * # 8. Kommentar
+		 * # 9. Cover-Bild
+		 */
+		
+		JButton btnExifMp4TagSchreiben = new JButton("mp4-Tag schreiben");
+		btnExifMp4TagSchreiben.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Process process = Runtime.getRuntime().exec("/home/thomas/scripts/mp4tag.py /home/thomas/workspace/Xxx//a-tip-to-the-school-nurse/01-city.mp4 1 2 3 4 5 6 7 9");
+					
+				    } catch (IOException e1) {
+						e1.printStackTrace();
+					}
+				System.out.println("mp4tag.py geschrieben");
+					
+				
+			}
+		});
+		btnExifMp4TagSchreiben.setBounds(395, 100, 180, 25);
+		panel_4_exifmp4.add(btnExifMp4TagSchreiben);
 		
 		/*
 		 * ==========================================================
@@ -1988,6 +2079,17 @@ public TripleX() {
 		JPanel panel_5_debug = new JPanel();
 		tabbedPane.addTab("debug", null, panel_5_debug, null);
 
+		
+		JScrollPane scrollPaneLog = new JScrollPane();
+		scrollPaneLog.setBounds(10, 10, 300, 300);
+
+		panel_5_debug.add(scrollPaneLog);
+		
+		txtpnLog = new JTextPane();
+		scrollPaneLog.setViewportView(txtpnLog);
+//		scrollPaneLog.setHorizontalScrollBarPolicy(ScrollPane.SCROLLBARS_AS_NEEDED);
+//		scrollPaneLog.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		
 		/*
 		 * ======================================================
 		 * Panel 6: Konfiguration
@@ -1999,42 +2101,78 @@ public TripleX() {
 		tabbedPane.addTab("Konfiguration", null, panel_6_Konfiguration, null);
 		panel_6_Konfiguration.setLayout(null);
 
-		JButton btnSpeichern = new JButton("Speichern");
-		btnSpeichern.addActionListener(new ActionListener() {
+		chckbxKonfigSpeichernBeimBeenden = new JCheckBox("Konfig beim beenden Speichern");
+		chckbxKonfigSpeichernBeimBeenden.setSelected(true);
+		chckbxKonfigSpeichernBeimBeenden.setBounds(33, 23, 250, 23);
+		panel_6_Konfiguration.add(chckbxKonfigSpeichernBeimBeenden);
+
+		
+		JLabel lblKonfigVersion = new JLabel("Version:");
+		lblKonfigVersion.setBounds(420, 25, 70, 15);
+		panel_6_Konfiguration.add(lblKonfigVersion);
+
+		txtKonfigVersion = new JTextField();
+		txtKonfigVersion.setBounds(485, 23, 30, 20);
+		panel_6_Konfiguration.add(txtKonfigVersion);
+		txtKonfigVersion.setColumns(10);
+
+		JLabel lblKonfigDatum = new JLabel("Datum:");
+		lblKonfigDatum.setBounds(545, 25, 70, 15);
+		panel_6_Konfiguration.add(lblKonfigDatum);
+
+		txtKonfigDatum = new JTextField();
+		txtKonfigDatum.setBounds(605, 23, 85, 20);
+		panel_6_Konfiguration.add(txtKonfigDatum);
+		txtKonfigDatum.setColumns(10);
+
+		// Checkbox Logging an/aus
+		chckbxKonfigLogging = new JCheckBox("Logging");
+		chckbxKonfigLogging.setBounds(33, 60, 100, 23);
+		chckbxKonfigLogging.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (chckbxKonfigLogging.isSelected()) {
+					txtKonfigLogdatei.setEditable(true);
+					txtKonfigLogdatei.setEnabled(true);
+					lblKonfigLogdatei.setEnabled(true);
+				} else {
+					txtKonfigLogdatei.setEditable(false);
+					txtKonfigLogdatei.setEnabled(false);
+					lblKonfigLogdatei.setEnabled(false);
+				}
+				
+			}
+		});
+		
+		panel_6_Konfiguration.add(chckbxKonfigLogging);
+
+		lblKonfigLogdatei = new JLabel("Pfad/Datei für Log-Datei");
+		lblKonfigLogdatei.setBounds(160, 65, 180, 15);
+		panel_6_Konfiguration.add(lblKonfigLogdatei);
+
+		txtKonfigLogdatei = new JTextField();
+		txtKonfigLogdatei.setBounds(340, 63, 114, 20);
+		panel_6_Konfiguration.add(txtKonfigLogdatei);
+		txtKonfigLogdatei.setColumns(10);
+		
+		
+		JButton btnKonfigSpeichern = new JButton("Speichern");
+		btnKonfigSpeichern.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Konfig_speichern();
 
 			}
 		});
-		btnSpeichern.setBounds(634, 340, 105, 25);
-		panel_6_Konfiguration.add(btnSpeichern);
+		btnKonfigSpeichern.setBounds(634, 340, 105, 25);
+		panel_6_Konfiguration.add(btnKonfigSpeichern);
 
-		JButton btnLaden = new JButton("Laden");
-		btnLaden.addActionListener(new ActionListener() {
+		JButton btnKonfigLaden = new JButton("Laden");
+		btnKonfigLaden.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Konfig_laden();
 			}
 		});
-		btnLaden.setBounds(634, 303, 105, 25);
-		panel_6_Konfiguration.add(btnLaden);
-
-		JLabel lblKonfigVersion = new JLabel("Version:");
-		lblKonfigVersion.setBounds(40, 25, 70, 15);
-		panel_6_Konfiguration.add(lblKonfigVersion);
-
-		txtKonfigVersion = new JTextField();
-		txtKonfigVersion.setBounds(110, 23, 114, 20);
-		panel_6_Konfiguration.add(txtKonfigVersion);
-		txtKonfigVersion.setColumns(10);
-
-		JLabel lblKonfigDatum = new JLabel("Datum:");
-		lblKonfigDatum.setBounds(40, 60, 70, 15);
-		panel_6_Konfiguration.add(lblKonfigDatum);
-
-		txtKonfigDatum = new JTextField();
-		txtKonfigDatum.setBounds(110, 58, 114, 20);
-		panel_6_Konfiguration.add(txtKonfigDatum);
-		txtKonfigDatum.setColumns(10);
+		btnKonfigLaden.setBounds(634, 303, 105, 25);
+		panel_6_Konfiguration.add(btnKonfigLaden);
 
 		JLabel lblKonfigTemplateSlug = new JLabel("Pfad/Datei template.slug");
 		lblKonfigTemplateSlug.setBounds(40, 95, 200, 15);
@@ -2046,24 +2184,8 @@ public TripleX() {
 		panel_6_Konfiguration.add(txtKonfigTemplateslug);
 		txtKonfigTemplateslug.setColumns(10);
 
-		chckbxKonfigAkutelleFensterposition = new JCheckBox("akutelle Fensterposition verwenden");
-		chckbxKonfigAkutelleFensterposition.setBounds(33, 165, 300, 23);
-		panel_6_Konfiguration.add(chckbxKonfigAkutelleFensterposition);
+		
 
-		chckbxKonfigLogging = new JCheckBox("Logging");
-		chckbxKonfigLogging.setBounds(33, 215, 100, 23);
-		panel_6_Konfiguration.add(chckbxKonfigLogging);
-
-		lblKonfigLogdatei = new JLabel("Pfad/Datei für Log-Datei");
-		lblKonfigLogdatei.setEnabled(false);
-		lblKonfigLogdatei.setBounds(160, 220, 180, 15);
-		panel_6_Konfiguration.add(lblKonfigLogdatei);
-
-		txtKonfigLogdatei = new JTextField();
-		txtKonfigLogdatei.setEnabled(false);
-		txtKonfigLogdatei.setBounds(340, 218, 114, 20);
-		panel_6_Konfiguration.add(txtKonfigLogdatei);
-		txtKonfigLogdatei.setColumns(10);
 
 		JLabel lblKonfigLetzterPfad = new JLabel("Letzter Pfad");
 		lblKonfigLetzterPfad.setBounds(40, 262, 100, 15);
@@ -2083,13 +2205,38 @@ public TripleX() {
 		panel_6_Konfiguration.add(txtKonfigStandardPfad);
 		txtKonfigStandardPfad.setColumns(10);
 
+		// Checkbox für aktuelle Fensterposition
+		chckbxKonfigAkutelleFensterposition = new JCheckBox("akutelle Fensterposition verwenden");
+		chckbxKonfigAkutelleFensterposition.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (chckbxKonfigAkutelleFensterposition.isSelected()) {
+					lblKonfigXpos.setEnabled(true);
+					txtKonfigXpos.setEnabled(true);
+					txtKonfigXpos.setEditable(true);
+					
+					lblKonfigYpos.setEnabled(true);
+					txtKonfigYpos.setEnabled(true);
+					txtKonfigYpos.setEditable(true);
+				} else {
+					lblKonfigXpos.setEnabled(false);
+					txtKonfigXpos.setEnabled(false);
+					txtKonfigXpos.setEditable(false);
+					
+					lblKonfigYpos.setEnabled(false);
+					txtKonfigYpos.setEnabled(false);
+					txtKonfigYpos.setEditable(false);
+				} // Ende else
+			}
+		});
+		
+		chckbxKonfigAkutelleFensterposition.setBounds(33, 165, 300, 23);
+		panel_6_Konfiguration.add(chckbxKonfigAkutelleFensterposition);
+		
 		lblKonfigXpos = new JLabel("x-Pos:");
-		lblKonfigXpos.setEnabled(false);
 		lblKonfigXpos.setBounds(340, 149, 50, 15);
 		panel_6_Konfiguration.add(lblKonfigXpos);
 
 		lblKonfigYpos = new JLabel("Y-Pos:");
-		lblKonfigYpos.setEnabled(false);
 		lblKonfigYpos.setBounds(340, 176, 50, 15);
 		panel_6_Konfiguration.add(lblKonfigYpos);
 
@@ -2105,6 +2252,7 @@ public TripleX() {
 		panel_6_Konfiguration.add(txtKonfigYpos);
 		txtKonfigYpos.setColumns(10);
 
+		iconKonfigReload = new ImageIcon(strReload19);
 		btnKonfigReload = new JButton(iconKonfigReload);
 		btnKonfigReload.setIcon(iconKonfigReload);
 
@@ -2138,21 +2286,14 @@ public TripleX() {
 		panel_6_Konfiguration.add(txtKonfigcomboboxenxml);
 		txtKonfigcomboboxenxml.setColumns(10);
 
-		JCheckBox chckbxKonfigBeimBeenden = new JCheckBox("Konfig beim beenden Speichern");
-		chckbxKonfigBeimBeenden.setSelected(true);
-		chckbxKonfigBeimBeenden.setBounds(380, 23, 250, 23);
-		panel_6_Konfiguration.add(chckbxKonfigBeimBeenden);
-
 		
 		txtStatusleiste = new JTextField();
 		txtStatusleiste.setText("Statusleiste");
 		frmFenstertitel.getContentPane().add(txtStatusleiste, BorderLayout.SOUTH);
 		txtStatusleiste.setColumns(10);
 		
+
 		
-
-
-		iconKonfigReload = new ImageIcon(strReload19);
 
 		/*
 		 * Abschluss Panel 6
@@ -2161,9 +2302,6 @@ public TripleX() {
 		 */
 		Konfig_laden();
 		
-		/*
-		 * Pfade in Panel 2 - Slug setzen
-		 */
 
 		// Überprüfen ob letzter Pfad ungleich "leer" ist, ansonsten
 		// Standard-Pfad
