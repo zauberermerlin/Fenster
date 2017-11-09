@@ -2,10 +2,8 @@ package org.fenster.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
-import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -14,6 +12,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,14 +46,14 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
-import java.awt.Component;
-import java.awt.ComponentOrientation;
 import javax.swing.border.LineBorder;
 import java.awt.Color;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
+import javax.swing.JTextArea;
+import java.awt.ComponentOrientation;
+import java.awt.Cursor;
 
 public class TripleX extends JFrame {
 
@@ -89,7 +88,7 @@ public class TripleX extends JFrame {
 	private JTextField txtKonfigStandardPfad;
 	
 	private JTextPane txtpnSlugBeschreibung;
-	private JTextPane txtpnLog;
+	private JTextArea txtAreaDebug;
 	
 	private JCheckBox chckbxKonfigAkutelleFensterposition;
 	private JCheckBox chckbxKonfigLogging;
@@ -100,25 +99,25 @@ public class TripleX extends JFrame {
 	private JLabel lblKonfigYpos;
 	private JLabel lblKonfigLogdatei;
 
-	String strSchublade16 = "externe_dateien/schublade16x16.png";
-	String strSchublade19 = "externe_dateien/schublade19x19.png";
-	String strSchublade25 = "externe_dateien/schublade25x25.png";
+	String strSchublade16 = "Fenster/externe_dateien/schublade16x16.png";
+	String strSchublade19 = "Fenster/externe_dateien/schublade19x19.png";
+	String strSchublade25 = "Fenster/externe_dateien/schublade25x25.png";
 
-	String strReload16 = "externe_dateien/reload_16x16.png";
-	String strReload19 = "externe_dateien/reload_19x19.png";
-	String strReload25 = "externe_dateien/reload_25x25.png";
+	String strReload16 = "Fenster/externe_dateien/reload_16x16.png";
+	String strReload19 = "Fenster/externe_dateien/reload_19x19.png";
+	String strReload25 = "Fenster/externe_dateien/reload_25x25.png";
 	
-	String strPfeilOben = "externe_dateien/pfeil_oben.png";
-	String strPfeilUnten = "externe_dateien/pfeil_unten.png";
-	String strPfeilLinks = "externe_dateien/pfeil_links.png";
-	String strPfeilRechts = "externe_dateien/pfeil_rechts.png";
-	String strPfeilTauschen = "externe_dateien/pfeil_tauschen.png";
+	String strPfeilOben = "Fenster/externe_dateien/pfeil_oben.png";
+	String strPfeilUnten = "Fenster/externe_dateien/pfeil_unten.png";
+	String strPfeilLinks = "Fenster/externe_dateien/pfeil_links.png";
+	String strPfeilRechts = "Fenster/externe_dateien/pfeil_rechts.png";
+	String strPfeilTauschen = "Fenster/externe_dateien/pfeil_tauschen.png";
 	
 	String strReload ="";
-	String strSlugActressToFirst ="externe_dateien/first.png";
-	String strSlugActressToNear ="externe_dateien/near.png";
-	String strCheck = "externe_dateien/check.png";
-	String strDownload = "externe_dateien/download.png";
+	String strSlugActressToFirst ="Fenster/externe_dateien/first.png";
+	String strSlugActressToNear ="Fenster/externe_dateien/near.png";
+	String strCheck = "Fenster/externe_dateien/check.png";
+	String strDownload = "Fenster/externe_dateien/download.png";
 	
 	
 	private ImageIcon iconRibbonPfadDialogbox;
@@ -229,7 +228,7 @@ public class TripleX extends JFrame {
 		window_start.frmFenstertitel.setLocation(konfiguration.getIntXPos(), konfiguration.getIntYPos());
 		
 		window_start.frmFenstertitel.setVisible(true);
-
+		window_start.DebugInfoSchreiben("Ich wurde gestartet");
 		
 		
 	} // Ende main Funktion
@@ -252,10 +251,10 @@ public class TripleX extends JFrame {
 		// ohne Pfad-Angabe identisch zu:
 		// /home/thomas/workspace/Fenster/konfig.txt
 		konfigDatei = new File("konfig.txt");
-
+		
 		if (!konfigDatei.exists() | !konfigDatei.isFile()) {
 			// Fensterausgabe mit Hinweis
-			JOptionPane.showMessageDialog(null, "Keine konfig.txt im Hauptverzeichnis vorhanden!");
+			JOptionPane.showMessageDialog(null, "Keine konfig.txt im Hauptverzeichnis vorhanden!\nPfad:\n" + konfigDatei.getAbsolutePath());
 
 		} else {
 
@@ -945,7 +944,20 @@ public void BilderAnzeigen() {
 	} // Ende der 1. if-Abfrage und Funktionsende	
 } // Ende BilderAnzeigen - Funktion
 
+
+/**
+ * @param strInfo
+ */
+public void DebugInfoSchreiben(String strInfo) {
 	
+	//aktuelle Zeit holen
+	LocalTime localTime = LocalTime.now();
+	txtAreaDebug.append(localTime.toString() + ": ");
+	
+	txtAreaDebug.append(strInfo + "\n");
+}
+
+
 	/**
 	 * Create the frame.
 	 */
@@ -1952,17 +1964,48 @@ public TripleX() {
 		iconSlugActressToFrist = new ImageIcon(strSlugActressToFirst);
 		iconSlugActressToNear = new ImageIcon(strSlugActressToNear);
 		
+		
+		// beginnende und endende Leerzeichen werden entfernt
+		// aus der Zeichenfolge Komma-Leerzeichen wird Strichpunkt
+		// das Kaufmännische Und zum Trenner; alles was dahinter steht wird ins Textfeld actor geschoben
 		JButton btnSlugCheckActress = new JButton("");
+		btnSlugCheckActress.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String inhalt[]=(txtSlugActress.getText().trim().replace(", ", ";").split("&"));
+				txtSlugActress.setText(inhalt[0].trim());
+				txtSlugActor.setText(inhalt[1].trim());
+				
+				DebugInfoSchreiben("btn - actress bereinigt und aufgeteilt");
+			}
+		});
 		btnSlugCheckActress.setBounds(395, 291, 18, 18);
 		btnSlugCheckActress.setIcon(iconSlugActressCheck);
 		panel_2_slug.add(btnSlugCheckActress);
 		
 		JButton btnSlugActressToFirst = new JButton("");
+		btnSlugActressToFirst.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				chckbxSlugFirst.setSelected(true);
+				txtSlugFirst.setEditable(true);
+				txtSlugFirst.setEnabled(true);
+				txtSlugFirst.setText(txtSlugActress.getText());
+				DebugInfoSchreiben("btn - actress nach first kopiert");
+			}
+		});
 		btnSlugActressToFirst.setBounds(420, 280, 18, 18);
 		btnSlugActressToFirst.setIcon(iconSlugActressToFrist);
 		panel_2_slug.add(btnSlugActressToFirst);
 		
 		JButton btnSlugActressToNear = new JButton("");
+		btnSlugActressToNear.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				chckbxSlugNear.setSelected(true);
+				txtSlugNear.setEditable(true);
+				txtSlugNear.setEnabled(true);
+				txtSlugNear.setText(txtSlugActress.getText());
+				DebugInfoSchreiben("btn - actress nach near kopiert");
+			}
+		});
 		btnSlugActressToNear.setBounds(420, 305, 18, 18);
 		btnSlugActressToNear.setIcon(iconSlugActressToNear);
 		panel_2_slug.add(btnSlugActressToNear);
@@ -2078,18 +2121,14 @@ public TripleX() {
 		 */
 		JPanel panel_5_debug = new JPanel();
 		tabbedPane.addTab("debug", null, panel_5_debug, null);
+		panel_5_debug.setLayout(new BorderLayout(0, 0));
 
-		
-		JScrollPane scrollPaneLog = new JScrollPane();
-		scrollPaneLog.setBounds(10, 10, 300, 300);
+		txtAreaDebug = new JTextArea();
+		JScrollPane scrollPaneDebug = new JScrollPane(txtAreaDebug);
 
-		panel_5_debug.add(scrollPaneLog);
+		panel_5_debug.add(scrollPaneDebug);
 		
-		txtpnLog = new JTextPane();
-		scrollPaneLog.setViewportView(txtpnLog);
-//		scrollPaneLog.setHorizontalScrollBarPolicy(ScrollPane.SCROLLBARS_AS_NEEDED);
-//		scrollPaneLog.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-		
+				
 		/*
 		 * ======================================================
 		 * Panel 6: Konfiguration
@@ -2175,12 +2214,12 @@ public TripleX() {
 		panel_6_Konfiguration.add(btnKonfigLaden);
 
 		JLabel lblKonfigTemplateSlug = new JLabel("Pfad/Datei template.slug");
-		lblKonfigTemplateSlug.setBounds(40, 95, 200, 15);
+		lblKonfigTemplateSlug.setBounds(40, 200, 200, 15);
 		panel_6_Konfiguration.add(lblKonfigTemplateSlug);
 
 		txtKonfigTemplateslug = new JTextField();
 		txtKonfigTemplateslug.setText("template.slug");
-		txtKonfigTemplateslug.setBounds(230, 93, 400, 20);
+		txtKonfigTemplateslug.setBounds(230, 198, 400, 20);
 		panel_6_Konfiguration.add(txtKonfigTemplateslug);
 		txtKonfigTemplateslug.setColumns(10);
 
@@ -2229,26 +2268,26 @@ public TripleX() {
 			}
 		});
 		
-		chckbxKonfigAkutelleFensterposition.setBounds(33, 165, 300, 23);
+		chckbxKonfigAkutelleFensterposition.setBounds(33, 105, 300, 23);
 		panel_6_Konfiguration.add(chckbxKonfigAkutelleFensterposition);
 		
 		lblKonfigXpos = new JLabel("x-Pos:");
-		lblKonfigXpos.setBounds(340, 149, 50, 15);
+		lblKonfigXpos.setBounds(340, 90, 50, 15);
 		panel_6_Konfiguration.add(lblKonfigXpos);
 
 		lblKonfigYpos = new JLabel("Y-Pos:");
-		lblKonfigYpos.setBounds(340, 176, 50, 15);
+		lblKonfigYpos.setBounds(340, 120, 50, 15);
 		panel_6_Konfiguration.add(lblKonfigYpos);
 
 		txtKonfigXpos = new JTextField();
 		txtKonfigXpos.setEnabled(false);
-		txtKonfigXpos.setBounds(395, 147, 40, 20);
+		txtKonfigXpos.setBounds(395, 90, 40, 20);
 		panel_6_Konfiguration.add(txtKonfigXpos);
 		txtKonfigXpos.setColumns(10);
 
 		txtKonfigYpos = new JTextField();
 		txtKonfigYpos.setEnabled(false);
-		txtKonfigYpos.setBounds(395, 174, 40, 20);
+		txtKonfigYpos.setBounds(395, 120, 40, 20);
 		panel_6_Konfiguration.add(txtKonfigYpos);
 		txtKonfigYpos.setColumns(10);
 
@@ -2256,7 +2295,7 @@ public TripleX() {
 		btnKonfigReload = new JButton(iconKonfigReload);
 		btnKonfigReload.setIcon(iconKonfigReload);
 
-		btnKonfigReload.setBounds(445, 159, 20, 20);
+		btnKonfigReload.setBounds(445, 100, 20, 20);
 		panel_6_Konfiguration.add(btnKonfigReload);
 
 		JLabel lblKonfigPythonPfad = new JLabel("Python/mp4 Pfad");
@@ -2278,11 +2317,11 @@ public TripleX() {
 		txtKonfigXxxshpfad.setColumns(10);
 
 		JLabel lblKonfigComboboxenxml = new JLabel("Pfad/Datei konfig_comboboxen.xml");
-		lblKonfigComboboxenxml.setBounds(40, 122, 260, 15);
+		lblKonfigComboboxenxml.setBounds(40, 230, 260, 15);
 		panel_6_Konfiguration.add(lblKonfigComboboxenxml);
 
 		txtKonfigcomboboxenxml = new JTextField();
-		txtKonfigcomboboxenxml.setBounds(310, 120, 320, 20);
+		txtKonfigcomboboxenxml.setBounds(310, 228, 320, 20);
 		panel_6_Konfiguration.add(txtKonfigcomboboxenxml);
 		txtKonfigcomboboxenxml.setColumns(10);
 
