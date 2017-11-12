@@ -401,6 +401,7 @@ public String slugDatenLaden(String strSlugDateiName) {
 		return strRueckgabe;
 		
 	} catch (IOException e) {
+		
 		strRueckgabe = "Fehler beim Schreiben der Slug-Datei " + strSlugDateiName + "."; 
 		e.printStackTrace();
 		return strRueckgabe;
@@ -428,7 +429,15 @@ public String slugDatenSetzen(String strSlugDateiName) {
 		// zum Teil heisst das Datenfeld ERSTELLT_AM
 		// Fehler bzw. Null-Pointer-Exception, wenn Datenfeld nicht vorhanden
 		
-		this.setStrPfad(propertiesBereinigen(properties.getProperty("PFAD")));
+		if (properties.getProperty("PFAD") != null) {
+			this.setStrPfad(propertiesBereinigen(properties.getProperty("PFAD")));	
+		} else {
+			JOptionPane.showMessageDialog(null,	"Fehler beim Lesen der Slug-Datei:\n" + strSlugDateiName + "\n\nDie Eigenschaft PFAD existiert nicht.");
+			this.setStrErstellt(propertiesBereinigen("bitte ändern"));
+		}
+		
+		
+		
 		this.setStrSlug(propertiesBereinigen(properties.getProperty("SLUG")));
 		this.setStrTitel(propertiesBereinigen(properties.getProperty("TITEL")));
 		this.setStrActress(propertiesBereinigen(properties.getProperty("ACTRESS")));
@@ -436,7 +445,7 @@ public String slugDatenSetzen(String strSlugDateiName) {
 		this.setStrBeschreibung(propertiesBereinigen(properties.getProperty("BESCHREIBUNG")));
 		
 		
-		// felht das Feld BRAZNR überall, wo es sich um NaughtyAmerica handelt???
+		// fehlt das Feld BRAZNR überall, wo es sich um NaughtyAmerica handelt???
 		this.setStrBraznr(propertiesBereinigen(properties.getProperty("BRAZNR")));
 		this.setStrNA(propertiesBereinigen(properties.getProperty("NA")));
 		this.setStrRelease(propertiesBereinigen(properties.getProperty("RELEASE")));

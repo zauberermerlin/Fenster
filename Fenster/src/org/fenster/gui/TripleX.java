@@ -11,6 +11,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -44,6 +46,9 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
+import com.sun.org.apache.xml.internal.utils.URI;
+
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
@@ -537,6 +542,7 @@ public void KonfigDatenSetzen(ClassKonfig konfigDaten) {
 		}
 		
 		sDatenFunktion.setStrSterne(cmbSlugSterne.getSelectedItem().toString());
+		DebugInfoSchreiben("btn - Slug-Daten aus Datei laden");
 	} // Ende Funktion
 
 	
@@ -610,6 +616,7 @@ public void SlugDatenLeeren() {
 	
 	cmbSlugSterne.setSelectedIndex(0);
 
+	DebugInfoSchreiben("btn - Slug Daten geleert");
 } // Ende Funktion SlugDatenLeeren
 
 public String SlugDatenSetzen(SlugDaten sDatenFunktion) {
@@ -852,9 +859,98 @@ public void PortraetbildAnzeigen() {
 } // Ende Funktion PortraetbildAnzeigen
 
 
-/**
- * 
+public void BilderDownloaden() {
+/*
+ * Ablauf
+ * (1) Download von Brazzers oder NA?
+ * (2) Pfad- und Slug-Angaben überprüfen/festlegen
+ * (3) Gibt es die Bilder schon? Überschreiben?
+ * (3) Download mit Anzeige in Statusleiste oder Progressbar
  */
+	
+// beide Felder leer --> Infofenster und Ende	
+if (txtSlugBraznr.getText().equals("") && txtSlugNa.getText().equals("")) {
+	JOptionPane.showMessageDialog(frmFenstertitel, "Weder BrazNr noch NA-Link-Bild gefüllt!");
+} else {
+	// beide Felder gefüllt --> Infofenster und Ende
+	if (!txtSlugBraznr.getText().equals("") && !txtSlugNa.getText().equals("")) {
+		JOptionPane.showMessageDialog(frmFenstertitel, "Beide Felder BrazNr und NA-Link-Bild gefüllt!\nNur ein Feld darf gefüllt sein!");
+	} else {
+		// Pfad muss gefüllt sein
+		if (txtRibbonPfad.getText().equals("")) {
+			JOptionPane.showMessageDialog(frmFenstertitel, "Pfad muss gefüllt sein!");
+		} else {
+			File fVerzeichnisPfad = new File(txtRibbonPfad.getText());
+			// Pfad muss existieren und Verzeichnis sein			
+			if (!fVerzeichnisPfad.isDirectory() || !fVerzeichnisPfad.exists()) {
+				JOptionPane.showMessageDialog(frmFenstertitel, "Pfad ist kein Verzeichnis und/oder nicht vorhanden!");
+			} else {
+				// Slug muss gefüllt sein
+				if (txtRibbonSlugName.getText().equals("")) {
+					JOptionPane.showMessageDialog(frmFenstertitel, "Slug muss gefüllt sein!");
+				} else {
+					// Brazzer oder NA
+					// Brazzer: entweder 5 oder 15 Bilder
+					if (!txtSlugBraznr.getText().equals("")) {
+						
+						String strStamm_braz_1="http://static.brazzers.com/scenes/";
+						String strStamm_braz_2="/preview/img";
+						String strQuelle;
+						String strDownloadDatei;
+						
+						for (int i = 1; i < 10; i++) {
+							strQuelle = strStamm_braz_1 + txtSlugBraznr.getText() + strStamm_braz_2 + "/0" + i + ".jpg";
+							
+							URL url;
+							try {
+								url = new URL(strQuelle);
+								BufferedImage img;
+								img = ImageIO.read(url);
+								strDownloadDatei = txtRibbonPfad.getText() + "/0" + i + "-" + txtRibbonSlugName.getText() + ".jpg";
+								File fDownload = new File(strDownloadDatei);
+								ImageIO.write(img, "jpg", fDownload);
+								DebugInfoSchreiben("Bild: " + strDownloadDatei + " geladen.");
+							} catch (IOException e) {
+								strDownloadDatei = txtRibbonPfad.getText() + "/0" + i + "-" + txtRibbonSlugName.getText() + ".jpg";
+								DebugInfoSchreiben("Bild: " + strDownloadDatei + " nicht vorhanden.");
+								//								e.printStackTrace();
+							}
+						} // Ende for-Schleife
+						
+						for (int i = 10; i < 16; i++) {
+							strQuelle = strStamm_braz_1 + txtSlugBraznr.getText() + strStamm_braz_2 + "/" + i + ".jpg";
+							
+							URL url;
+							try {
+								url = new URL(strQuelle);
+								BufferedImage img;
+								img = ImageIO.read(url);
+								strDownloadDatei = txtRibbonPfad.getText() + "/" + i + "-" + txtRibbonSlugName.getText() + ".jpg";
+								File fDownload = new File(strDownloadDatei);
+								ImageIO.write(img, "jpg", fDownload);
+								DebugInfoSchreiben("Bild: " + strDownloadDatei + " geladen.");
+							} catch (IOException e) {
+								strDownloadDatei = txtRibbonPfad.getText() + "/" + i + "-" + txtRibbonSlugName.getText() + ".jpg";
+								DebugInfoSchreiben("Bild: " + strDownloadDatei + " nicht vorhanden.");
+								//								e.printStackTrace();
+							}
+						} // Ende for-Schleife
+
+						
+					} else {
+					// NA	
+						JOptionPane.showMessageDialog(frmFenstertitel, "Hier gehts los mit NA. Noch nicht implementiert!");								
+					}
+				}
+			}
+		}
+	}	
+} // Ende äußerste if-Abfrage
+	
+
+} // Ende Funktion BilderDownloaden
+
+
 public void BilderAnzeigen() {
 	
 	/*
@@ -907,7 +1003,7 @@ public void BilderAnzeigen() {
 	lblAnzeigeBild1.setBounds(200, 40, 150, 100);
 	
 	strBildPfadName = strBildPfad + "/02-" + strBildName + ".jpg";
-	System.out.println(strBildPfadName);
+//	System.out.println(strBildPfadName);
 	
 	
 	File fBildDatei = new File(strBildPfadName);
@@ -942,6 +1038,7 @@ public void BilderAnzeigen() {
 
 	
 	} // Ende der 1. if-Abfrage und Funktionsende	
+	DebugInfoSchreiben("Funktion BilderAnzeigen(); wurde aufgerufen.");
 } // Ende BilderAnzeigen - Funktion
 
 
@@ -955,6 +1052,15 @@ public void DebugInfoSchreiben(String strInfo) {
 	txtAreaDebug.append(localTime.toString() + ": ");
 	
 	txtAreaDebug.append(strInfo + "\n");
+}
+
+public void DebugExceptionSchreiben(Exception e) {
+	//aktuelle Zeit holen
+		LocalTime localTime = LocalTime.now();
+		txtAreaDebug.append("===================== Exception ===================================================");
+		txtAreaDebug.append(localTime.toString() + ": ");
+//		txtAreaDebug.append(e.printStackTrace());
+		txtAreaDebug.append("===================================================================================");
 }
 
 
@@ -1363,7 +1469,7 @@ public TripleX() {
 							fileErzeugen = new File(strVollstaendigerPfad);
 							//							System.out.println(strVollstaendigerPfad);
 							if (fileErzeugen.exists()) {
-								int ueberschreiben = JOptionPane.showConfirmDialog(null, "Slug-Datei besteht bereits.\nÜberschreiben?", "Nachfrage", JOptionPane.YES_NO_OPTION);
+								int ueberschreiben = JOptionPane.showConfirmDialog(frmFenstertitel, "Slug-Datei besteht bereits.\nÜberschreiben?", "Nachfrage", JOptionPane.YES_NO_OPTION);
 								System.out.println(ueberschreiben);
 								if (ueberschreiben == 0) {
 									txtStatusleiste.setText(sDaten.slugDatenLaden(strVollstaendigerPfad));									
@@ -1467,11 +1573,7 @@ public TripleX() {
 		btnSlugBilderDownload.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-//				URL url = new URL("http://www.avajava.com/images/avajavalogo.jpg");
-//		        BufferedImage img = ImageIO.read(url);
-//		        File file = new File("D:\\image\\downloaded.jpg");
-//		        ImageIO.write(img, "jpg", file);
-//				
+				BilderDownloaden();
 				
 			}
 		}); // Ende ActionListener
