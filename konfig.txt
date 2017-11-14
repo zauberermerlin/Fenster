@@ -28,7 +28,7 @@ fenster_y=300
 last_pfad=
 
 #Standard-Pfad für Slug-Dateien
-standard_pfad=/netz/krypto/stars/alix_lynx/put-her-to-the-test
+standard_pfad=/netz/krypto/stars/adriana_chechik/my-wife-is-my-pornstar-adriana-chechik-ryan-mclane
 
 
 #Logging an oder aus

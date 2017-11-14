@@ -13,6 +13,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -21,6 +24,7 @@ import java.util.Arrays;
 import java.util.Properties;
 
 import javax.imageio.ImageIO;
+import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -59,6 +63,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.JTextArea;
 import java.awt.ComponentOrientation;
 import java.awt.Cursor;
+import java.awt.FlowLayout;
 
 public class TripleX extends JFrame {
 
@@ -77,7 +82,17 @@ public class TripleX extends JFrame {
 
 	private JTabbedPane tabbedPane;
 	private JPanel panel_1_Datei;
-	private JPanel panel_3_bilder;
+	private JPanel panel_4_bilder;
+	private JScrollPane scrollPaneBilder;
+	private JPanel panelBilderRahmen;
+	
+	// Register Bilder, als ArrayList
+	private ArrayList<JLabel> lblBilderNummer;
+	private ArrayList<JCheckBox> chckbxTitelbild;
+	private ArrayList<JCheckBox> chckbxPortraetbild;
+	private ArrayList<JPanel> panelBilder;
+	private Dimension dimensionBilder = new Dimension(210, 260);
+	private ArrayList<String> strBildNameVerzeichnis;
 	
 	private JLabel lblSlugTitelbild;
 	private JLabel lblSlugTitelbildAnzeige;
@@ -201,11 +216,6 @@ public class TripleX extends JFrame {
 	private JTextField txtRibbonVersion;
 	private JTextField txtRibbonVersionsdatum;
 
-	// Register Bilder, als ArrayList
-	private ArrayList<JLabel> lblBilderNummer;
-	private ArrayList<JCheckBox> chckbxTitelbild;
-	private ArrayList<JCheckBox> chckbxPortraitbild;
-	
 	/**
 	 * Launch the application.
 	 */
@@ -836,16 +846,15 @@ public void PortraetbildAnzeigen() {
 			// Resize
 			Image dimg = null;
 				if (bufferedimg.getWidth() > bufferedimg.getHeight()) {
-					dimg = bufferedimg.getScaledInstance(lblSlugPortraetbildAnzeige.getWidth(), lblSlugPortraetbildAnzeige.getHeight(),
-							Image.SCALE_SMOOTH);
+					dimg = bufferedimg.getScaledInstance(lblSlugPortraetbildAnzeige.getWidth(), lblSlugPortraetbildAnzeige.getHeight(), Image.SCALE_SMOOTH);
 				} else {
 					// hochkant
-					dimg = bufferedimg.getScaledInstance((lblSlugPortraetbildAnzeige.getWidth()/3)*2, lblSlugPortraetbildAnzeige.getHeight(),
-							Image.SCALE_SMOOTH);													
+					dimg = bufferedimg.getScaledInstance((lblSlugPortraetbildAnzeige.getWidth()/3)*2, lblSlugPortraetbildAnzeige.getHeight(), Image.SCALE_SMOOTH);													
 				}
 
 			// Icon lesen
 			ImageIcon iconSlugPortraetbild = new ImageIcon(dimg);
+			lblSlugPortraetbildAnzeige.setHorizontalAlignment(0);
 			lblSlugPortraetbildAnzeige.setIcon(iconSlugPortraetbild);
 		
 	} else {
@@ -897,6 +906,7 @@ if (txtSlugBraznr.getText().equals("") && txtSlugNa.getText().equals("")) {
 						String strStamm_braz_2="/preview/img";
 						String strQuelle;
 						String strDownloadDatei;
+						int iAnzahlBilder = 0;
 						
 						for (int i = 1; i < 10; i++) {
 							strQuelle = strStamm_braz_1 + txtSlugBraznr.getText() + strStamm_braz_2 + "/0" + i + ".jpg";
@@ -909,10 +919,11 @@ if (txtSlugBraznr.getText().equals("") && txtSlugNa.getText().equals("")) {
 								strDownloadDatei = txtRibbonPfad.getText() + "/0" + i + "-" + txtRibbonSlugName.getText() + ".jpg";
 								File fDownload = new File(strDownloadDatei);
 								ImageIO.write(img, "jpg", fDownload);
-								DebugInfoSchreiben("Bild: " + strDownloadDatei + " geladen.");
+								DebugInfoSchreiben("geladen: Bild: " + strDownloadDatei);
+								iAnzahlBilder++;
 							} catch (IOException e) {
 								strDownloadDatei = txtRibbonPfad.getText() + "/0" + i + "-" + txtRibbonSlugName.getText() + ".jpg";
-								DebugInfoSchreiben("Bild: " + strDownloadDatei + " nicht vorhanden.");
+								DebugInfoSchreiben("nicht vorhanden: Bild: " + strDownloadDatei);
 								//								e.printStackTrace();
 							}
 						} // Ende for-Schleife
@@ -928,15 +939,16 @@ if (txtSlugBraznr.getText().equals("") && txtSlugNa.getText().equals("")) {
 								strDownloadDatei = txtRibbonPfad.getText() + "/" + i + "-" + txtRibbonSlugName.getText() + ".jpg";
 								File fDownload = new File(strDownloadDatei);
 								ImageIO.write(img, "jpg", fDownload);
-								DebugInfoSchreiben("Bild: " + strDownloadDatei + " geladen.");
+								DebugInfoSchreiben("geladen: Bild: " + strDownloadDatei);
+								iAnzahlBilder++;
 							} catch (IOException e) {
 								strDownloadDatei = txtRibbonPfad.getText() + "/" + i + "-" + txtRibbonSlugName.getText() + ".jpg";
-								DebugInfoSchreiben("Bild: " + strDownloadDatei + " nicht vorhanden.");
+								DebugInfoSchreiben("nicht vorhanden: Bild: " + strDownloadDatei);
 								//								e.printStackTrace();
 							}
+							txtStatusleiste.setText("Download Brazzers-Bilder fertig.");
 						} // Ende for-Schleife
-
-						
+						txtStatusleiste.setText("Es wurden " + iAnzahlBilder + " Bilder ge-downloaded");
 					} else {
 					// NA	
 						JOptionPane.showMessageDialog(frmFenstertitel, "Hier gehts los mit NA. Noch nicht implementiert!");								
@@ -964,12 +976,14 @@ public void BilderAnzeigen() {
 	 * Anzeige: pro Reihe 3 Bilder
 	 */
 
+	DebugInfoSchreiben("Funktion BilderAnzeigen() wird aufgerufen");
 	
 	// ungelöster Fehler: keine Aktualisierung
 	
 	String strBildName;
 	String strBildPfad;
 	String strBildPfadName;
+	File fBilder;
 	
 	// Wenn Pfad nicht gefüllt, dann braucht auch nix angezeigt zu werden
 	if ( ! txtRibbonPfad.getText().equals("")) {
@@ -982,63 +996,100 @@ public void BilderAnzeigen() {
 			strBildPfad = txtRibbonPfad.getText();
 		} // Ende if
 
-		String[] strArrayPfad = strBildPfad.split("/");	
-		int intAnzahl = strArrayPfad.length;
-		strBildName = strArrayPfad[intAnzahl - 1];
-	
+		
+		//Bilder im Pfad holen
+		//Sofern Datei auf .jpg endet anzeigen
+		fBilder = new File(txtRibbonPfad.getText());
+		String strAlleBilder[] = fBilder.list();
+		Arrays.sort(strAlleBilder);
 		
 		
-	
-	/*
-	 * Bild-Labels haben alle die feste Größe vom 150x100
-	 */
+		lblBilderNummer = new ArrayList<JLabel>();
+		chckbxTitelbild = new ArrayList<JCheckBox>();
+		chckbxPortraetbild = new ArrayList<JCheckBox>();
+		panelBilder = new ArrayList<JPanel>();
+		strBildNameVerzeichnis = new ArrayList<String>();
 
-	JLabel lblBilderTitelbild = new JLabel("Titelbild 01");
-	lblBilderTitelbild.setBounds(95, 42, 80, 15);
-	panel_3_bilder.add(lblBilderTitelbild);
-
-	JLabel lblAnzeigeBild1 = new JLabel("");
-	lblAnzeigeBild1.setHorizontalAlignment(SwingConstants.CENTER);
-	lblAnzeigeBild1.setBorder(new LineBorder(new Color(0, 0, 0)));
-	lblAnzeigeBild1.setBounds(200, 40, 150, 100);
-	
-	strBildPfadName = strBildPfad + "/02-" + strBildName + ".jpg";
-//	System.out.println(strBildPfadName);
-	
-	
-	File fBildDatei = new File(strBildPfadName);
-
-	if (fBildDatei.isFile() && fBildDatei.exists()) {
-	
-		BufferedImage bufferedimg = null;
-		try {
-			bufferedimg = ImageIO.read(new File(strBildPfadName));
-		} catch (IOException e) {
-			e.printStackTrace();
+		// Panel leeren
+		panelBilderRahmen.removeAll();
+		
+		
+		// Variablen anlegen
+		for (int i = 0; i < strAlleBilder.length; i++) {
+			if (strAlleBilder[i].endsWith(".jpg")) {
+				// Bildname mit kompletten Pfad setzen
+				strBildNameVerzeichnis.add(new String(txtRibbonPfad.getText() + "/" + strAlleBilder[i]));
+//				System.out.println(strBildNameVerzeichnis.get(i));
+				panelBilder.add(new JPanel());
+				lblBilderNummer.add(new JLabel());
+				chckbxTitelbild.add(new JCheckBox(strAlleBilder[i].substring(0, 2) + "-Titelbild"));
+				chckbxPortraetbild.add(new JCheckBox(strAlleBilder[i].substring(0, 2) + "-Porträtbild"));
+			}
 		}
 
-		// Resize
-		Image dimg = null;
-			if (bufferedimg.getWidth() > bufferedimg.getHeight()) {
-				dimg = bufferedimg.getScaledInstance(lblAnzeigeBild1.getWidth(), lblAnzeigeBild1.getHeight(),
-						Image.SCALE_SMOOTH);
-			} else {
-				// hochkant
-				dimg = bufferedimg.getScaledInstance((lblAnzeigeBild1.getWidth()/3)*2, lblAnzeigeBild1.getHeight(),
-						Image.SCALE_SMOOTH);													
-			}
+		
+		// Größe des eingebetteten Panels setzen
+		// 3 Bilder pro Reihe/Zeile
+		
+		Dimension dimensionPanelBilder;
+		if (lblBilderNummer.size() % 3 != 0) {
+			dimensionPanelBilder = new Dimension(600, ((lblBilderNummer.size() / 3) +1 ) * 280);
+			DebugInfoSchreiben("Register Bilder); Panel-Größe: 600x" + ((lblBilderNummer.size() / 3) +1 ) * 330);
+		} else {
+			dimensionPanelBilder = new Dimension(600, (lblBilderNummer.size() / 3) * 280);
+			DebugInfoSchreiben("Register Bilder); Panel-Größe: 600x" + (lblBilderNummer.size() / 3) * 330);
+		}
+		
+		panelBilderRahmen.setPreferredSize(dimensionPanelBilder);
+		
+		
+		
+		// Werte setzen und anzeigen
+		for (int i = 0; i < lblBilderNummer.size(); i++) {
+			lblBilderNummer.get(i).setHorizontalAlignment(SwingConstants.CENTER);
+//			lblBilderNummer.get(i).setBorder(new LineBorder(new Color(0, 0, 0)));
+			lblBilderNummer.get(i).setSize(150, 100);
+			// Dimension 210 x 260
+			panelBilder.get(i).setBorder(new LineBorder(new Color(0, 0, 0)));
+			panelBilder.get(i).setPreferredSize(dimensionBilder);
+			panelBilder.get(i).setLayout(new BoxLayout(panelBilder.get(i), BoxLayout.Y_AXIS));
+			
+			DebugInfoSchreiben("Bild: " + strBildNameVerzeichnis.get(i));
+			
+			File fBildDatei = new File(strBildNameVerzeichnis.get(i));
+			if (fBildDatei.isFile() && fBildDatei.exists()) {
+				
+				BufferedImage bufferedimg = null;
+				try {
+					bufferedimg = ImageIO.read(new File(strBildNameVerzeichnis.get(i)));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 
-		// Icon lesen
-		ImageIcon iconAnzeigeBild1 = new ImageIcon(dimg);
-		lblAnzeigeBild1.setIcon(iconAnzeigeBild1);
-	} // Ende if fBildDatei
-	
-	
-	panel_3_bilder.add(lblAnzeigeBild1);
+				// Resize
+				Image dimg = null;
+					if (bufferedimg.getWidth() > bufferedimg.getHeight()) {
+						dimg = bufferedimg.getScaledInstance(210, 140, Image.SCALE_SMOOTH);
+//						dimg = bufferedimg.getScaledInstance(lblAnzeigeBild1.getWidth(), lblAnzeigeBild1.getHeight(),
+					} else {
+						// hochkant
+						dimg = bufferedimg.getScaledInstance(140, 210, Image.SCALE_SMOOTH);													
+					}
 
-	
+				// Icon lesen
+				ImageIcon iconAnzeigeBild = new ImageIcon(dimg);
+				lblBilderNummer.get(i).setIcon(iconAnzeigeBild);
+				// Mittig das Bild bzw. Icon darstellen
+				lblBilderNummer.get(i).setHorizontalAlignment(0);
+			} // Ende if fBildDatei
+			
+			
+			panelBilder.get(i).add(lblBilderNummer.get(i));
+			panelBilder.get(i).add(chckbxTitelbild.get(i));
+			panelBilder.get(i).add(chckbxPortraetbild.get(i));
+			panelBilderRahmen.add(panelBilder.get(i));
+		} // Ende for-Schleife
 	} // Ende der 1. if-Abfrage und Funktionsende	
-	DebugInfoSchreiben("Funktion BilderAnzeigen(); wurde aufgerufen.");
 } // Ende BilderAnzeigen - Funktion
 
 
@@ -1119,7 +1170,7 @@ public TripleX() {
 		menu_item_version.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				JOptionPane.showMessageDialog(null, "Version");
+				JOptionPane.showMessageDialog(frmFenstertitel, "Version");
 
 			}
 		});
@@ -1314,7 +1365,7 @@ public TripleX() {
 					break;
 				
 				// Panel: Bild
-				case 2:
+				case 3:
 					BilderAnzeigen();
 					
 					break;
@@ -1341,6 +1392,74 @@ public TripleX() {
 		panel_1_Datei.add(btnDateiDateiKopieren);
 		
 		JButton btnDateiErstellenUndKopieren = new JButton("Erst. + kopieren");
+		btnDateiErstellenUndKopieren.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				DebugInfoSchreiben("btnDateiErstellenUndKopieren wurde betätigt");
+				
+				//ersten markierten Eintrag holen
+				// Wert: -1, wenn nix markiert ist
+				int iMarkierung = listDateiVerzeichnis.getSelectedIndex();
+				String strErgebnis;
+				if (iMarkierung != -1) {
+
+					DebugInfoSchreiben("Erster, markierter Eintrag aus der ist: " + dflModel.get(iMarkierung));
+					
+					// Datei muss auf .mp4 enden
+					if (dflModel.get(iMarkierung).endsWith(".mp4")) {
+						strErgebnis = JOptionPane.showInputDialog(frmFenstertitel, "Datei\n\t" + dflModel.get(iMarkierung) + "\nwird umbenannt und\nins Unterverzeichnis kopiert.", dflModel.get(iMarkierung) );
+
+						// Neuer Dateiname muss auf mp4 enden und darf nicht identisch zum bisherigen Namen sein
+						if (strErgebnis.endsWith(".mp4") && !strErgebnis.equals(dflModel.get(iMarkierung))) {
+							String strAlterDateiname = txtRibbonPfad.getText() + "/" + dflModel.get(iMarkierung);
+							String strNeuerDateiname = txtRibbonPfad.getText() + "/" + strErgebnis;
+							String strNeuesVerzeichnis = txtRibbonPfad.getText() + "/" + strErgebnis.subSequence(0, (strErgebnis.length()-4));
+							String strNeueDateiNeuesVerzeichnis = strNeuesVerzeichnis + "/" + strErgebnis;
+							
+							File fAlterDateiname = new File(strAlterDateiname);
+							File fNeuerDateiname = new File(strNeuerDateiname);
+							File fNeuesVerzeichnis = new File(strNeuesVerzeichnis);
+							
+							// Datei umbenennen
+							if (fAlterDateiname.renameTo(fNeuerDateiname)) {
+								DebugInfoSchreiben("Datei von: " + strAlterDateiname + " nach " + strNeuerDateiname + " umbenannt.");
+
+								// Neues Verzeichnis anlegen
+								if (fNeuesVerzeichnis.mkdir()) {
+									DebugInfoSchreiben("Verzeichnis: " + strNeuesVerzeichnis + " angelegt.");
+									
+									Path moveQuellePath = Paths.get(strNeuerDateiname);
+									Path moveZielPath = Paths.get(strNeueDateiNeuesVerzeichnis);
+									try {
+										Files.move(moveQuellePath, moveZielPath);
+										DebugInfoSchreiben("Datei: " + strNeuerDateiname + " wurde nach " + strNeueDateiNeuesVerzeichnis + " verschoben.");
+										txtStatusleiste.setText("Datei umbenannt, Verzeichnis angelegt und Datei verschoben.");
+										txtRibbonPfad.setText(strNeuesVerzeichnis);
+										VerzeichnisAkutalisieren(strNeuesVerzeichnis, dflModel);
+									} catch (IOException e1) {
+										DebugInfoSchreiben("Datei: " + strNeuerDateiname + " kann nicht nach " + strNeueDateiNeuesVerzeichnis + " verschoben werden.");
+										e1.printStackTrace();
+									}
+									
+									
+								} else {
+									DebugInfoSchreiben("Verzeichnis: " + strNeuesVerzeichnis + " konnte nicht angelegt werden.");
+								} // Ende Verzeichnis anlegen
+							} else {
+								DebugInfoSchreiben("Umbenennung von: " + strAlterDateiname + " nach " + strNeuerDateiname + " fehlgeschlagen.");
+								txtStatusleiste.setText("Umbenennung von: " + strAlterDateiname + " nach " + strNeuerDateiname + " fehlgeschlagen.");
+							} // Ende Datei umbenennen
+							
+						} else {
+							JOptionPane.showMessageDialog(frmFenstertitel, "Dateiname endet nicht auf .mp4\n" + strErgebnis);
+						}
+					} else {
+						JOptionPane.showMessageDialog(frmFenstertitel, "Es wurde keine *.mp4 - Datei ausgewählt!\nAuswahl: " + dflModel.get(iMarkierung));
+						DebugInfoSchreiben("Es wurde keine mp4-Datei ausgewählt. Keine weitere Aktion.");
+					}
+				} // Ende äussere If-Bedingung
+			}
+		}); // Ende actionlistener
 		btnDateiErstellenUndKopieren.setBounds(400, 105, 150, 25);
 		panel_1_Datei.add(btnDateiErstellenUndKopieren);
 		
@@ -1400,15 +1519,15 @@ public TripleX() {
 		 * Album
 		 */
 		JLabel lblSlugAlbum = new JLabel("Album");
-		lblSlugAlbum.setBounds(30, 202, 55, 15);
+		lblSlugAlbum.setBounds(30, 252, 55, 15);
 		panel_2_slug.add(lblSlugAlbum);
 		
 		//Hier kein ActionListener, da nur bei Studio-Auswahl sich die Combo-Boxen ändern
 		cmbSlugAlbum = new JComboBox<String>();
-		cmbSlugAlbum.setBounds(100, 199, 200, 22);
+		cmbSlugAlbum.setBounds(100, 250, 200, 22);
 		panel_2_slug.add(cmbSlugAlbum);
 		JLabel lblSlugStudio = new JLabel("Studio");
-		lblSlugStudio.setBounds(30, 167, 55, 15);
+		lblSlugStudio.setBounds(30, 217, 55, 15);
 		panel_2_slug.add(lblSlugStudio);
 
 		/*
@@ -1417,7 +1536,7 @@ public TripleX() {
 		 * Studio
 		 */
 		cmbSlugStudio = new JComboBox<String>();
-		cmbSlugStudio.setBounds(100, 164, 120, 22);
+		cmbSlugStudio.setBounds(100, 214, 120, 22);
 		panel_2_slug.add(cmbSlugStudio);
 		
 		cmbSlugStudio.addActionListener(new ActionListener() {
@@ -1478,7 +1597,7 @@ public TripleX() {
 								txtStatusleiste.setText(sDaten.slugDatenLaden(strVollstaendigerPfad));
 							} // Ende 4. if
 						} else {
-							JOptionPane.showMessageDialog(null, "Die Sulg-Angabe ist nicht gefüllt!", "Hinweis", JOptionPane.WARNING_MESSAGE);
+							JOptionPane.showMessageDialog(null, "Die Slug-Angabe ist nicht gefüllt!", "Hinweis", JOptionPane.WARNING_MESSAGE);
 						} // Ende 3. if
 					} else {
 						JOptionPane.showMessageDialog(null, "Die Pfad-Angabe ist kein Verzeichnis\noder existiert nicht!", "Hinweis", JOptionPane.WARNING_MESSAGE);
@@ -1488,7 +1607,7 @@ public TripleX() {
 				} // Ende 1. if
 			}
 		});
-		btnSlugErzeugen.setBounds(650, 435, 115, 25);
+		btnSlugErzeugen.setBounds(600, 435, 115, 25);
 		panel_2_slug.add(btnSlugErzeugen);
 
 		JButton btnSlugDateiLaden = new JButton("Slug Laden");
@@ -1532,7 +1651,7 @@ public TripleX() {
 			}
 		}); // Ende ActionListener
 		
-		btnSlugDateiLaden.setBounds(650, 400, 115, 25);
+		btnSlugDateiLaden.setBounds(600, 400, 115, 25);
 		panel_2_slug.add(btnSlugDateiLaden);
 
 		JLabel lblSlugBeschreibung = new JLabel("Beschreibung");
@@ -1547,28 +1666,28 @@ public TripleX() {
 		scrollPane_1.setViewportView(txtpnSlugBeschreibung);
 
 		JLabel lblSlugBraznr = new JLabel("Braz-Nr.");
-		lblSlugBraznr.setBounds(255, 167, 70, 15);
+		lblSlugBraznr.setBounds(255, 217, 70, 15);
 		panel_2_slug.add(lblSlugBraznr);
 
 		txtSlugBraznr = new JTextField();
 		txtSlugBraznr.setHorizontalAlignment(SwingConstants.CENTER);
-		txtSlugBraznr.setBounds(325, 165, 50, 19);
+		txtSlugBraznr.setBounds(325, 215, 50, 19);
 		panel_2_slug.add(txtSlugBraznr);
 		txtSlugBraznr.setColumns(10);
 
 		JLabel lblSlugNa = new JLabel("NA Bild Link");
-		lblSlugNa.setBounds(420, 167, 90, 15);
+		lblSlugNa.setBounds(420, 217, 90, 15);
 		panel_2_slug.add(lblSlugNa);
 
 		txtSlugNa = new JTextField();
-		txtSlugNa.setBounds(510, 165, 250, 19);
+		txtSlugNa.setBounds(510, 215, 250, 19);
 		panel_2_slug.add(txtSlugNa);
 		txtSlugNa.setColumns(10);
 
 
 		iconSlugBilderDownload = new ImageIcon(strDownload);
 		JButton btnSlugBilderDownload = new JButton("");
-		btnSlugBilderDownload.setBounds(390, 165, 18, 18);
+		btnSlugBilderDownload.setBounds(390, 215, 18, 18);
 		btnSlugBilderDownload.setIcon(iconSlugBilderDownload);
 		btnSlugBilderDownload.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -1670,21 +1789,21 @@ public TripleX() {
 		panel_2_slug.add(chckbxSlugBilder);
 
 		JLabel lblSlugSterne = new JLabel("Sterne");
-		lblSlugSterne.setBounds(555, 10, 60, 15);
+		lblSlugSterne.setBounds(657, 97, 60, 15);
 		panel_2_slug.add(lblSlugSterne);
 
 		cmbSlugSterne = new JComboBox<String>();
-		cmbSlugSterne.setBounds(610, 7, 40, 20);
+		cmbSlugSterne.setBounds(715, 95, 40, 20);
 
 		ComboBoxBefuellen(cmbSlugSterne, sterneDaten);
 		panel_2_slug.add(cmbSlugSterne);
 
 		JSeparator separator_3 = new JSeparator();
-		separator_3.setBounds(30, 155, 730, 2);
+		separator_3.setBounds(30, 205, 730, 2);
 		panel_2_slug.add(separator_3);
 
 		JLabel lblSlugDvd = new JLabel("DVD");
-		lblSlugDvd.setBounds(465, 202, 40, 15);
+		lblSlugDvd.setBounds(465, 252, 40, 15);
 		panel_2_slug.add(lblSlugDvd);
 
 
@@ -1703,7 +1822,7 @@ public TripleX() {
 
 		lblSlugTitelbildAnzeige = new JLabel((String) null);
 		lblSlugTitelbildAnzeige.setBorder(new LineBorder(new Color(0, 0, 0)));
-		lblSlugTitelbildAnzeige.setBounds(95, 10, 90, 60);
+		lblSlugTitelbildAnzeige.setBounds(95, 10, 150, 100);
 		panel_2_slug.add(lblSlugTitelbildAnzeige);
 
 		
@@ -1779,7 +1898,7 @@ public TripleX() {
 		iconSlugPortraetbildUnten = new ImageIcon(strPfeilUnten);
 		
 		lblSlugPortraitbild = new JLabel("Portraitbild");
-		lblSlugPortraitbild.setBounds(255, 9, 90, 15);
+		lblSlugPortraitbild.setBounds(305, 9, 90, 15);
 		panel_2_slug.add(lblSlugPortraitbild);
 		
 		JButton btnSlugPortraetbildOben = new JButton("");
@@ -1805,7 +1924,7 @@ public TripleX() {
 			}
 		});
 		btnSlugPortraetbildOben.setIcon(iconSlugPortraetbildOben);
-		btnSlugPortraetbildOben.setBounds(295, 25, 18, 18);
+		btnSlugPortraetbildOben.setBounds(345, 25, 18, 18);
 		panel_2_slug.add(btnSlugPortraetbildOben);
 			
 		JButton btnSlugPortraetbildUnten = new JButton("");
@@ -1833,18 +1952,18 @@ public TripleX() {
 		});
 
 		btnSlugPortraetbildUnten.setIcon(iconSlugPortraetbildUnten);
-		btnSlugPortraetbildUnten.setBounds(295, 66, 18, 18);
+		btnSlugPortraetbildUnten.setBounds(345, 66, 18, 18);
 		panel_2_slug.add(btnSlugPortraetbildUnten);
 
 		lblSlugPortraetbildAnzeige = new JLabel("");
 		lblSlugPortraetbildAnzeige.setBorder(new LineBorder(new Color(0, 0, 0)));
-		lblSlugPortraetbildAnzeige.setBounds(350, 10, 90, 60);
+		lblSlugPortraetbildAnzeige.setBounds(400, 10, 150, 100);
 		panel_2_slug.add(lblSlugPortraetbildAnzeige);
 
 		txtSlugPortraitbild = new JTextField();
 		txtSlugPortraitbild.setHorizontalAlignment(SwingConstants.CENTER);
 		txtSlugPortraitbild.setText("01");
-		txtSlugPortraitbild.setBounds(290, 45, 30, 19);
+		txtSlugPortraitbild.setBounds(340, 45, 30, 19);
 		panel_2_slug.add(txtSlugPortraitbild);
 		txtSlugPortraitbild.setColumns(10);
 
@@ -1862,11 +1981,11 @@ public TripleX() {
 		iconSlugRelaseNachErstelltAm = new ImageIcon(strPfeilRechts);
 
 		JLabel lblSlugRelease = new JLabel("Release");
-		lblSlugRelease.setBounds(30, 110, 70, 15);
+		lblSlugRelease.setBounds(30, 160, 70, 15);
 		panel_2_slug.add(lblSlugRelease);
 
 		JLabel lblSlugErstelltAm = new JLabel("Erstellt am");
-		lblSlugErstelltAm.setBounds(350, 110, 85, 15);
+		lblSlugErstelltAm.setBounds(350, 160, 85, 15);
 		panel_2_slug.add(lblSlugErstelltAm);
 
 		
@@ -1883,14 +2002,14 @@ public TripleX() {
 		txtSlugReleaseJahr = new JTextField();
 		txtSlugReleaseJahr.setHorizontalAlignment(SwingConstants.CENTER);
 		txtSlugReleaseJahr.setText(dtf.format(localDate).toString());
-		txtSlugReleaseJahr.setBounds(100, 108, 40, 20);
+		txtSlugReleaseJahr.setBounds(100, 158, 40, 20);
 		panel_2_slug.add(txtSlugReleaseJahr);
 		txtSlugReleaseJahr.setColumns(10);
 
 		
 		txtSlugReleaseMonat = new JTextField();
 		txtSlugReleaseMonat.setHorizontalAlignment(SwingConstants.CENTER);
-		txtSlugReleaseMonat.setBounds(145, 108, 25, 20);
+		txtSlugReleaseMonat.setBounds(145, 158, 25, 20);
 		panel_2_slug.add(txtSlugReleaseMonat);
 		txtSlugReleaseMonat.setColumns(10);
 
@@ -1898,14 +2017,14 @@ public TripleX() {
 		txtSlugReleaseTag = new JTextField();
 		txtSlugReleaseTag.setHorizontalAlignment(SwingConstants.CENTER);
 		txtSlugReleaseTag.setText("");
-		txtSlugReleaseTag.setBounds(175, 108, 25, 20);
+		txtSlugReleaseTag.setBounds(175, 158, 25, 20);
 		panel_2_slug.add(txtSlugReleaseTag);
 		txtSlugReleaseTag.setColumns(10);
 		
 		txtSlugReleaseZeit = new JTextField();
 		txtSlugReleaseZeit.setHorizontalAlignment(SwingConstants.CENTER);
 		txtSlugReleaseZeit.setText("00:00");
-		txtSlugReleaseZeit.setBounds(210, 108, 41, 20);
+		txtSlugReleaseZeit.setBounds(210, 158, 41, 20);
 		panel_2_slug.add(txtSlugReleaseZeit);
 		txtSlugReleaseZeit.setColumns(10);
 		
@@ -1917,7 +2036,7 @@ public TripleX() {
 		// dtf = DateTimeFormatter.ofPattern("yyyy");
 		// localDate = LocalDate.now();
 		txtSlugErstelltAmJahr = new JTextField();
-		txtSlugErstelltAmJahr.setBounds(440, 108, 40, 20);
+		txtSlugErstelltAmJahr.setBounds(440, 158, 40, 20);
 		txtSlugErstelltAmJahr.setText(dtf.format(localDate).toString());
 		panel_2_slug.add(txtSlugErstelltAmJahr);
 		txtSlugErstelltAmJahr.setColumns(10);
@@ -1926,7 +2045,7 @@ public TripleX() {
 		localDate = LocalDate.now();
 		
 		txtSlugErstelltAmMonat = new JTextField();
-		txtSlugErstelltAmMonat.setBounds(485, 108, 25, 20);
+		txtSlugErstelltAmMonat.setBounds(485, 158, 25, 20);
 		txtSlugErstelltAmMonat.setText(dtf.format(localDate).toString());
 		panel_2_slug.add(txtSlugErstelltAmMonat);
 		txtSlugErstelltAmMonat.setColumns(10);
@@ -1936,14 +2055,14 @@ public TripleX() {
 		localDate = LocalDate.now();
 		
 		txtSlugErstelltAmTag = new JTextField();
-		txtSlugErstelltAmTag.setBounds(515, 108, 25, 20);
+		txtSlugErstelltAmTag.setBounds(515, 158, 25, 20);
 		txtSlugErstelltAmTag.setText(dtf.format(localDate).toString());
 		panel_2_slug.add(txtSlugErstelltAmTag);
 		txtSlugErstelltAmTag.setColumns(10);
 		
 		txtSlugErstelltAmZeit = new JTextField();
 		txtSlugErstelltAmZeit.setText("00:00");
-		txtSlugErstelltAmZeit.setBounds(550, 108, 41, 20);
+		txtSlugErstelltAmZeit.setBounds(550, 158, 41, 20);
 		panel_2_slug.add(txtSlugErstelltAmZeit);
 		txtSlugErstelltAmZeit.setColumns(10);
 		
@@ -1956,7 +2075,7 @@ public TripleX() {
 				txtSlugReleaseJahr.setText(String.valueOf(intReleaseJahr));
 			}
 		});
-		btnSlugReleaseJahrOben.setBounds(110, 87, 18, 18);
+		btnSlugReleaseJahrOben.setBounds(110, 137, 18, 18);
 		btnSlugReleaseJahrOben.setIcon(iconSlugReleaseJahrOben);
 		panel_2_slug.add(btnSlugReleaseJahrOben);
 		
@@ -1969,7 +2088,7 @@ public TripleX() {
 			}
 		});
 
-		btnSlugReleaseJahrUnten.setBounds(110, 130, 18, 18);
+		btnSlugReleaseJahrUnten.setBounds(110, 180, 18, 18);
 		btnSlugReleaseJahrUnten.setIcon(iconSlugReleaseJahrUnten);
 
 		panel_2_slug.add(btnSlugReleaseJahrUnten);
@@ -1982,7 +2101,7 @@ public TripleX() {
 
 			}
 		});
-		btnSlugLeeren.setBounds(650, 365, 115, 25);
+		btnSlugLeeren.setBounds(600, 365, 115, 25);
 		panel_2_slug.add(btnSlugLeeren);
 		
 		
@@ -1995,7 +2114,7 @@ public TripleX() {
 		 */
 		JButton btnSlugTauschen = new JButton("");
 		btnSlugTauschen.setIcon(iconSlugTauschen);
-		btnSlugTauschen.setBounds(290, 110, 26, 18);
+		btnSlugTauschen.setBounds(290, 160, 26, 18);
 		panel_2_slug.add(btnSlugTauschen);
 
 				
@@ -2010,11 +2129,11 @@ public TripleX() {
 				txtSlugReleaseZeit.setText(txtSlugErstelltAmZeit.getText());
 			}
 		});
-		btnSlugErstelltAmNachRelease.setBounds(269, 110, 18, 18);
+		btnSlugErstelltAmNachRelease.setBounds(269, 160, 18, 18);
 		panel_2_slug.add(btnSlugErstelltAmNachRelease);
 
 		JButton btnSlugReleaseNachErstelltAm = new JButton("");
-		btnSlugReleaseNachErstelltAm.setBounds(320, 110, 18, 18);
+		btnSlugReleaseNachErstelltAm.setBounds(320, 160, 18, 18);
 		btnSlugReleaseNachErstelltAm.setIcon(iconSlugRelaseNachErstelltAm);
 		panel_2_slug.add(btnSlugReleaseNachErstelltAm);
 		btnSlugReleaseNachErstelltAm.addActionListener(new ActionListener() {
@@ -2028,32 +2147,32 @@ public TripleX() {
 		});
 
 		JLabel lblSlugPart = new JLabel("Part");
-		lblSlugPart.setBounds(536, 67, 40, 15);
+		lblSlugPart.setBounds(692, 130, 40, 15);
 		panel_2_slug.add(lblSlugPart);
 
 		txtSlugPart = new JTextField();
 		txtSlugPart.setHorizontalAlignment(SwingConstants.CENTER);
 		txtSlugPart.setText("1");
-		txtSlugPart.setBounds(581, 64, 25, 20);
+		txtSlugPart.setBounds(731, 128, 25, 20);
 		panel_2_slug.add(txtSlugPart);
 		txtSlugPart.setColumns(10);
 
 
 
 		JLabel lblSlugAnzahlParts = new JLabel("Anzahl Parts");
-		lblSlugAnzahlParts.setBounds(631, 67, 100, 15);
+		lblSlugAnzahlParts.setBounds(631, 160, 100, 15);
 		panel_2_slug.add(lblSlugAnzahlParts);
 
 		txtSlugAnzahlParts = new JTextField();
 		txtSlugAnzahlParts.setHorizontalAlignment(SwingConstants.CENTER);
-		txtSlugAnzahlParts.setBounds(731, 64, 25, 20);
+		txtSlugAnzahlParts.setBounds(731, 158, 25, 20);
 		panel_2_slug.add(txtSlugAnzahlParts);
 		txtSlugAnzahlParts.setColumns(10);
 
 
 
 		txtSlugDvd = new JTextField();
-		txtSlugDvd.setBounds(510, 200, 250, 20);
+		txtSlugDvd.setBounds(510, 250, 250, 20);
 		panel_2_slug.add(txtSlugDvd);
 		txtSlugDvd.setColumns(10);
 		
@@ -2120,7 +2239,7 @@ public TripleX() {
 
 		/*
 		 * ==========================================================
-		 * Start Panel 3: Bilder
+		 * Start Panel 4: Bilder
 		 * 
 		 * Bilder im Verzeichnis in der Vorschau
 		 * 
@@ -2128,38 +2247,64 @@ public TripleX() {
 		 * 
 		 * ==========================================================
 		 */
+		
+		JPanel panel_3_slugdatei = new JPanel();
+		tabbedPane.addTab("slug-datei", null, panel_3_slugdatei, null);
+		panel_3_slugdatei.setLayout(new BorderLayout(0, 0));
+		
+		JPanel panelSlugdateiRahmen = new JPanel();
+		panel_3_slugdatei.add(panelSlugdateiRahmen);
+		panelSlugdateiRahmen.setLayout(new BoxLayout(panelSlugdateiRahmen, BoxLayout.Y_AXIS));
+		
+		JPanel panelSlugdateiButtons = new JPanel();
+		panelSlugdateiRahmen.add(panelSlugdateiButtons);
+		
+		JScrollPane scrollPaneSlugDatei = new JScrollPane();
+		panelSlugdateiRahmen.add(scrollPaneSlugDatei);
+		
+		JTextPane txtPaneSlugDatei = new JTextPane();
+		panelSlugdateiRahmen.add(txtPaneSlugDatei);
 
 
-		panel_3_bilder = new JPanel();
-		tabbedPane.addTab("bilder", null, panel_3_bilder, null);
-		panel_3_bilder.setLayout(null);
+		panel_4_bilder = new JPanel();
+		tabbedPane.addTab("bilder", null, panel_4_bilder, null);
+		panel_4_bilder.setLayout(null);
+		
+		scrollPaneBilder = new JScrollPane();
+		scrollPaneBilder.setBounds(1, 1, 790, 470);
+		panel_4_bilder.add(scrollPaneBilder);
+		
+		panelBilderRahmen = new JPanel();
+		FlowLayout flowLayout = (FlowLayout) panelBilderRahmen.getLayout();
+		flowLayout.setAlignment(FlowLayout.LEFT);
+		scrollPaneBilder.setViewportView(panelBilderRahmen);
 
 
 		/*
-		 * Ende Panel 3
+		 * Ende Panel 4
 		 */
 
 
 		/*
 		 * ==========================================================
-		 * Start Panel 4: exif und mp4
+		 * Start Panel 5: exif und mp4
 		 * 
 		 * 
 		 * ==========================================================
 		 */
-		JPanel panel_4_exifmp4 = new JPanel();
-		tabbedPane.addTab("exif - mp4tag", null, panel_4_exifmp4, null);
-		panel_4_exifmp4.setLayout(null);
+		JPanel panel_5_exifmp4 = new JPanel();
+		tabbedPane.addTab("exif - mp4tag", null, panel_5_exifmp4, null);
+		panel_5_exifmp4.setLayout(null);
 
 		// Exif Button erzeugen
-		JButton btnExifErzeugen = new JButton("Exif erzeugen");
+		JButton btnExifErzeugen = new JButton("Exif-Datei erzeugen");
 		btnExifErzeugen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
 			}
 		});
-		btnExifErzeugen.setBounds(395, 291, 150, 25);
-		panel_4_exifmp4.add(btnExifErzeugen);
+		btnExifErzeugen.setBounds(395, 291, 180, 25);
+		panel_5_exifmp4.add(btnExifErzeugen);
 		
 		// Button Exif-Daten schreiben
 		JButton btnExifDatenSchreiben = new JButton("Exif Daten schreiben");
@@ -2179,7 +2324,7 @@ public TripleX() {
 			
 		});
 		btnExifDatenSchreiben.setBounds(395, 200, 180, 25);
-		panel_4_exifmp4.add(btnExifDatenSchreiben);
+		panel_5_exifmp4.add(btnExifDatenSchreiben);
 		
 		// Button mp4 Tag Schreiben
 
@@ -2214,56 +2359,59 @@ public TripleX() {
 			}
 		});
 		btnExifMp4TagSchreiben.setBounds(395, 100, 180, 25);
-		panel_4_exifmp4.add(btnExifMp4TagSchreiben);
+		panel_5_exifmp4.add(btnExifMp4TagSchreiben);
 		
 		/*
 		 * ==========================================================
-		 * Start Panel 5: Debug
+		 * Start Panel 7: Debug
 		 * ==========================================================
 		 */
-		JPanel panel_5_debug = new JPanel();
-		tabbedPane.addTab("debug", null, panel_5_debug, null);
-		panel_5_debug.setLayout(new BorderLayout(0, 0));
+		
+		JPanel panel_6_exifdatei = new JPanel();
+		tabbedPane.addTab("exif-datei", null, panel_6_exifdatei, null);
+		JPanel panel_7_debug = new JPanel();
+		tabbedPane.addTab("debug", null, panel_7_debug, null);
+		panel_7_debug.setLayout(new BorderLayout(0, 0));
 
 		txtAreaDebug = new JTextArea();
 		JScrollPane scrollPaneDebug = new JScrollPane(txtAreaDebug);
 
-		panel_5_debug.add(scrollPaneDebug);
+		panel_7_debug.add(scrollPaneDebug);
 		
 				
 		/*
 		 * ======================================================
-		 * Panel 6: Konfiguration
+		 * Panel 8: Konfiguration
 		 * ======================================================
 		 */
 
 
-		JPanel panel_6_Konfiguration = new JPanel();
-		tabbedPane.addTab("Konfiguration", null, panel_6_Konfiguration, null);
-		panel_6_Konfiguration.setLayout(null);
+		JPanel panel_8_Konfiguration = new JPanel();
+		tabbedPane.addTab("Konfiguration", null, panel_8_Konfiguration, null);
+		panel_8_Konfiguration.setLayout(null);
 
 		chckbxKonfigSpeichernBeimBeenden = new JCheckBox("Konfig beim beenden Speichern");
 		chckbxKonfigSpeichernBeimBeenden.setSelected(true);
 		chckbxKonfigSpeichernBeimBeenden.setBounds(33, 23, 250, 23);
-		panel_6_Konfiguration.add(chckbxKonfigSpeichernBeimBeenden);
+		panel_8_Konfiguration.add(chckbxKonfigSpeichernBeimBeenden);
 
 		
 		JLabel lblKonfigVersion = new JLabel("Version:");
 		lblKonfigVersion.setBounds(420, 25, 70, 15);
-		panel_6_Konfiguration.add(lblKonfigVersion);
+		panel_8_Konfiguration.add(lblKonfigVersion);
 
 		txtKonfigVersion = new JTextField();
 		txtKonfigVersion.setBounds(485, 23, 30, 20);
-		panel_6_Konfiguration.add(txtKonfigVersion);
+		panel_8_Konfiguration.add(txtKonfigVersion);
 		txtKonfigVersion.setColumns(10);
 
 		JLabel lblKonfigDatum = new JLabel("Datum:");
 		lblKonfigDatum.setBounds(545, 25, 70, 15);
-		panel_6_Konfiguration.add(lblKonfigDatum);
+		panel_8_Konfiguration.add(lblKonfigDatum);
 
 		txtKonfigDatum = new JTextField();
 		txtKonfigDatum.setBounds(605, 23, 85, 20);
-		panel_6_Konfiguration.add(txtKonfigDatum);
+		panel_8_Konfiguration.add(txtKonfigDatum);
 		txtKonfigDatum.setColumns(10);
 
 		// Checkbox Logging an/aus
@@ -2284,15 +2432,15 @@ public TripleX() {
 			}
 		});
 		
-		panel_6_Konfiguration.add(chckbxKonfigLogging);
+		panel_8_Konfiguration.add(chckbxKonfigLogging);
 
 		lblKonfigLogdatei = new JLabel("Pfad/Datei für Log-Datei");
 		lblKonfigLogdatei.setBounds(160, 65, 180, 15);
-		panel_6_Konfiguration.add(lblKonfigLogdatei);
+		panel_8_Konfiguration.add(lblKonfigLogdatei);
 
 		txtKonfigLogdatei = new JTextField();
 		txtKonfigLogdatei.setBounds(340, 63, 114, 20);
-		panel_6_Konfiguration.add(txtKonfigLogdatei);
+		panel_8_Konfiguration.add(txtKonfigLogdatei);
 		txtKonfigLogdatei.setColumns(10);
 		
 		
@@ -2304,7 +2452,7 @@ public TripleX() {
 			}
 		});
 		btnKonfigSpeichern.setBounds(634, 340, 105, 25);
-		panel_6_Konfiguration.add(btnKonfigSpeichern);
+		panel_8_Konfiguration.add(btnKonfigSpeichern);
 
 		JButton btnKonfigLaden = new JButton("Laden");
 		btnKonfigLaden.addActionListener(new ActionListener() {
@@ -2313,16 +2461,16 @@ public TripleX() {
 			}
 		});
 		btnKonfigLaden.setBounds(634, 303, 105, 25);
-		panel_6_Konfiguration.add(btnKonfigLaden);
+		panel_8_Konfiguration.add(btnKonfigLaden);
 
 		JLabel lblKonfigTemplateSlug = new JLabel("Pfad/Datei template.slug");
 		lblKonfigTemplateSlug.setBounds(40, 200, 200, 15);
-		panel_6_Konfiguration.add(lblKonfigTemplateSlug);
+		panel_8_Konfiguration.add(lblKonfigTemplateSlug);
 
 		txtKonfigTemplateslug = new JTextField();
 		txtKonfigTemplateslug.setText("template.slug");
 		txtKonfigTemplateslug.setBounds(230, 198, 400, 20);
-		panel_6_Konfiguration.add(txtKonfigTemplateslug);
+		panel_8_Konfiguration.add(txtKonfigTemplateslug);
 		txtKonfigTemplateslug.setColumns(10);
 
 		
@@ -2330,20 +2478,20 @@ public TripleX() {
 
 		JLabel lblKonfigLetzterPfad = new JLabel("Letzter Pfad");
 		lblKonfigLetzterPfad.setBounds(40, 262, 100, 15);
-		panel_6_Konfiguration.add(lblKonfigLetzterPfad);
+		panel_8_Konfiguration.add(lblKonfigLetzterPfad);
 
 		JLabel lblKonfigStandardPfad = new JLabel("Standard Pfad");
 		lblKonfigStandardPfad.setBounds(40, 300, 110, 15);
-		panel_6_Konfiguration.add(lblKonfigStandardPfad);
+		panel_8_Konfiguration.add(lblKonfigStandardPfad);
 
 		txtKonfigLetzterPfad = new JTextField();
 		txtKonfigLetzterPfad.setBounds(175, 260, 300, 20);
-		panel_6_Konfiguration.add(txtKonfigLetzterPfad);
+		panel_8_Konfiguration.add(txtKonfigLetzterPfad);
 		txtKonfigLetzterPfad.setColumns(10);
 
 		txtKonfigStandardPfad = new JTextField();
 		txtKonfigStandardPfad.setBounds(175, 298, 300, 20);
-		panel_6_Konfiguration.add(txtKonfigStandardPfad);
+		panel_8_Konfiguration.add(txtKonfigStandardPfad);
 		txtKonfigStandardPfad.setColumns(10);
 
 		// Checkbox für aktuelle Fensterposition
@@ -2371,26 +2519,26 @@ public TripleX() {
 		});
 		
 		chckbxKonfigAkutelleFensterposition.setBounds(33, 105, 300, 23);
-		panel_6_Konfiguration.add(chckbxKonfigAkutelleFensterposition);
+		panel_8_Konfiguration.add(chckbxKonfigAkutelleFensterposition);
 		
 		lblKonfigXpos = new JLabel("x-Pos:");
 		lblKonfigXpos.setBounds(340, 90, 50, 15);
-		panel_6_Konfiguration.add(lblKonfigXpos);
+		panel_8_Konfiguration.add(lblKonfigXpos);
 
 		lblKonfigYpos = new JLabel("Y-Pos:");
 		lblKonfigYpos.setBounds(340, 120, 50, 15);
-		panel_6_Konfiguration.add(lblKonfigYpos);
+		panel_8_Konfiguration.add(lblKonfigYpos);
 
 		txtKonfigXpos = new JTextField();
 		txtKonfigXpos.setEnabled(false);
 		txtKonfigXpos.setBounds(395, 90, 40, 20);
-		panel_6_Konfiguration.add(txtKonfigXpos);
+		panel_8_Konfiguration.add(txtKonfigXpos);
 		txtKonfigXpos.setColumns(10);
 
 		txtKonfigYpos = new JTextField();
 		txtKonfigYpos.setEnabled(false);
 		txtKonfigYpos.setBounds(395, 120, 40, 20);
-		panel_6_Konfiguration.add(txtKonfigYpos);
+		panel_8_Konfiguration.add(txtKonfigYpos);
 		txtKonfigYpos.setColumns(10);
 
 		iconKonfigReload = new ImageIcon(strReload19);
@@ -2398,33 +2546,33 @@ public TripleX() {
 		btnKonfigReload.setIcon(iconKonfigReload);
 
 		btnKonfigReload.setBounds(445, 100, 20, 20);
-		panel_6_Konfiguration.add(btnKonfigReload);
+		panel_8_Konfiguration.add(btnKonfigReload);
 
 		JLabel lblKonfigPythonPfad = new JLabel("Python/mp4 Pfad");
 		lblKonfigPythonPfad.setBounds(40, 338, 130, 15);
-		panel_6_Konfiguration.add(lblKonfigPythonPfad);
+		panel_8_Konfiguration.add(lblKonfigPythonPfad);
 
 		JLabel lblKopnfigXxxshPfad = new JLabel("xxx.sh Pfad");
 		lblKopnfigXxxshPfad.setBounds(40, 376, 100, 15);
-		panel_6_Konfiguration.add(lblKopnfigXxxshPfad);
+		panel_8_Konfiguration.add(lblKopnfigXxxshPfad);
 
 		txtKonfigPythonpfad = new JTextField();
 		txtKonfigPythonpfad.setBounds(175, 336, 300, 20);
-		panel_6_Konfiguration.add(txtKonfigPythonpfad);
+		panel_8_Konfiguration.add(txtKonfigPythonpfad);
 		txtKonfigPythonpfad.setColumns(10);
 
 		txtKonfigXxxshpfad = new JTextField();
 		txtKonfigXxxshpfad.setBounds(175, 374, 114, 20);
-		panel_6_Konfiguration.add(txtKonfigXxxshpfad);
+		panel_8_Konfiguration.add(txtKonfigXxxshpfad);
 		txtKonfigXxxshpfad.setColumns(10);
 
 		JLabel lblKonfigComboboxenxml = new JLabel("Pfad/Datei konfig_comboboxen.xml");
 		lblKonfigComboboxenxml.setBounds(40, 230, 260, 15);
-		panel_6_Konfiguration.add(lblKonfigComboboxenxml);
+		panel_8_Konfiguration.add(lblKonfigComboboxenxml);
 
 		txtKonfigcomboboxenxml = new JTextField();
 		txtKonfigcomboboxenxml.setBounds(310, 228, 320, 20);
-		panel_6_Konfiguration.add(txtKonfigcomboboxenxml);
+		panel_8_Konfiguration.add(txtKonfigcomboboxenxml);
 		txtKonfigcomboboxenxml.setColumns(10);
 
 		
