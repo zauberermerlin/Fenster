@@ -52,6 +52,9 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.sun.org.apache.xml.internal.utils.URI;
+import com.sun.xml.internal.ws.util.StringUtils;
+
+import sun.nio.cs.CharsetMapping;
 
 import javax.swing.JList;
 import javax.swing.JScrollPane;
@@ -143,6 +146,10 @@ public class TripleX extends JFrame {
 	private ImageIcon iconRibbonPfadDialogbox;
 	private ImageIcon iconRibbonTitelZuSerie;
 	private ImageIcon iconRibbonSlugUmwandeln;
+	private ImageIcon iconRibbonAktualisieren;
+	private ImageIcon iconRibbonStarverzeichnis;
+	private ImageIcon iconRibbonTitel2Slug;
+	
 	private ImageIcon iconKonfigReload;
 	private ImageIcon iconSlugErstelltAmNachRelase;
 	private ImageIcon iconSlugRelaseNachErstelltAm;
@@ -658,6 +665,8 @@ public String SlugDatenSetzen(SlugDaten sDatenFunktion) {
 	// In ComboBoxen
 //	writer.write("STUDIO=\"" + strStudio + "\"");
 //	writer.write("ALBUM=\"" + strAlbum + "\"");
+	DebugInfoSchreiben("Studio: " +sDatenFunktion.getStrStudio());
+	DebugInfoSchreiben("Album: " +sDatenFunktion.getStrAlbum());
 	
 	txtSlugDvd.setText(sDatenFunktion.getStrDVD());
 	txtRibbonSerie.setText(sDatenFunktion.getStrSerie());
@@ -799,6 +808,7 @@ public void TitelbildAnzeigen() {
 
 			// Icon lesen
 			ImageIcon iconSlugTitelbild = new ImageIcon(dimg);
+			lblSlugTitelbildAnzeige.setHorizontalAlignment(SwingConstants.CENTER);
 			lblSlugTitelbildAnzeige.setIcon(iconSlugTitelbild);
 		
 	} else {
@@ -854,7 +864,7 @@ public void PortraetbildAnzeigen() {
 
 			// Icon lesen
 			ImageIcon iconSlugPortraetbild = new ImageIcon(dimg);
-			lblSlugPortraetbildAnzeige.setHorizontalAlignment(0);
+			lblSlugPortraetbildAnzeige.setHorizontalAlignment(SwingConstants.CENTER);
 			lblSlugPortraetbildAnzeige.setIcon(iconSlugPortraetbild);
 		
 	} else {
@@ -951,6 +961,44 @@ if (txtSlugBraznr.getText().equals("") && txtSlugNa.getText().equals("")) {
 						txtStatusleiste.setText("Es wurden " + iAnzahlBilder + " Bilder ge-downloaded");
 					} else {
 					// NA	
+						
+// aus xxx.sh						
+//						#Beispiel für einen Wert aus template.slug
+//						#http://images4.naughtycdn.com/datana/upload/source/2cst/carmelladylanjerryrem/carmelladylanjerryremvert_scene_huge.jpg
+//							
+//						STAMM_NA=$(echo $1 | cut -d/ -f9);
+//						BILD1=$(echo $STAMM_NA | cut -d_ -f1);
+//
+//						#je nach übergebenem Parameter sind die letzten 3 oder letzten 4 Zeichen zu entfernen
+//						#zu unterscheiden am Ende mit: entweder *huge.jpg oder img?.jpg
+//							
+//						ANZAHL=$(echo ${#STAMM_NA});
+//						KRITERIUM=$(echo ${STAMM_NA:$((ANZAHL-8)):8});
+//							
+//						[ "$1" = "save" ]
+//							
+//						if [ "$KRITERIUM" != "huge.jpg" ]
+//						then
+//							BILD=$(echo ${BILD1::-3});
+//						else
+//							BILD=$(echo ${BILD1::-4});
+//						fi
+//							
+//						PFAD=$(echo $1 | cut -d/ -f1-8);
+//						BIG="vert_scene_huge.jpg";
+//						PIC="hor_big_img";
+//
+//						wget $PFAD"/"$BILD$BIG;
+//						mv $BILD$BIG 05-$SLUG.jpg;
+//
+//						for((i=1;i<5;i++));
+//						do
+//							wget $PFAD"/"$BILD$PIC$i".jpg";
+//							mv $BILD$PIC$i".jpg" "0"$i-$SLUG.jpg;
+//						done;
+						
+						
+						
 						JOptionPane.showMessageDialog(frmFenstertitel, "Hier gehts los mit NA. Noch nicht implementiert!");								
 					}
 				}
@@ -1034,10 +1082,10 @@ public void BilderAnzeigen() {
 		Dimension dimensionPanelBilder;
 		if (lblBilderNummer.size() % 3 != 0) {
 			dimensionPanelBilder = new Dimension(600, ((lblBilderNummer.size() / 3) +1 ) * 280);
-			DebugInfoSchreiben("Register Bilder); Panel-Größe: 600x" + ((lblBilderNummer.size() / 3) +1 ) * 330);
+//			DebugInfoSchreiben("Register Bilder; Panel-Größe: 600x" + ((lblBilderNummer.size() / 3) +1 ) * 330);
 		} else {
 			dimensionPanelBilder = new Dimension(600, (lblBilderNummer.size() / 3) * 280);
-			DebugInfoSchreiben("Register Bilder); Panel-Größe: 600x" + (lblBilderNummer.size() / 3) * 330);
+//			DebugInfoSchreiben("Register Bilder; Panel-Größe: 600x" + (lblBilderNummer.size() / 3) * 330);
 		}
 		
 		panelBilderRahmen.setPreferredSize(dimensionPanelBilder);
@@ -1046,7 +1094,7 @@ public void BilderAnzeigen() {
 		
 		// Werte setzen und anzeigen
 		for (int i = 0; i < lblBilderNummer.size(); i++) {
-			lblBilderNummer.get(i).setHorizontalAlignment(SwingConstants.CENTER);
+//			lblBilderNummer.get(i).setHorizontalAlignment(SwingConstants.CENTER);
 //			lblBilderNummer.get(i).setBorder(new LineBorder(new Color(0, 0, 0)));
 			lblBilderNummer.get(i).setSize(150, 100);
 			// Dimension 210 x 260
@@ -1080,7 +1128,7 @@ public void BilderAnzeigen() {
 				ImageIcon iconAnzeigeBild = new ImageIcon(dimg);
 				lblBilderNummer.get(i).setIcon(iconAnzeigeBild);
 				// Mittig das Bild bzw. Icon darstellen
-				lblBilderNummer.get(i).setHorizontalAlignment(0);
+				lblBilderNummer.get(i).setHorizontalAlignment(SwingConstants.CENTER);
 			} // Ende if fBildDatei
 			
 			
@@ -1114,6 +1162,24 @@ public void DebugExceptionSchreiben(Exception e) {
 		txtAreaDebug.append("===================================================================================");
 }
 
+/**
+ * @param strEingang
+ * @return [String]
+ */
+public String StringUmwandeln(String strEingang) {
+/*
+ * Schritte der Umwandlung
+ * Alles in Kleinbuchstaben
+ * Sonderzeichen entfernen
+ * Leerzeichen in Bindestrich
+ * Unterstrich in Bindestrich
+ * 2 Bindestriche zu einem Bindestrich
+ * 
+ */
+	String strAusgang = strEingang.toLowerCase().replace(" ", "-").replace("_", "-").replace("/", "").replace("&", "").replace("--", "-").replace("'", "");
+	
+	return strAusgang;
+}
 
 	/**
 	 * Create the frame.
@@ -1197,7 +1263,7 @@ public TripleX() {
 		panel_ribbon.setLayout(null);
 
 		JLabel lblRibbonPfad = new JLabel("Pfad");
-		lblRibbonPfad.setBounds(30, 10, 85, 16);
+		lblRibbonPfad.setBounds(30, 10, 40, 16);
 		panel_ribbon.add(lblRibbonPfad);
 		
 		txtRibbonPfad = new JTextField();
@@ -1226,7 +1292,7 @@ public TripleX() {
 		
 		
 		JLabel lblRibbonTitel = new JLabel("Titel");
-		lblRibbonTitel.setBounds(30, 76, 70, 16);
+		lblRibbonTitel.setBounds(30, 76, 40, 16);
 		panel_ribbon.add(lblRibbonTitel);
 		
 		txtRibbonTitel = new JTextField();
@@ -1330,6 +1396,34 @@ public TripleX() {
 		txtRibbonVersionsdatum.setBounds(640, 9, 100, 20);
 		panel_ribbon.add(txtRibbonVersionsdatum);
 		txtRibbonVersionsdatum.setColumns(10);
+		
+		
+		// Speziell für NA
+		// Kopiert den Titel nach Slug
+		// anschliessend alles in Kleinbuchstaben und Zeichenkonvertierung
+		JButton btnRibbonTitel2Slug = new JButton();
+		btnRibbonTitel2Slug.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			
+				txtRibbonSlugName.setText(StringUmwandeln(txtRibbonTitel.getText()));
+				DebugInfoSchreiben("btnRibbonTitel2Slug - würde gedrückt");
+				DebugInfoSchreiben("Umwandlung des Titels: " + txtRibbonTitel.getText() + "nach: " + StringUmwandeln(txtRibbonTitel.getText()));
+			}
+		});
+		iconRibbonTitel2Slug = new ImageIcon(strPfeilOben);
+		btnRibbonTitel2Slug.setIcon(iconRibbonTitel2Slug);
+		btnRibbonTitel2Slug.setBounds(92, 74, 20, 20);
+		panel_ribbon.add(btnRibbonTitel2Slug);
+		
+		JButton btnRibbonStartverzeichnis = new JButton();
+		iconRibbonStarverzeichnis = new ImageIcon(strPfeilOben);
+		btnRibbonStartverzeichnis.setIcon(iconRibbonStarverzeichnis);
+		btnRibbonStartverzeichnis.setBounds(92, 8, 20, 20);
+		panel_ribbon.add(btnRibbonStartverzeichnis);
+		
+		JButton btnRibbonAktualisieren = new JButton();
+		btnRibbonAktualisieren.setBounds(68, 8, 20, 20);
+		panel_ribbon.add(btnRibbonAktualisieren);
 		
 		
 		
@@ -1569,7 +1663,7 @@ public TripleX() {
 		txtSlugActor.setBounds(100, 325, 290, 20);
 		panel_2_slug.add(txtSlugActor);
 		txtSlugActor.setColumns(10);
-		JButton btnSlugErzeugen = new JButton("Erzeugen");
+		JButton btnSlugErzeugen = new JButton("Slug Erzeu");
 		btnSlugErzeugen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				SlugDaten sDaten = new SlugDaten();
@@ -1589,8 +1683,9 @@ public TripleX() {
 							//							System.out.println(strVollstaendigerPfad);
 							if (fileErzeugen.exists()) {
 								int ueberschreiben = JOptionPane.showConfirmDialog(frmFenstertitel, "Slug-Datei besteht bereits.\nÜberschreiben?", "Nachfrage", JOptionPane.YES_NO_OPTION);
-								System.out.println(ueberschreiben);
+								//								System.out.println(ueberschreiben);
 								if (ueberschreiben == 0) {
+									DebugInfoSchreiben("Slug-Datei wurde überschrieben: " + sDaten.slugDatenLaden(strVollstaendigerPfad));
 									txtStatusleiste.setText(sDaten.slugDatenLaden(strVollstaendigerPfad));									
 								} // Ende 5. if
 							} else {
@@ -1605,9 +1700,10 @@ public TripleX() {
 				} else { // else aus 1. if
 					JOptionPane.showMessageDialog(null, "Die Pfad-Angabe ist nicht gefüllt!", "Hinweis", JOptionPane.WARNING_MESSAGE);
 				} // Ende 1. if
+				DebugInfoSchreiben("btnSlugErzeugen gedrückt.");
 			}
 		});
-		btnSlugErzeugen.setBounds(600, 435, 115, 25);
+		btnSlugErzeugen.setBounds(550, 400, 115, 25);
 		panel_2_slug.add(btnSlugErzeugen);
 
 		JButton btnSlugDateiLaden = new JButton("Slug Laden");
@@ -1631,7 +1727,6 @@ public TripleX() {
 							 */
 							SlugDatenLeeren();
 							SlugDaten sDaten = new SlugDaten();
-							//							System.out.println("Pfad: " + Dateiliste[i].getPath());
 
 							txtStatusleiste.setText(sDaten.slugDatenSetzen(Dateiliste[i].getPath().toString()));
 							SlugDatenSetzen(sDaten);
@@ -1648,10 +1743,11 @@ public TripleX() {
 				} else {
 					JOptionPane.showMessageDialog(null, "Es konnte keine Slug-Datei gelesen werden.\nDie Pfadangabe ist falsch oder nicht erreichbar!     \n\nPfad: " + txtRibbonPfad.getText());
 				}
+				DebugInfoSchreiben("btnSlugDatenLaden gedrückt.");
 			}
 		}); // Ende ActionListener
 		
-		btnSlugDateiLaden.setBounds(600, 400, 115, 25);
+		btnSlugDateiLaden.setBounds(550, 365, 115, 25);
 		panel_2_slug.add(btnSlugDateiLaden);
 
 		JLabel lblSlugBeschreibung = new JLabel("Beschreibung");
@@ -1659,7 +1755,7 @@ public TripleX() {
 		panel_2_slug.add(lblSlugBeschreibung);
 
 		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(145, 361, 300, 100);
+		scrollPane_1.setBounds(130, 361, 300, 100);
 		panel_2_slug.add(scrollPane_1);
 
 		txtpnSlugBeschreibung = new JTextPane();
@@ -1723,7 +1819,7 @@ public TripleX() {
 			} // Ende ActionPerformed
 		}); // Ende Listener
 
-		chckbxSlugFirst.setBounds(465, 290, 70, 23);
+		chckbxSlugFirst.setBounds(465, 245, 65, 23);
 		panel_2_slug.add(chckbxSlugFirst);
 		
 		
@@ -1754,38 +1850,38 @@ public TripleX() {
 		}); // Ende Listener
 
 		
-		chckbxSlugNear.setBounds(465, 325, 70, 23);
+		chckbxSlugNear.setBounds(465, 275, 65, 23);
 		panel_2_slug.add(chckbxSlugNear);
 		
 		chckbxSlugThumbs = new JCheckBox("Thumbs");
-		chckbxSlugThumbs.setBounds(465, 361, 129, 23);
+		chckbxSlugThumbs.setBounds(435, 361, 80, 23);
 		panel_2_slug.add(chckbxSlugThumbs);
 		
 		chckbxSlugVr = new JCheckBox("VR");
-		chckbxSlugVr.setBounds(465, 388, 129, 23);
+		chckbxSlugVr.setBounds(435, 388, 70, 23);
 		panel_2_slug.add(chckbxSlugVr);
 
 		chckbxSlugRemastered = new JCheckBox("Remastered");
-		chckbxSlugRemastered.setBounds(465, 415, 115, 23);
+		chckbxSlugRemastered.setBounds(435, 415, 115, 23);
 		panel_2_slug.add(chckbxSlugRemastered);
 
 		txtSlugFirst = new JTextField();
 		txtSlugFirst.setEditable(false);
 		txtSlugFirst.setEnabled(false);
-		txtSlugFirst.setBounds(536, 290, 200, 20);
+		txtSlugFirst.setBounds(536, 245, 200, 20);
 		panel_2_slug.add(txtSlugFirst);
 		txtSlugFirst.setColumns(10);
 
 		txtSlugNear = new JTextField();
 		txtSlugNear.setEditable(false);
 		txtSlugNear.setEnabled(false);
-		txtSlugNear.setBounds(536, 325, 200, 20);
+		txtSlugNear.setBounds(536, 275, 200, 20);
 		panel_2_slug.add(txtSlugNear);
 		txtSlugNear.setColumns(10);
 
 
 		chckbxSlugBilder = new JCheckBox("Bilder");
-		chckbxSlugBilder.setBounds(465, 442, 75, 23);
+		chckbxSlugBilder.setBounds(435, 442, 75, 23);
 		panel_2_slug.add(chckbxSlugBilder);
 
 		JLabel lblSlugSterne = new JLabel("Sterne");
@@ -1803,7 +1899,7 @@ public TripleX() {
 		panel_2_slug.add(separator_3);
 
 		JLabel lblSlugDvd = new JLabel("DVD");
-		lblSlugDvd.setBounds(465, 252, 40, 15);
+		lblSlugDvd.setBounds(565, 9, 35, 15);
 		panel_2_slug.add(lblSlugDvd);
 
 
@@ -2101,7 +2197,7 @@ public TripleX() {
 
 			}
 		});
-		btnSlugLeeren.setBounds(600, 365, 115, 25);
+		btnSlugLeeren.setBounds(550, 330, 115, 25);
 		panel_2_slug.add(btnSlugLeeren);
 		
 		
@@ -2172,7 +2268,7 @@ public TripleX() {
 
 
 		txtSlugDvd = new JTextField();
-		txtSlugDvd.setBounds(510, 250, 250, 20);
+		txtSlugDvd.setBounds(600, 8, 170, 20);
 		panel_2_slug.add(txtSlugDvd);
 		txtSlugDvd.setColumns(10);
 		
@@ -2192,9 +2288,10 @@ public TripleX() {
 		JButton btnSlugCheckActress = new JButton("");
 		btnSlugCheckActress.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				int iAnzahlTrenner = txtSlugActress.getText().length() - txtSlugActress.getText().replace("&", "").length(); 
 				String inhalt[]=(txtSlugActress.getText().trim().replace(", ", ";").split("&"));
 				txtSlugActress.setText(inhalt[0].trim());
-				txtSlugActor.setText(inhalt[1].trim());
+				txtSlugActor.setText(inhalt[iAnzahlTrenner].trim());
 				
 				DebugInfoSchreiben("btn - actress bereinigt und aufgeteilt");
 			}
@@ -2230,6 +2327,22 @@ public TripleX() {
 		btnSlugActressToNear.setBounds(420, 305, 18, 18);
 		btnSlugActressToNear.setIcon(iconSlugActressToNear);
 		panel_2_slug.add(btnSlugActressToNear);
+		
+		JButton btnSlugExifErzeugen = new JButton("Exif Erzeu");
+		btnSlugExifErzeugen.setBounds(670, 330, 110, 25);
+		panel_2_slug.add(btnSlugExifErzeugen);
+		
+		JButton btnSlugExifAusfuehren = new JButton("Exif ausfü");
+		btnSlugExifAusfuehren.setBounds(670, 365, 110, 25);
+		panel_2_slug.add(btnSlugExifAusfuehren);
+		
+		JButton btnSlugExifBeides = new JButton("Exif beides");
+		btnSlugExifBeides.setBounds(670, 400, 110, 25);
+		panel_2_slug.add(btnSlugExifBeides);
+		
+		JButton btnSlugMp4Erzeugen = new JButton("mp4 schrei");
+		btnSlugMp4Erzeugen.setBounds(670, 435, 110, 25);
+		panel_2_slug.add(btnSlugMp4Erzeugen);
 		
 
 
