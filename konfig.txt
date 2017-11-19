@@ -28,7 +28,7 @@ fenster_y=300
 last_pfad=
 
 #Standard-Pfad für Slug-Dateien
-standard_pfad=/netz/krypto/stars/diamond_foxxx
+standard_pfad=/netz/krypto/stars/ariana_marie/naughty
 
 
 #Logging an oder aus

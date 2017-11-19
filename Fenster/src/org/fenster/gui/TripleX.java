@@ -125,7 +125,8 @@ public class TripleX extends JFrame {
 	String strSchublade16 = "Fenster/externe_dateien/schublade16x16.png";
 	String strSchublade19 = "Fenster/externe_dateien/schublade19x19.png";
 	String strSchublade25 = "Fenster/externe_dateien/schublade25x25.png";
-
+	String strSchubladeHome = "Fenster/externe_dateien/schublade_2.png";
+	
 	String strReload16 = "Fenster/externe_dateien/reload_16x16.png";
 	String strReload19 = "Fenster/externe_dateien/reload_19x19.png";
 	String strReload25 = "Fenster/externe_dateien/reload_25x25.png";
@@ -135,18 +136,21 @@ public class TripleX extends JFrame {
 	String strPfeilLinks = "Fenster/externe_dateien/pfeil_links.png";
 	String strPfeilRechts = "Fenster/externe_dateien/pfeil_rechts.png";
 	String strPfeilTauschen = "Fenster/externe_dateien/pfeil_tauschen.png";
+	String strPfeilDownload = "Fenster/externe_dateien/pfeil_download.png";
 	
-	String strReload ="";
+	String strRefresh ="Fenster/externe_dateien/refresh.png";
 	String strSlugActressToFirst ="Fenster/externe_dateien/first.png";
 	String strSlugActressToNear ="Fenster/externe_dateien/near.png";
 	String strCheck = "Fenster/externe_dateien/check.png";
-	String strDownload = "Fenster/externe_dateien/download.png";
+	String strDownload = "Fenster/externe_dateien/pfeil_download.png";
+	
+	String strSlugErzeugen ="Fenster/externe_dateien/slug_erzeugen.png";
 	
 	
 	private ImageIcon iconRibbonPfadDialogbox;
 	private ImageIcon iconRibbonTitelZuSerie;
 	private ImageIcon iconRibbonSlugUmwandeln;
-	private ImageIcon iconRibbonAktualisieren;
+	private ImageIcon iconRibbonRefresh;
 	private ImageIcon iconRibbonStarverzeichnis;
 	private ImageIcon iconRibbonTitel2Slug;
 	
@@ -162,6 +166,8 @@ public class TripleX extends JFrame {
 	private ImageIcon iconSlugActressToNear;
 	private ImageIcon iconSlugActressCheck;
 	private ImageIcon iconSlugBilderDownload;
+	
+	private ImageIcon iconSlugErzeugen;
 
 	
 	
@@ -222,6 +228,8 @@ public class TripleX extends JFrame {
 	private DefaultListModel<String> dflModel;
 	private JTextField txtRibbonVersion;
 	private JTextField txtRibbonVersionsdatum;
+
+	
 
 	/**
 	 * Launch the application.
@@ -738,6 +746,7 @@ public String SlugDatenSetzen(SlugDaten sDatenFunktion) {
  */
 public String VerzeichnisAkutalisieren(String strPfad, DefaultListModel<String> dflModel) {
 
+	DebugInfoSchreiben("Funktion VerzeichnisAktualisieren() wurde aufgerufen.");
 //	System.out.println("Funktionsaufruf: " + strPfad);
 	File fPfad = new File(strPfad);
 	
@@ -887,6 +896,8 @@ public void BilderDownloaden() {
  * (3) Download mit Anzeige in Statusleiste oder Progressbar
  */
 	
+	String strDownloadDatei;
+	
 // beide Felder leer --> Infofenster und Ende	
 if (txtSlugBraznr.getText().equals("") && txtSlugNa.getText().equals("")) {
 	JOptionPane.showMessageDialog(frmFenstertitel, "Weder BrazNr noch NA-Link-Bild gefüllt!");
@@ -915,7 +926,7 @@ if (txtSlugBraznr.getText().equals("") && txtSlugNa.getText().equals("")) {
 						String strStamm_braz_1="http://static.brazzers.com/scenes/";
 						String strStamm_braz_2="/preview/img";
 						String strQuelle;
-						String strDownloadDatei;
+						
 						int iAnzahlBilder = 0;
 						
 						for (int i = 1; i < 10; i++) {
@@ -961,45 +972,65 @@ if (txtSlugBraznr.getText().equals("") && txtSlugNa.getText().equals("")) {
 						txtStatusleiste.setText("Es wurden " + iAnzahlBilder + " Bilder ge-downloaded");
 					} else {
 					// NA	
+					// Je nach Link entweder das huge.jpg-Bild oder das big_img1.jpg Bild	
+					
+					DebugInfoSchreiben("NaughtyAmerica Bilder werden gedownloaded");
 						
-// aus xxx.sh						
-//						#Beispiel für einen Wert aus template.slug
-//						#http://images4.naughtycdn.com/datana/upload/source/2cst/carmelladylanjerryrem/carmelladylanjerryremvert_scene_huge.jpg
-//							
-//						STAMM_NA=$(echo $1 | cut -d/ -f9);
-//						BILD1=$(echo $STAMM_NA | cut -d_ -f1);
-//
-//						#je nach übergebenem Parameter sind die letzten 3 oder letzten 4 Zeichen zu entfernen
-//						#zu unterscheiden am Ende mit: entweder *huge.jpg oder img?.jpg
-//							
-//						ANZAHL=$(echo ${#STAMM_NA});
-//						KRITERIUM=$(echo ${STAMM_NA:$((ANZAHL-8)):8});
-//							
-//						[ "$1" = "save" ]
-//							
-//						if [ "$KRITERIUM" != "huge.jpg" ]
-//						then
-//							BILD=$(echo ${BILD1::-3});
-//						else
-//							BILD=$(echo ${BILD1::-4});
-//						fi
-//							
-//						PFAD=$(echo $1 | cut -d/ -f1-8);
-//						BIG="vert_scene_huge.jpg";
-//						PIC="hor_big_img";
-//
-//						wget $PFAD"/"$BILD$BIG;
-//						mv $BILD$BIG 05-$SLUG.jpg;
-//
-//						for((i=1;i<5;i++));
-//						do
-//							wget $PFAD"/"$BILD$PIC$i".jpg";
-//							mv $BILD$PIC$i".jpg" "0"$i-$SLUG.jpg;
-//						done;
+					String strNaStammName = "";
+					
+//						https://images3.naughtycdn.com/datana/upload/source/mgbf/lexijmac/lexijmacvert_scene_huge.jpg
+//						https://images1.naughtycdn.com/datana/upload/source/mgbf/lexijmac/lexijmachor_big_img1.jpg
+//						https://images1.naughtycdn.com/datana/upload/source/mgbf/lexijmac/lexijmachor_big_img4.jpg
+					if (txtSlugNa.getText().contains("huge")) {
+						strNaStammName = txtSlugNa.getText().substring(0, txtSlugNa.getText().length() - 19);
+						DebugInfoSchreiben("Angegebenes Bild: huge: " + strNaStammName);
+					}
+					
+					if (txtSlugNa.getText().contains("hor_big")) {
+						strNaStammName = txtSlugNa.getText().substring(0, txtSlugNa.getText().length() - 16);
+						DebugInfoSchreiben("Angegebenes Bild: big: " + strNaStammName);
+					}
+						
+					
+					// Jetzt startet das Downloaden
+					// Huge-Bild als Nummer 05
+					URL url;
+					try {
+						url = new URL(strNaStammName + "vert_scene_huge.jpg");
+						BufferedImage img;
+						img = ImageIO.read(url);
+						strDownloadDatei = txtRibbonPfad.getText() + "/05-" + txtRibbonSlugName.getText() + ".jpg";
+						File fDownload = new File(strDownloadDatei);
+						ImageIO.write(img, "jpg", fDownload);
+						DebugInfoSchreiben("geladen: Bild: " + strDownloadDatei);
+					} catch (IOException e) {
+						strDownloadDatei = txtRibbonPfad.getText() + "/0-" + txtRibbonSlugName.getText() + ".jpg";
+						DebugInfoSchreiben("nicht vorhanden: Bild: " + strDownloadDatei);
+					}
+						
+					// die nächsten 4 Bilder
+					for (int j = 1; j < 5; j++) {
+						
+						try {
+							url = new URL(strNaStammName + "hor_big_img" + j +".jpg");
+							BufferedImage img;
+							img = ImageIO.read(url);
+							strDownloadDatei = txtRibbonPfad.getText() + "/0" +j + "-" + txtRibbonSlugName.getText() + ".jpg";
+							File fDownload = new File(strDownloadDatei);
+							ImageIO.write(img, "jpg", fDownload);
+							DebugInfoSchreiben("geladen: Bild: " + strDownloadDatei);
+						} catch (IOException e) {
+							strDownloadDatei = txtRibbonPfad.getText() + "/0" + j + "-" + txtRibbonSlugName.getText() + ".jpg";
+							DebugInfoSchreiben("nicht vorhanden: Bild: " + strDownloadDatei);
+						}	
 						
 						
-						
-						JOptionPane.showMessageDialog(frmFenstertitel, "Hier gehts los mit NA. Noch nicht implementiert!");								
+					} // Ende for-Schleife
+					
+					
+					
+					txtStatusleiste.setText("Download Bilder NaughtyAmerica fertig.");
+					
 					}
 				}
 			}
@@ -1263,7 +1294,7 @@ public TripleX() {
 		panel_ribbon.setLayout(null);
 
 		JLabel lblRibbonPfad = new JLabel("Pfad");
-		lblRibbonPfad.setBounds(30, 10, 40, 16);
+		lblRibbonPfad.setBounds(30, 10, 35, 16);
 		panel_ribbon.add(lblRibbonPfad);
 		
 		txtRibbonPfad = new JTextField();
@@ -1416,14 +1447,24 @@ public TripleX() {
 		panel_ribbon.add(btnRibbonTitel2Slug);
 		
 		JButton btnRibbonStartverzeichnis = new JButton();
-		iconRibbonStarverzeichnis = new ImageIcon(strPfeilOben);
+		iconRibbonStarverzeichnis = new ImageIcon(strSchubladeHome);
 		btnRibbonStartverzeichnis.setIcon(iconRibbonStarverzeichnis);
 		btnRibbonStartverzeichnis.setBounds(92, 8, 20, 20);
 		panel_ribbon.add(btnRibbonStartverzeichnis);
 		
-		JButton btnRibbonAktualisieren = new JButton();
-		btnRibbonAktualisieren.setBounds(68, 8, 20, 20);
-		panel_ribbon.add(btnRibbonAktualisieren);
+		
+		JButton btnRibbonRefresh = new JButton("");
+		btnRibbonRefresh.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				DebugInfoSchreiben("btnRibbonRefresh wurde gedrückt.");
+				txtStatusleiste.setText(VerzeichnisAkutalisieren(txtRibbonPfad.getText(), dflModel));
+			}
+		});
+		iconRibbonRefresh = new ImageIcon(strRefresh);
+		btnRibbonRefresh.setBounds(67, 8, 20, 20);
+		panel_ribbon.add(btnRibbonRefresh);
+		btnRibbonRefresh.setIcon(iconRibbonRefresh);
 		
 		
 		
@@ -1663,7 +1704,9 @@ public TripleX() {
 		txtSlugActor.setBounds(100, 325, 290, 20);
 		panel_2_slug.add(txtSlugActor);
 		txtSlugActor.setColumns(10);
-		JButton btnSlugErzeugen = new JButton("Slug Erzeu");
+		
+		JButton btnSlugErzeugen = new JButton();
+		btnSlugErzeugen.setToolTipText("Slug-Datei wird erzeugt bzw. gespeichert.");
 		btnSlugErzeugen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				SlugDaten sDaten = new SlugDaten();
@@ -1703,7 +1746,9 @@ public TripleX() {
 				DebugInfoSchreiben("btnSlugErzeugen gedrückt.");
 			}
 		});
-		btnSlugErzeugen.setBounds(550, 400, 115, 25);
+		btnSlugErzeugen.setBounds(550, 400, 50, 25);
+		iconSlugErzeugen = new ImageIcon(strSlugErzeugen);
+		btnSlugErzeugen.setIcon(iconSlugErzeugen);
 		panel_2_slug.add(btnSlugErzeugen);
 
 		JButton btnSlugDateiLaden = new JButton("Slug Laden");
@@ -2277,7 +2322,7 @@ public TripleX() {
 		 * Button rund um Actress und Actor
 		 */
 		
-		iconSlugActressCheck = new ImageIcon(strCheck);
+		iconSlugActressCheck = new ImageIcon(strRefresh);
 		iconSlugActressToFrist = new ImageIcon(strSlugActressToFirst);
 		iconSlugActressToNear = new ImageIcon(strSlugActressToNear);
 		
@@ -2290,8 +2335,41 @@ public TripleX() {
 			public void actionPerformed(ActionEvent e) {
 				int iAnzahlTrenner = txtSlugActress.getText().length() - txtSlugActress.getText().replace("&", "").length(); 
 				String inhalt[]=(txtSlugActress.getText().trim().replace(", ", ";").split("&"));
-				txtSlugActress.setText(inhalt[0].trim());
-				txtSlugActor.setText(inhalt[iAnzahlTrenner].trim());
+				String strActress = "";
+				
+				
+				// Wenn Studio NA und keine Überschneidung zwischen txtslugActress und txtRibbonTitel
+				// dann txtSlug nach txtRibbonTitel
+				
+				if (cmbSlugStudio.getSelectedIndex() == 2) {
+					DebugInfoSchreiben("Ausgewähltes Studio: " + cmbSlugStudio.getSelectedItem().toString());
+					txtRibbonTitel.setText(txtRibbonTitel.getText() + "/ " + txtSlugActress.getText().trim());
+				}
+				
+				// Erster Eintrag ist immer für Actress
+				// bei zwei oder mehr Einträgen ist der letzte Eintrag für Actor, alles andere für Actress
+				
+				switch (iAnzahlTrenner) {
+				case 0:
+						txtSlugActress.setText(inhalt[0].trim());														
+					break;
+
+				case 1:
+						txtSlugActress.setText(inhalt[0].trim());
+						txtSlugActor.setText(inhalt[iAnzahlTrenner].trim());
+					break;
+					
+				default:
+					txtSlugActor.setText(inhalt[iAnzahlTrenner].trim());
+						for (int i = 0; i < iAnzahlTrenner; i++) {
+							strActress = strActress + inhalt[i].trim() + ";";
+						}
+					// Letztes Zeichen = Semikoln entfernen
+					txtSlugActress.setText(strActress.substring(0, strActress.length()-1));
+			
+					
+					break;
+				} // Ende switch
 				
 				DebugInfoSchreiben("btn - actress bereinigt und aufgeteilt");
 			}
@@ -2564,7 +2642,7 @@ public TripleX() {
 
 			}
 		});
-		btnKonfigSpeichern.setBounds(634, 340, 105, 25);
+		btnKonfigSpeichern.setBounds(634, 340, 110, 25);
 		panel_8_Konfiguration.add(btnKonfigSpeichern);
 
 		JButton btnKonfigLaden = new JButton("Laden");
@@ -2573,7 +2651,7 @@ public TripleX() {
 				Konfig_laden();
 			}
 		});
-		btnKonfigLaden.setBounds(634, 303, 105, 25);
+		btnKonfigLaden.setBounds(634, 303, 110, 25);
 		panel_8_Konfiguration.add(btnKonfigLaden);
 
 		JLabel lblKonfigTemplateSlug = new JLabel("Pfad/Datei template.slug");
@@ -2654,7 +2732,7 @@ public TripleX() {
 		panel_8_Konfiguration.add(txtKonfigYpos);
 		txtKonfigYpos.setColumns(10);
 
-		iconKonfigReload = new ImageIcon(strReload19);
+		iconKonfigReload = new ImageIcon(strRefresh);
 		btnKonfigReload = new JButton(iconKonfigReload);
 		btnKonfigReload.setIcon(iconKonfigReload);
 
@@ -2687,6 +2765,10 @@ public TripleX() {
 		txtKonfigcomboboxenxml.setBounds(310, 228, 320, 20);
 		panel_8_Konfiguration.add(txtKonfigcomboboxenxml);
 		txtKonfigcomboboxenxml.setColumns(10);
+		
+		JButton btnKonfigAnwenden = new JButton("Anwenden");
+		btnKonfigAnwenden.setBounds(634, 266, 110, 25);
+		panel_8_Konfiguration.add(btnKonfigAnwenden);
 
 		
 		txtStatusleiste = new JTextField();
