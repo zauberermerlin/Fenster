@@ -28,8 +28,7 @@ fenster_y=300
 last_pfad=
 
 #Standard-Pfad für Slug-Dateien
-standard_pfad=/netz/krypto/stars/ariana_marie/naughty
-
+standard_pfad=/netz/krypto/stars
 
 #Logging an oder aus
 #Standardwert: aus
@@ -37,4 +36,3 @@ logging=aus
 
 #Pfad und Name fuer log-Datei
 log=/home/thomas/workspace/Fenster/log.txt
-

@@ -7,12 +7,16 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.CharBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -44,6 +48,7 @@ import javax.swing.JTextField;
 import javax.swing.JTextPane;
 
 import org.fenster.model.ClassKonfig;
+import org.fenster.model.ExifDaten;
 import org.fenster.model.SlugDaten;
 
 import org.jsoup.Jsoup;
@@ -73,6 +78,7 @@ public class TripleX extends JFrame {
 	private static final long serialVersionUID = 906608270381572622L;
 	
 	private JFrame frmFenstertitel;
+	
 	private JTextField txtStatusleiste;
 	private JTextField txtSlugActress;
 	private JTextField txtSlugActor;
@@ -175,6 +181,14 @@ public class TripleX extends JFrame {
 	private ImageIcon iconSlugReleaseJahrUnten;
 	private ImageIcon iconSlugTauschen;
 	
+	
+	private ImageIcon iconSlugErstelltAmJahrOben;
+	private ImageIcon iconSlugErstelltAmJahrUnten;
+	private ImageIcon iconSlugErstelltAmMonatOben;
+	private ImageIcon iconSlugErstelltAmMonatUnten;
+	private ImageIcon iconSlugErstelltAmTagOben;
+	private ImageIcon iconSlugErstelltAmTagUnten;
+	
 	private JButton btnKonfigReload;
 	private JTextField txtKonfigPythonpfad;
 	private JTextField txtKonfigXxxshpfad;
@@ -228,6 +242,7 @@ public class TripleX extends JFrame {
 	private DefaultListModel<String> dflModel;
 	private JTextField txtRibbonVersion;
 	private JTextField txtRibbonVersionsdatum;
+	
 
 	
 
@@ -241,8 +256,12 @@ public class TripleX extends JFrame {
 		ClassKonfig konfiguration = new ClassKonfig();
 
 		TripleX window_start = new TripleX();
+
 		
 		konfiguration.KonfigLaden();
+		
+	
+		
 		
 //		if (window_start.txtKonfigXpos.getText().equals("")) {
 //			window_start.txtKonfigXpos.setText("100");
@@ -1202,16 +1221,109 @@ public String StringUmwandeln(String strEingang) {
  * Schritte der Umwandlung
  * Alles in Kleinbuchstaben
  * Sonderzeichen entfernen
+ * Punkt entfernen
+ * Komma entfernen
+ * runde Klammern entfernen
  * Leerzeichen in Bindestrich
  * Unterstrich in Bindestrich
  * 2 Bindestriche zu einem Bindestrich
  * 
  */
-	String strAusgang = strEingang.toLowerCase().replace(" ", "-").replace("_", "-").replace("/", "").replace("&", "").replace("--", "-").replace("'", "");
+	String strAusgang = strEingang.toLowerCase().replace(" ", "-").replace("(", "").replace(")", "")
+			.replace(",", "").replace("_", "-").replace("/", "").replace("&", "").replace("--", "-").replace("'", "").replace(".", "");
 	
 	return strAusgang;
 }
 
+
+
+public void setExifDaten(ExifDaten exifDaten) {
+	exifDaten.setStrTitle(txtRibbonTitel.getText());
+	DebugInfoSchreiben("Exif: -title=" + txtRibbonTitel.getText());
+	
+	exifDaten.setStrLabel(txtRibbonTitel.getText());
+	exifDaten.setStrXpauthor(cmbSlugStudio.getSelectedObjects().toString());
+	exifDaten.setStrKeywords(txtSlugActress.getText() + ";" + txtSlugActor);
+	exifDaten.setStrPersoninimage(txtSlugActress.getText());
+	exifDaten.setStrXpcomment(txtpnSlugBeschreibung.getText());
+	exifDaten.setStrCaptionAbstract(txtpnSlugBeschreibung.getText());
+	exifDaten.setStrDescription(txtpnSlugBeschreibung.getText());
+	exifDaten.setStrImageDescription(txtpnSlugBeschreibung.getText());
+	
+	exifDaten.setStrDateTimeOriginal(txtSlugReleaseJahr.getText() + ":" + txtSlugReleaseMonat.getText() + ":" +
+										txtSlugReleaseTag.getText() + " " + txtSlugReleaseZeit.getText());
+	
+	
+		
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//-title=Wives On Vacation / Ava Addams & Eva Notty & Jessy Jones
+	//-label=Wives On Vacation / Ava Addams & Eva Notty & Jessy Jones
+	//-xpauthor=Naughty America
+	//-keywords=Ava Addams;Eva Notty; Jessy Jones
+	//-personinimage=Ava Addams;Eva Notty
+	//
+	//-xpcomment=Ava Addams & Eva Notty are on vacation. While they are away from their husbands they decide to have some fun and bring a complete stranger back to their room. These girls just want to have fun
+	//-Caption-Abstract=Ava Addams & Eva Notty are on vacation. While they are away from their husbands they decide to have some fun and bring a complete stranger back to their room. These girls just want to have fun
+	//-Description=Ava Addams & Eva Notty are on vacation. While they are away from their husbands they decide to have some fun and bring a complete stranger back to their room. These girls just want to have fun
+	//-imagedescription=Ava Addams & Eva Notty are on vacation. While they are away from their husbands they decide to have some fun and bring a complete stranger back to their room. These girls just want to have fun
+	//
+	//-DateTimeOriginal=2015:01:16 00:00
+
+
+} // Ende Funktion setExifDaten
+
+
+public void getExifDaten() {
+	
+}
+
+
+public Boolean ExifDatenAusDateiLaden(String strDatei) {
+	
+	File fDatei = new File(strDatei);
+	if (fDatei.exists()) {
+		
+//		FileInputStream fis;
+		FileReader fReader;
+		BufferedReader br;
+		String strZeile = "";
+		
+		try {
+			fReader = new FileReader(fDatei);
+			br = new BufferedReader(fReader);
+			
+			while (br.read() != -1) {
+				strZeile = br.readLine();
+				DebugInfoSchreiben(strZeile);
+				
+			}
+			
+			
+		} catch (IOException e) {
+			DebugInfoSchreiben("Fehler beim Lesen der Datei: " + strDatei + "Funktion ExifDatenAusDateiLaden");
+			e.printStackTrace();
+		}
+		
+		return true;		
+	} else {
+		return false;
+	}
+} // Ende Funktion ExifDatenAusDateiLaden
+
+
+public void ExifDatenInDateiSchreiben() {
+	
+}
 	/**
 	 * Create the frame.
 	 */
@@ -1222,8 +1334,7 @@ public TripleX() {
 		frmFenstertitel.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frmFenstertitel.getContentPane().setLayout(new BorderLayout(0, 0));
 
-
-		
+	
 		/*
 		 * ======================================
 		 * Menüs
@@ -1546,10 +1657,24 @@ public TripleX() {
 
 						// Neuer Dateiname muss auf mp4 enden und darf nicht identisch zum bisherigen Namen sein
 						if (strErgebnis.endsWith(".mp4") && !strErgebnis.equals(dflModel.get(iMarkierung))) {
-							String strAlterDateiname = txtRibbonPfad.getText() + "/" + dflModel.get(iMarkierung);
-							String strNeuerDateiname = txtRibbonPfad.getText() + "/" + strErgebnis;
-							String strNeuesVerzeichnis = txtRibbonPfad.getText() + "/" + strErgebnis.subSequence(0, (strErgebnis.length()-4));
+							
+							String strAlterDateiname = "";
+							String strNeuerDateiname = "";
+							String strNeuesVerzeichnis = "";
 							String strNeueDateiNeuesVerzeichnis = strNeuesVerzeichnis + "/" + strErgebnis;
+
+							if (txtRibbonPfad.getText().endsWith("/")) {
+								strAlterDateiname = txtRibbonPfad.getText() + dflModel.get(iMarkierung);
+								strNeuerDateiname = txtRibbonPfad.getText() + strErgebnis;
+								strNeuesVerzeichnis = txtRibbonPfad.getText() + strErgebnis.subSequence(0, (strErgebnis.length()-4));
+							} else {
+								strNeuesVerzeichnis = txtRibbonPfad.getText() + "/" + strErgebnis.subSequence(0, (strErgebnis.length()-4));
+								strAlterDateiname = txtRibbonPfad.getText() + "/" + dflModel.get(iMarkierung);
+								strNeuerDateiname = txtRibbonPfad.getText() + "/" + strErgebnis;
+							}
+							
+							
+
 							
 							File fAlterDateiname = new File(strAlterDateiname);
 							File fNeuerDateiname = new File(strNeuerDateiname);
@@ -2245,6 +2370,78 @@ public TripleX() {
 		btnSlugLeeren.setBounds(550, 330, 115, 25);
 		panel_2_slug.add(btnSlugLeeren);
 		
+
+		
+		/*
+		 * Buttons für ErstelltAm zu verändern
+		 * 
+		 * 
+		 */
+		JButton btnSlugErstelltAmJahrOben = new JButton("");
+		btnSlugErstelltAmJahrOben.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnSlugErstelltAmJahrOben.setBounds(450, 137, 18, 18);
+		iconSlugErstelltAmJahrOben = new ImageIcon(strPfeilOben);
+		btnSlugErstelltAmJahrOben.setIcon(iconSlugErstelltAmJahrOben);
+		panel_2_slug.add(btnSlugErstelltAmJahrOben);
+		
+		JButton btnSlugErstelltAmJahrUnten = new JButton("");
+		btnSlugErstelltAmJahrUnten.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnSlugErstelltAmJahrUnten.setBounds(450, 180, 18, 18);
+		iconSlugErstelltAmJahrUnten = new ImageIcon(strPfeilUnten);
+		btnSlugErstelltAmJahrUnten.setIcon(iconSlugErstelltAmJahrUnten);
+		panel_2_slug.add(btnSlugErstelltAmJahrUnten);
+
+		JButton btnSlugErstelltAmMonatOben = new JButton("");
+		btnSlugErstelltAmMonatOben.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnSlugErstelltAmMonatOben.setBounds(488, 137, 18, 18);
+		iconSlugErstelltAmMonatOben = new ImageIcon(strPfeilOben);
+		btnSlugErstelltAmMonatOben.setIcon(iconSlugErstelltAmMonatOben);
+		panel_2_slug.add(btnSlugErstelltAmMonatOben);
+		
+		JButton btnSlugErstelltAmMonatUnten = new JButton("");
+		btnSlugErstelltAmMonatUnten.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnSlugErstelltAmMonatUnten.setBounds(488, 180, 18, 18);
+		iconSlugErstelltAmMonatUnten = new ImageIcon(strPfeilUnten);
+		btnSlugErstelltAmMonatUnten.setIcon(iconSlugErstelltAmMonatUnten);
+		panel_2_slug.add(btnSlugErstelltAmMonatUnten);
+		
+		
+		JButton btnSlugErstelltAmTagOben = new JButton("");
+		btnSlugErstelltAmTagOben.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnSlugErstelltAmTagOben.setBounds(518, 137, 18, 18);
+		iconSlugErstelltAmTagOben = new ImageIcon(strPfeilOben);
+		btnSlugErstelltAmTagOben.setIcon(iconSlugErstelltAmTagOben);
+		panel_2_slug.add(btnSlugErstelltAmTagOben);
+		
+		JButton btnSlugErstelltAmTagUnten = new JButton("");
+		btnSlugErstelltAmTagUnten.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnSlugErstelltAmTagUnten.setBounds(518, 180, 18, 18);
+		iconSlugErstelltAmTagUnten = new ImageIcon(strPfeilUnten);
+		btnSlugErstelltAmTagUnten.setIcon(iconSlugErstelltAmTagUnten);
+		panel_2_slug.add(btnSlugErstelltAmTagUnten);
+
+		
+		
+		
+		
 		
 		/*
 		 * Buttons zwischen den Datümern
@@ -2340,11 +2537,22 @@ public TripleX() {
 				
 				// Wenn Studio NA und keine Überschneidung zwischen txtslugActress und txtRibbonTitel
 				// dann txtSlug nach txtRibbonTitel
+				// wenn neben Studio NA gefüllt auch Album gefüllt, dann dies in den Titel
+				
 				
 				if (cmbSlugStudio.getSelectedIndex() == 2) {
-					DebugInfoSchreiben("Ausgewähltes Studio: " + cmbSlugStudio.getSelectedItem().toString());
-					txtRibbonTitel.setText(txtRibbonTitel.getText() + "/ " + txtSlugActress.getText().trim());
-				}
+					
+					if (cmbSlugAlbum.getSelectedIndex() == 0) {
+						
+						DebugInfoSchreiben("Ausgewähltes Studio: " + cmbSlugStudio.getSelectedItem().toString());
+						txtRibbonTitel.setText(txtRibbonTitel.getText() + "/ " + txtSlugActress.getText().trim());
+					} else {
+						DebugInfoSchreiben("Titel: " + cmbSlugAlbum.getSelectedItem().toString() + " / " + txtSlugActress.getText().trim());
+						txtRibbonTitel.setText(cmbSlugAlbum.getSelectedItem().toString() + " / " + txtSlugActress.getText().trim());
+					}
+					
+
+				} // Ende if
 				
 				// Erster Eintrag ist immer für Actress
 				// bei zwei oder mehr Einträgen ist der letzte Eintrag für Actor, alles andere für Actress
@@ -2407,6 +2615,14 @@ public TripleX() {
 		panel_2_slug.add(btnSlugActressToNear);
 		
 		JButton btnSlugExifErzeugen = new JButton("Exif Erzeu");
+		btnSlugExifErzeugen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			ExifDaten exifDaten = new ExifDaten();
+			setExifDaten(exifDaten);
+				
+			
+			}
+		});
 		btnSlugExifErzeugen.setBounds(670, 330, 110, 25);
 		panel_2_slug.add(btnSlugExifErzeugen);
 		
@@ -2422,6 +2638,7 @@ public TripleX() {
 		btnSlugMp4Erzeugen.setBounds(670, 435, 110, 25);
 		panel_2_slug.add(btnSlugMp4Erzeugen);
 		
+	
 
 
 		/*
