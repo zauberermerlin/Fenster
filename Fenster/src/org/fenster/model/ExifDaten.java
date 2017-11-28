@@ -1,10 +1,11 @@
 package org.fenster.model;
 
-
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class ExifDaten {
 
-	private String strDatei;
+	private String strExifDatei;
 	
 	private String strTitle;
 	private String strLabel;
@@ -21,8 +22,8 @@ public class ExifDaten {
 	}
 
 
-	public void setStrDatei(String strDatei) {
-		this.strDatei = strDatei;
+	public void setStrDatei(String strExifDatei) {
+		this.strExifDatei = strExifDatei;
 	}
 	
 	
@@ -130,12 +131,64 @@ public class ExifDaten {
 	private String strDateTimeOriginal;
 	
 
-	public String ExifDatenAusDateiLaden(String strDatei) {
+	public String ExifDatenAusDateiLaden(String strExifDatei) {
 		return "Fertig Exif Laden";
 	}
 
-	public String ExifDatenDateiErzeugen(String strDatei) {
-		return "Fertig";
+	public String ExifDatenDateiErzeugen(String strExifDatei) {
+		
+			FileWriter writer;
+			
+			String strRueckgabe = "";
+			
+				try {
+					writer = new FileWriter(strExifDatei);
+					writer.write("#Aus der Gui-Anwendung heraus erstellt.");
+					writer.write(System.getProperty("line.separator"));
+					// Hier beginnen die Werte
+					writer.write("-title=" + getStrTitle());
+					writer.write(System.getProperty("line.separator"));
+					writer.write("-label=" + getStrLabel());
+					writer.write(System.getProperty("line.separator"));
+					writer.write("-xpauthor=" + getStrXpauthor());
+					writer.write(System.getProperty("line.separator"));
+					writer.write("-keywords=" + getStrKeywords());
+					writer.write(System.getProperty("line.separator"));
+					writer.write("-personinimage=" + getStrPersoninimage());
+					writer.write(System.getProperty("line.separator"));
+					writer.write("-xpcomment=" + getStrXpcomment());
+					writer.write(System.getProperty("line.separator"));
+					writer.write("-Caption-Abstract=" + getStrCaptionAbstract());
+					writer.write(System.getProperty("line.separator"));
+					writer.write("-Description=" + getStrDescription());
+					writer.write(System.getProperty("line.separator"));
+					writer.write("-imagedescription=" + getStrImageDescription());
+					writer.write(System.getProperty("line.separator"));
+					writer.write("-DateTimeOriginal=" + getStrDateTimeOriginal());
+					writer.write(System.getProperty("line.separator"));
+					writer.flush();
+					writer.close();
+					strRueckgabe = "Exifdatei wurde erzeugt. (aus ExifDaten.java)";
+					
+					
+				} catch (IOException e) {
+					strRueckgabe = "Fehler beim Erzeugen der Exif-Datei (aus ExifDaten.java)";
+					e.printStackTrace();
+				}
+				//-title=Wives On Vacation / Ava Addams & Eva Notty & Jessy Jones
+				//-label=Wives On Vacation / Ava Addams & Eva Notty & Jessy Jones
+				//-xpauthor=Naughty America
+				//-keywords=Ava Addams;Eva Notty; Jessy Jones
+				//-personinimage=Ava Addams;Eva Notty
+				//
+				//-xpcomment=Ava Addams & Eva Notty are on vacation. While they are away from their husbands they decide to have some fun and bring a complete stranger back to their room. These girls just want to have fun
+				//-Caption-Abstract=Ava Addams & Eva Notty are on vacation. While they are away from their husbands they decide to have some fun and bring a complete stranger back to their room. These girls just want to have fun
+				//-Description=Ava Addams & Eva Notty are on vacation. While they are away from their husbands they decide to have some fun and bring a complete stranger back to their room. These girls just want to have fun
+				//-imagedescription=Ava Addams & Eva Notty are on vacation. While they are away from their husbands they decide to have some fun and bring a complete stranger back to their room. These girls just want to have fun
+				//
+				//-DateTimeOriginal=2015:01:16 00:00
+		
+		return strRueckgabe;
 	}
 
 	public Boolean SlugDateiVorhanden(String strDatei) {

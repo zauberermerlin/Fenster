@@ -28,7 +28,7 @@ fenster_y=300
 last_pfad=
 
 #Standard-Pfad für Slug-Dateien
-standard_pfad=/netz/krypto/stars
+standard_pfad=/netz/krypto/stars/august_ames/the-thirst-is-real
 
 #Logging an oder aus
 #Standardwert: aus

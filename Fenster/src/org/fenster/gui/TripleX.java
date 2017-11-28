@@ -260,6 +260,7 @@ public class TripleX extends JFrame {
 		
 		konfiguration.KonfigLaden();
 		
+//		SlugDaten slugDaten = new SlugDaten(window_start);
 	
 		
 		
@@ -349,7 +350,8 @@ public class TripleX extends JFrame {
 				}
 
 				fis.close();
-				txtStatusleiste.setText("Konfiguration geladen");
+//				txtStatusleiste.setText("Konfiguration geladen");
+				DebugInfoSchreiben("TripleX-Klasse: Funktion Konfig_Laden(): Konfiguration geladen");
 
 			} catch (IOException e) {
 				// TODO Automatisch generierter Erfassungsblock
@@ -1239,11 +1241,18 @@ public String StringUmwandeln(String strEingang) {
 
 public void setExifDaten(ExifDaten exifDaten) {
 	exifDaten.setStrTitle(txtRibbonTitel.getText());
-	DebugInfoSchreiben("Exif: -title=" + txtRibbonTitel.getText());
+	DebugInfoSchreiben("Exif-Daten");
+	DebugInfoSchreiben("-title=" + txtRibbonTitel.getText());
 	
 	exifDaten.setStrLabel(txtRibbonTitel.getText());
-	exifDaten.setStrXpauthor(cmbSlugStudio.getSelectedObjects().toString());
-	exifDaten.setStrKeywords(txtSlugActress.getText() + ";" + txtSlugActor);
+	DebugInfoSchreiben("-label=" + txtRibbonTitel.getText());
+	
+	exifDaten.setStrXpauthor(cmbSlugStudio.getSelectedItem().toString());
+	DebugInfoSchreiben("-xpauthor=" + cmbSlugStudio.getSelectedItem().toString());
+	
+	exifDaten.setStrKeywords(txtSlugActress.getText() + ";" + txtSlugActor.getText());
+
+	
 	exifDaten.setStrPersoninimage(txtSlugActress.getText());
 	exifDaten.setStrXpcomment(txtpnSlugBeschreibung.getText());
 	exifDaten.setStrCaptionAbstract(txtpnSlugBeschreibung.getText());
@@ -1252,18 +1261,6 @@ public void setExifDaten(ExifDaten exifDaten) {
 	
 	exifDaten.setStrDateTimeOriginal(txtSlugReleaseJahr.getText() + ":" + txtSlugReleaseMonat.getText() + ":" +
 										txtSlugReleaseTag.getText() + " " + txtSlugReleaseZeit.getText());
-	
-	
-		
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	//-title=Wives On Vacation / Ava Addams & Eva Notty & Jessy Jones
@@ -1321,9 +1318,58 @@ public Boolean ExifDatenAusDateiLaden(String strDatei) {
 } // Ende Funktion ExifDatenAusDateiLaden
 
 
-public void ExifDatenInDateiSchreiben() {
+public void ExifDatenInDateiSchreiben(ExifDaten exifDaten) {
+/*
+ * Ablauf:
+ * (1) es muss eine slug-Datei existieren
+ * (2) wenn eine exif-Datei bereits existiert -> Nachfrage bzgl. Überschreiben
+ * (3) Check der Datenfelder auf Vollständigkeit
+ * (4) Datei schreiben
+ */
 	
-}
+	
+	DebugInfoSchreiben("Funktion ExifDatenInDateiSchreiben() wurde aufgerufen.");
+	
+// existiert die entsprechende *.slug-Datei?
+	String strSlugDatei;
+	String strExifDatei;
+	int iExifUeberschreiben;
+	
+	if (txtRibbonPfad.getText().endsWith("/")) {
+		strSlugDatei = txtRibbonPfad.getText() + txtRibbonSlugName.getText() + ".slug";
+		strExifDatei = txtRibbonPfad.getText() + txtRibbonSlugName.getText() + ".exif"; 
+	} else {
+		strSlugDatei = txtRibbonPfad.getText() + "/" + txtRibbonSlugName.getText() + ".slug";
+		strExifDatei = txtRibbonPfad.getText() + "/" + txtRibbonSlugName.getText() + ".exif";
+	}
+	
+	DebugInfoSchreiben("Slug-Datei: " + strSlugDatei);
+	DebugInfoSchreiben("Exif-Datei: " + strExifDatei);
+	
+	File fSlugDatei = new File(strSlugDatei);
+	// Slug-Datei existiert
+	if (fSlugDatei.exists()) {
+
+		// Überprüfen, ob exif-Datei existiert
+		File fExifDatei = new File(strExifDatei);
+		if (fExifDatei.exists()) {
+			iExifUeberschreiben = JOptionPane.showConfirmDialog(frmFenstertitel, "Soll die Exifdatei:\n" + strExifDatei + "\nüberschrieben werden?", "Überschreiben", JOptionPane.YES_NO_OPTION);
+		} else {
+			// ExifDatei endlich schreiben
+			DebugInfoSchreiben(exifDaten.ExifDatenDateiErzeugen(strExifDatei));
+			
+		}
+		
+		// Exif-Datei soll überschrieben werden
+		
+		
+	} else {
+		JOptionPane.showMessageDialog(frmFenstertitel, "Es existiert keine Slug-Datei.\nEs kann keine exif-Datei erstellt werden.");
+		DebugInfoSchreiben("Es existiert keine Slug-Datei. Erwarteter Name: " + strSlugDatei
+				+ ". Es kann keine exif-Datei erstellt werden.");
+	} // Ende if
+} // Ende Funktion ExifDatenInDateiSchreiben()
+
 	/**
 	 * Create the frame.
 	 */
@@ -1646,6 +1692,7 @@ public TripleX() {
 				//ersten markierten Eintrag holen
 				// Wert: -1, wenn nix markiert ist
 				int iMarkierung = listDateiVerzeichnis.getSelectedIndex();
+				// strErgebnis wird der neue Dateiname, der im Eingabefeld eingegeben wurde
 				String strErgebnis;
 				if (iMarkierung != -1) {
 
@@ -1655,17 +1702,20 @@ public TripleX() {
 					if (dflModel.get(iMarkierung).endsWith(".mp4")) {
 						strErgebnis = JOptionPane.showInputDialog(frmFenstertitel, "Datei\n\t" + dflModel.get(iMarkierung) + "\nwird umbenannt und\nins Unterverzeichnis kopiert.", dflModel.get(iMarkierung) );
 
+						DebugInfoSchreiben("Neuer Dateiname aufgrund Eingabefeld: " + strErgebnis);
+						
 						// Neuer Dateiname muss auf mp4 enden und darf nicht identisch zum bisherigen Namen sein
 						if (strErgebnis.endsWith(".mp4") && !strErgebnis.equals(dflModel.get(iMarkierung))) {
 							
 							String strAlterDateiname = "";
 							String strNeuerDateiname = "";
 							String strNeuesVerzeichnis = "";
-							String strNeueDateiNeuesVerzeichnis = strNeuesVerzeichnis + "/" + strErgebnis;
+							String strNeueDateiNeuesVerzeichnis = "";
 
 							if (txtRibbonPfad.getText().endsWith("/")) {
 								strAlterDateiname = txtRibbonPfad.getText() + dflModel.get(iMarkierung);
 								strNeuerDateiname = txtRibbonPfad.getText() + strErgebnis;
+								// letzten 4 Zeichen = .mp4 abschneiden
 								strNeuesVerzeichnis = txtRibbonPfad.getText() + strErgebnis.subSequence(0, (strErgebnis.length()-4));
 							} else {
 								strNeuesVerzeichnis = txtRibbonPfad.getText() + "/" + strErgebnis.subSequence(0, (strErgebnis.length()-4));
@@ -1673,8 +1723,11 @@ public TripleX() {
 								strNeuerDateiname = txtRibbonPfad.getText() + "/" + strErgebnis;
 							}
 							
-							
-
+							strNeueDateiNeuesVerzeichnis = strNeuesVerzeichnis + "/" + strErgebnis;							
+//							DebugInfoSchreiben("strAlterDateiname: " + strAlterDateiname);
+//							DebugInfoSchreiben("strNeuerDateiname: " + strNeuerDateiname);
+//							DebugInfoSchreiben("strNeuesVerzeichnis: " + strNeuesVerzeichnis);
+//							DebugInfoSchreiben("strNeueDateiNeuesVerzeichnis: " + strNeueDateiNeuesVerzeichnis);
 							
 							File fAlterDateiname = new File(strAlterDateiname);
 							File fNeuerDateiname = new File(strNeuerDateiname);
@@ -1682,6 +1735,7 @@ public TripleX() {
 							
 							// Datei umbenennen
 							if (fAlterDateiname.renameTo(fNeuerDateiname)) {
+								
 								DebugInfoSchreiben("Datei von: " + strAlterDateiname + " nach " + strNeuerDateiname + " umbenannt.");
 
 								// Neues Verzeichnis anlegen
@@ -2302,6 +2356,7 @@ public TripleX() {
 		// dtf = DateTimeFormatter.ofPattern("yyyy");
 		// localDate = LocalDate.now();
 		txtSlugErstelltAmJahr = new JTextField();
+		txtSlugErstelltAmJahr.setHorizontalAlignment(SwingConstants.CENTER);
 		txtSlugErstelltAmJahr.setBounds(440, 158, 40, 20);
 		txtSlugErstelltAmJahr.setText(dtf.format(localDate).toString());
 		panel_2_slug.add(txtSlugErstelltAmJahr);
@@ -2311,6 +2366,7 @@ public TripleX() {
 		localDate = LocalDate.now();
 		
 		txtSlugErstelltAmMonat = new JTextField();
+		txtSlugErstelltAmMonat.setHorizontalAlignment(SwingConstants.CENTER);
 		txtSlugErstelltAmMonat.setBounds(485, 158, 25, 20);
 		txtSlugErstelltAmMonat.setText(dtf.format(localDate).toString());
 		panel_2_slug.add(txtSlugErstelltAmMonat);
@@ -2321,12 +2377,14 @@ public TripleX() {
 		localDate = LocalDate.now();
 		
 		txtSlugErstelltAmTag = new JTextField();
+		txtSlugErstelltAmTag.setHorizontalAlignment(SwingConstants.CENTER);
 		txtSlugErstelltAmTag.setBounds(515, 158, 25, 20);
 		txtSlugErstelltAmTag.setText(dtf.format(localDate).toString());
 		panel_2_slug.add(txtSlugErstelltAmTag);
 		txtSlugErstelltAmTag.setColumns(10);
 		
 		txtSlugErstelltAmZeit = new JTextField();
+		txtSlugErstelltAmZeit.setHorizontalAlignment(SwingConstants.CENTER);
 		txtSlugErstelltAmZeit.setText("00:00");
 		txtSlugErstelltAmZeit.setBounds(550, 158, 41, 20);
 		panel_2_slug.add(txtSlugErstelltAmZeit);
@@ -2400,6 +2458,32 @@ public TripleX() {
 		JButton btnSlugErstelltAmMonatOben = new JButton("");
 		btnSlugErstelltAmMonatOben.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				String strMonat = txtSlugErstelltAmMonat.getText();
+				// Wenn Feld nicht gefüllt sein sollte
+				if (strMonat.equals("")) {
+					strMonat = "00";
+				}
+				
+				if (strMonat.startsWith("0")) {
+					strMonat = strMonat.substring(1, 2);
+				}
+				int iMonat = Integer.parseInt(strMonat);
+				iMonat++;
+				
+				// bei 31 wird der nächste Tag -> 1
+				if (iMonat > 12) {
+					iMonat = 1;
+				}
+				
+				// führende Null hinzufügen
+				if (iMonat <10) {
+					strMonat = "0" + String.valueOf(iMonat);
+				} else {
+					strMonat = String.valueOf(iMonat);
+				}
+				
+				txtSlugErstelltAmMonat.setText(strMonat);
+				DebugInfoSchreiben("Schaltfläche btnSlugErstelltAmMonatOben wurde gedrückt. Neuer Monat:" + strMonat);
 			}
 		});
 		btnSlugErstelltAmMonatOben.setBounds(488, 137, 18, 18);
@@ -2410,6 +2494,32 @@ public TripleX() {
 		JButton btnSlugErstelltAmMonatUnten = new JButton("");
 		btnSlugErstelltAmMonatUnten.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				String strMonat = txtSlugErstelltAmMonat.getText();
+				// Wenn Feld nicht gefüllt sein sollte
+				if (strMonat.equals("")) {
+					strMonat = "02";
+				}
+				
+				if (strMonat.startsWith("0")) {
+					strMonat = strMonat.substring(1, 2);
+				}
+				int iMonat = Integer.parseInt(strMonat);
+				iMonat--;
+				
+				// bei 31 wird der nächste Tag -> 1
+				if (iMonat < 1) {
+					iMonat = 12;
+				}
+				
+				// führende Null hinzufügen
+				if (iMonat <10) {
+					strMonat = "0" + String.valueOf(iMonat);
+				} else {
+					strMonat = String.valueOf(iMonat);
+				}
+				
+				txtSlugErstelltAmMonat.setText(strMonat);
+				DebugInfoSchreiben("Schaltfläche btnSlugErstelltAmMonatUnten wurde gedrückt. Neuer Monat:" + strMonat);
 			}
 		});
 		btnSlugErstelltAmMonatUnten.setBounds(488, 180, 18, 18);
@@ -2421,6 +2531,32 @@ public TripleX() {
 		JButton btnSlugErstelltAmTagOben = new JButton("");
 		btnSlugErstelltAmTagOben.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				String strTag = txtSlugErstelltAmTag.getText();
+				// Wenn Feld nicht gefüllt sein sollte
+				if (strTag.equals("")) {
+					strTag = "00";
+				}
+				
+				if (strTag.startsWith("0")) {
+					strTag = strTag.substring(1, 2);
+				}
+				int iTag = Integer.parseInt(strTag);
+				iTag++;
+				
+				// bei 31 wird der nächste Tag -> 1
+				if (iTag > 31) {
+					iTag = 1;
+				}
+				
+				// führende Null hinzufügen
+				if (iTag <10) {
+					strTag = "0" + String.valueOf(iTag);
+				} else {
+					strTag = String.valueOf(iTag);
+				}
+				
+				txtSlugErstelltAmTag.setText(strTag);
+				DebugInfoSchreiben("Schaltfläche btnSlugErstelltAmTagOben wurde gedrückt. Neuer Tag:" + strTag);
 			}
 		});
 		btnSlugErstelltAmTagOben.setBounds(518, 137, 18, 18);
@@ -2431,6 +2567,32 @@ public TripleX() {
 		JButton btnSlugErstelltAmTagUnten = new JButton("");
 		btnSlugErstelltAmTagUnten.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				String strTag = txtSlugErstelltAmTag.getText();
+				// Wenn Feld nicht gefüllt sein sollte
+				if (strTag.equals("")) {
+					strTag = "2";
+				}
+				
+				if (strTag.startsWith("0")) {
+					strTag = strTag.substring(1, 2);
+				}
+				int iTag = Integer.parseInt(strTag);
+				iTag--;
+				
+				// bei 31 wird der nächste Tag -> 1
+				if (iTag < 1) {
+					iTag = 31;
+				}
+				
+				// führende Null hinzufügen
+				if (iTag <10) {
+					strTag = "0" + String.valueOf(iTag);
+				} else {
+					strTag = String.valueOf(iTag);
+				}
+				
+				txtSlugErstelltAmTag.setText(strTag);
+				DebugInfoSchreiben("Schaltfläche btnSlugErstelltAmTagUnten wurde gedrückt. Neuer Tag:" + strTag);
 			}
 		});
 		btnSlugErstelltAmTagUnten.setBounds(518, 180, 18, 18);
@@ -2617,9 +2779,10 @@ public TripleX() {
 		JButton btnSlugExifErzeugen = new JButton("Exif Erzeu");
 		btnSlugExifErzeugen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+			DebugInfoSchreiben("btnSlugExifErzeugen gedrückt.");
 			ExifDaten exifDaten = new ExifDaten();
 			setExifDaten(exifDaten);
-				
+			ExifDatenInDateiSchreiben(exifDaten);	
 			
 			}
 		});

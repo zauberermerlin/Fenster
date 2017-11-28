@@ -8,6 +8,8 @@ import java.util.Properties;
 
 import javax.swing.JOptionPane;
 
+import org.fenster.gui.TripleX;
+
 public class ClassKonfig {
 
 final String strDateiKonfigPfad = "konfig.txt";
@@ -30,6 +32,15 @@ private String StrLetzterPfad;
 private String StrStandardPfad;
 private String StrPythonPfad;
 private String StrXxxPfad;
+
+
+/*
+ * 
+ * Könnte schwierig werden, da die Initialisierung noch vor dem Hauptprg erfolgt.
+ */
+public ClassKonfig(TripleX haupt) {
+	
+}
 
 
 /**

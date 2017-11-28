@@ -7,12 +7,34 @@ import java.util.Properties;
 
 import javax.swing.JOptionPane;
 
+import org.fenster.gui.TripleX;
+
 /**
  * @author thomas
  *
  */
 public class SlugDaten {
 	
+	
+	/**strInfo
+	 * Ohne Parameter
+	 */
+	public SlugDaten(TripleX haupt) {
+
+		System.out.println("Aufruf mit Class");
+		haupt.DebugInfoSchreiben("Klasse aufgerufen");
+		
+	}
+	
+	
+	
+	/**
+	 * Ohne Parameter
+	 */
+	public SlugDaten() {
+
+	}
+
 	public static String getStrVersion() {
 		return strVersion;
 	}
@@ -203,7 +225,8 @@ public void setStrActor(String strActor) {
 }
 
 public void setStrBeschreibung(String strBeschreibung) {
-	this.strBeschreibung = strBeschreibung;
+	// im Beschreibungsfeld die doppelten Anführungszeichen durch einfache ersetzen.
+	this.strBeschreibung = strBeschreibung.replace("\"", "'");
 }
 
 public void setStrBraznr(String strBraznr) {
